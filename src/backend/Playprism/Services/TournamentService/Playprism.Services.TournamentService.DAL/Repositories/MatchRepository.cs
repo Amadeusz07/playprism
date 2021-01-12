@@ -23,13 +23,13 @@ namespace Playprism.Services.TournamentService.DAL.Repositories
             return entities;
         }
 
-        // public async Task<MatchEntity> GetByIdAsync(int id)
-        // {
-        //     return await MainDbContext.Matches
-        //         .Include(x => x.Round)
-        //         .ThenInclude(x => x.MatchDefinition)
-        //         .FirstAsync(x => x.Id == id);
-        // }
+        public async Task<MatchEntity> GetFullByIdAsync(int id)
+        {
+            return await MainDbContext.Matches
+                .Include(x => x.Round)
+                .ThenInclude(x => x.MatchDefinition)
+                .FirstAsync(x => x.Id == id);
+        }
 
         public async Task ClearAsync(int tournamentId)
         {

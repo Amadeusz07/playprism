@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using AutoMapper;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 using Playprism.Services.TournamentService.BLL.Interfaces;
 using Playprism.Services.TournamentService.DAL.Entities;
@@ -11,10 +12,12 @@ namespace Playprism.Services.TournamentService.BLL.Services
     public class MatchService: IMatchService
     {
         private readonly IMatchRepository _matchRepository;
+        private readonly IMapper _mapper;
 
-        public MatchService(IMatchRepository matchRepository)
+        public MatchService(IMatchRepository matchRepository, IMapper mapper)
         {
             _matchRepository = matchRepository;
+            _mapper = mapper;
         }
 
         public async Task<MatchEntity> UpdateMatchAsync(MatchEntity entity)
@@ -24,8 +27,10 @@ namespace Playprism.Services.TournamentService.BLL.Services
             {
                 throw new EntityNotFoundException();
             }
-            var result = await _matchRepository.UpdateAsync(entity);
-            return result;
+
+            match = _mapper.Map(entity, match);
+            await _matchRepository.UpdateAsync(match);
+            return match;
         }
 
         public async Task<MatchEntity> ConfirmMatchAsync(int id)
@@ -46,9 +51,9 @@ namespace Playprism.Services.TournamentService.BLL.Services
             return match;
         }
 
-        public async Task<MatchEntity> SetResultAsync(MatchEntity entity)
+        public async Task<MatchEntity> SetResultAsync(MatchEntity result)
         {
-            var match = await _matchRepository.GetByIdAsync(entity.Id);
+            var match = await _matchRepository.GetFullByIdAsync(result.Id);
             if (match == null)
             {
                 throw new EntityNotFoundException();
@@ -56,10 +61,10 @@ namespace Playprism.Services.TournamentService.BLL.Services
 
             if (match.Played || match.Result != null || match.Participant1Score != null || match.Participant2Score != null)
             {
-                throw new InvalidOperationException($"Result of match {entity.Id} already set");
+                throw new InvalidOperationException($"Result of match {result.Id} already set");
             }
 
-            if (IsMatchResultValid(entity, match.Round.MatchDefinition))
+            if (IsMatchResultValid(result, match.Round.MatchDefinition))
             {
                 if (!match.Round.MatchDefinition.ConfirmationNeeded)
                 {
@@ -67,13 +72,14 @@ namespace Playprism.Services.TournamentService.BLL.Services
                 }
 
                 match.Played = true;
-                return await _matchRepository.UpdateAsync(match);
+                match.Result = result.Result;
+                match.Participant1Score = result.Participant1Score;
+                match.Participant2Score = result.Participant2Score;
+                await _matchRepository.UpdateAsync(match);
             }
-            else
-            {
-                throw new ValidationException("");
-            }
-            
+
+            // match.Round = null; // only
+            return match;
         }
         
         // for now public, might be used to valid on a fly data in frontend
@@ -84,7 +90,7 @@ namespace Playprism.Services.TournamentService.BLL.Services
                 throw new ArgumentException("Number of games should be not divisible by two");    
             }
             
-            if (match.Participant1Score > 0 || match.Participant2Score > 0)
+            if (match.Participant1Score < 0 || match.Participant2Score < 0)
             {
                 throw new ValidationException($"One of scores of match {match.Id} is less that 0");
             }

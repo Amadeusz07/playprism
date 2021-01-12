@@ -27,6 +27,7 @@ namespace Playprism.Services.TournamentService.DAL.Entities
         public bool Confirmed { get; set; }
 
         public virtual TournamentEntity Tournament { get; set; }
+        [JsonIgnore]
         public virtual RoundEntity Round { get; set; }
         public ICollection<GameEntity> Games { get; set; }
 

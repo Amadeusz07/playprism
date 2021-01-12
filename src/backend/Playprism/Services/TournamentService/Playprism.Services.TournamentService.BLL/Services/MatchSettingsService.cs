@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Playprism.Services.TournamentService.BLL.Common;
 using Playprism.Services.TournamentService.BLL.Interfaces;
 using Playprism.Services.TournamentService.DAL.Entities;
@@ -12,10 +13,12 @@ namespace Playprism.Services.TournamentService.BLL.Services
     public class MatchSettingsService: IMatchSettingsService
     {
         private readonly IRepository<MatchDefinitionEntity> _matchDefinitionRepository;
+        private readonly IMapper _mapper;
 
-        public MatchSettingsService(IRepository<MatchDefinitionEntity> matchDefinitionRepository)
+        public MatchSettingsService(IRepository<MatchDefinitionEntity> matchDefinitionRepository, IMapper mapper)
         {
             _matchDefinitionRepository = matchDefinitionRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<MatchDefinitionEntity>> GetMatchSettingsByTournamentAsync(int tournamentId)
@@ -48,12 +51,15 @@ namespace Playprism.Services.TournamentService.BLL.Services
 
         public async Task<MatchDefinitionEntity> UpdateMatchSettingsAsync(MatchDefinitionEntity entity)
         {
+            var matchDefinition = await _matchDefinitionRepository.GetByIdAsync(entity.Id);
             if (await NameExistsAsync(entity.TournamentId, entity.Name))
             {
                 throw new ValidationException("Name already exists"); 
             }
-            await _matchDefinitionRepository.UpdateAsync(entity);
-            return entity;
+
+            matchDefinition = _mapper.Map(entity, matchDefinition);
+            await _matchDefinitionRepository.UpdateAsync(matchDefinition);
+            return matchDefinition;
         }
 
         public async Task DeleteMatchSettingsAsync(int id)

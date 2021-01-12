@@ -3,6 +3,7 @@ using Playprism.Services.TournamentService.BLL.Interfaces;
 using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
 using System.Threading.Tasks;
+using AutoMapper;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 
 namespace Playprism.Services.TournamentService.BLL.Services
@@ -12,14 +13,17 @@ namespace Playprism.Services.TournamentService.BLL.Services
         private readonly ITournamentRepository _tournamentRepository;
         private readonly IParticipantRepository _participantRepository;
         private readonly IMatchSettingsService _matchSettingsService;
+        private readonly IMapper _mapper;
 
         public CrudService(ITournamentRepository tournamentRepository, 
             IParticipantRepository participantRepository, 
-            IMatchSettingsService matchSettingsService)
+            IMatchSettingsService matchSettingsService,
+            IMapper mapper)
         {
             _tournamentRepository = tournamentRepository;
             _participantRepository = participantRepository;
             _matchSettingsService = matchSettingsService;
+            _mapper = mapper;
         }
 
         public async Task<TournamentEntity> AddTournamentAsync(TournamentEntity entity)
@@ -48,13 +52,15 @@ namespace Playprism.Services.TournamentService.BLL.Services
             {
                 throw new EntityNotFoundException();
             }
-            var result = await _tournamentRepository.UpdateAsync(entity);
-            return result;
+
+            tournament = _mapper.Map(entity, tournament);
+            await _tournamentRepository.UpdateAsync(tournament);
+            return tournament;
         }
 
         public async Task<ParticipantEntity> AddNewParticipantAsync(ParticipantEntity entity)
         {
-            var tournament = await _tournamentRepository.GetByIdAsync(entity.Id);
+            var tournament = await _tournamentRepository.GetByIdAsync(entity.TournamentId);
             if (tournament == null)
             {
                 throw new EntityNotFoundException();

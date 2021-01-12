@@ -105,6 +105,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
         }
         
         [HttpPost("{id}/start")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> StartTournament(int id)
         {
             var tournament = await _crudService.GetTournamentAsync(id);
@@ -114,6 +115,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
         }
 
         [HttpPost("{id}/rounds/{roundId}/close")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> CloseRound(int roundId)
         {
             await _competitionProcess.FinishRoundAsync(roundId);
