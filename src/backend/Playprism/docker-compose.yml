@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  playprismapi:
+    image: playprismapi
+    build:
+      context: .
+      dockerfile: Services/TournamentService/Playprism.Services.TournamentService.API/Dockerfile
+    container_name: playprismapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "8080:80"
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 

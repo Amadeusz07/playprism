@@ -40,12 +40,13 @@ namespace Playprism.Services.TournamentService.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog API v1");
-                });
             }
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog API v1");
+            });
 
             app.UseHttpsRedirection();
 

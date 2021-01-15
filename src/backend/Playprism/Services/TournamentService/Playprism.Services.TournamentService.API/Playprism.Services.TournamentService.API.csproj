@@ -23,5 +23,13 @@
     <ProjectReference Include="..\Playprism.Services.TournamentService.DAL\Playprism.Services.TournamentService.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.Docker.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 
 </Project>
