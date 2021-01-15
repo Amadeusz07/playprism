@@ -24,6 +24,6 @@ stages:
       displayName: Build an Tournament Service image
       inputs:
         command: build
-        dockerfile: '*Services/TournamentService/Playprism.Services.TournamentService.API/Dockerfile'
+        dockerfile: '**Services/TournamentService/Playprism.Services.TournamentService.API/Dockerfile'
         tags: |
           $(tag)
