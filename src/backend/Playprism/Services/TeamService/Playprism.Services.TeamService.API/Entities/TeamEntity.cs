@@ -19,6 +19,6 @@ namespace Playprism.Services.TeamService.API.Entities
         public DateTime? DeleteDate { get; set; }
         public bool Active { get; set; }
 
-        public ICollection<PlayerEntity> Players { get; set; }
+        public ICollection<TeamPlayerAssignmentEntity> Assignments { get; set; }
     }
 }

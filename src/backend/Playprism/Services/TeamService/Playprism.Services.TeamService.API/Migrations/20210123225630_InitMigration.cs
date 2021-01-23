@@ -45,39 +45,44 @@ namespace Playprism.Services.TeamService.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlayerEntityTeamEntity",
+                name: "TeamPlayerAssignmentEntity",
                 columns: table => new
                 {
-                    PlayersId = table.Column<int>(type: "integer", nullable: false),
-                    TeamsId = table.Column<int>(type: "integer", nullable: false)
+                    PlayerId = table.Column<int>(type: "integer", nullable: false),
+                    TeamId = table.Column<int>(type: "integer", nullable: false),
+                    InviteDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ResponseDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LeaveDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Accepted = table.Column<bool>(type: "boolean", nullable: false),
+                    Active = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlayerEntityTeamEntity", x => new { x.PlayersId, x.TeamsId });
+                    table.PrimaryKey("PK_TeamPlayerAssignmentEntity", x => new { x.TeamId, x.PlayerId });
                     table.ForeignKey(
-                        name: "FK_PlayerEntityTeamEntity_Players_PlayersId",
-                        column: x => x.PlayersId,
+                        name: "FK_TeamPlayerAssignmentEntity_Players_PlayerId",
+                        column: x => x.PlayerId,
                         principalTable: "Players",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PlayerEntityTeamEntity_Teams_TeamsId",
-                        column: x => x.TeamsId,
+                        name: "FK_TeamPlayerAssignmentEntity_Teams_TeamId",
+                        column: x => x.TeamId,
                         principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlayerEntityTeamEntity_TeamsId",
-                table: "PlayerEntityTeamEntity",
-                column: "TeamsId");
+                name: "IX_TeamPlayerAssignmentEntity_PlayerId",
+                table: "TeamPlayerAssignmentEntity",
+                column: "PlayerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PlayerEntityTeamEntity");
+                name: "TeamPlayerAssignmentEntity");
 
             migrationBuilder.DropTable(
                 name: "Players");

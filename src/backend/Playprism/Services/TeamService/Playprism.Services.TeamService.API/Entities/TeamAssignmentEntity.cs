@@ -4,13 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Playprism.Services.TeamService.API.Entities
 {
-    public class TeamAssignmentEntity: Entity
+    public class TeamPlayerAssignmentEntity: Entity
     {
-        [Key]
-        public int Id { get; set; }
-        [ForeignKey("Player")]
+        [Key, Column(Order = 1)]
         public int PlayerId { get; set; }
-        [ForeignKey("Team")]
+        [Key, Column(Order = 2)]
         public int TeamId { get; set; }
         public DateTime InviteDate { get; set; }
         public DateTime? ResponseDate { get; set; }

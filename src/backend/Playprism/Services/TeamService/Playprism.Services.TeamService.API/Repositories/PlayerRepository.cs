@@ -15,8 +15,12 @@ namespace Playprism.Services.TeamService.API.Repositories
 
         public async Task<IEnumerable<TeamEntity>> GetMemberTeamsAsync(int userId)
         {
-            var player = await MainDbContext.Players.Include(x => x.Teams).FirstOrDefaultAsync(x => x.UserId == userId);
-            return player.Teams;
+            var player = await MainDbContext.Players
+                .Include(x => x.Assignments)
+                .ThenInclude(x => x.Team)
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+
+            return player.Assignments.Select(x => x.Team);
         }
     }
 }

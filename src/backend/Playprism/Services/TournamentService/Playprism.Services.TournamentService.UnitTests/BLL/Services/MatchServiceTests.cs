@@ -14,8 +14,8 @@ namespace Playprism.Services.TournamentService.UnitTests.BLL.Services
         private Mock<IMatchRepository> _mockMatchRepository;
         private Mock<IMapper> _mockMapper;
         private MatchService _serviceUnderTest;
-        private MatchEntity correctMatchResult;
-        private MatchEntity correctDatabaseMatchEntity;
+        //private MatchEntity correctMatchResult;
+        //private MatchEntity correctDatabaseMatchEntity;
 
         [SetUp]
         public void Setup()

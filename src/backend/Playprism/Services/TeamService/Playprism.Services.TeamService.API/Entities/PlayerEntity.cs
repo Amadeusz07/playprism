@@ -10,6 +10,6 @@ namespace Playprism.Services.TeamService.API.Entities
         public int UserId { get; set; }
         public int Name { get; set; }
 
-        public ICollection<TeamEntity> Teams { get; set; }
+        public ICollection<TeamPlayerAssignmentEntity> Assignments { get; set; }
     }
 }

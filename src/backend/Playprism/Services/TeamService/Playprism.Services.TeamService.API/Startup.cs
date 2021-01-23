@@ -9,6 +9,7 @@ using Playprism.Services.TeamService.API.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Services;
 using Playprism.Services.TeamService.API.Services;
+using Playprism.Services.TeamService.API.Filters;
 
 namespace Playprism.Services.TeamService.API
 {
@@ -24,7 +25,10 @@ namespace Playprism.Services.TeamService.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(config =>
+            {
+                config.Filters.Add<UserAuth0Filter>();
+            });
             services.AddDbContext<TeamDbContext>(options =>
             {
                 options.UseNpgsql(Configuration.GetConnectionString("TeamDbConnection"),
