@@ -7,13 +7,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{8B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TournamentService", "TournamentService", "{0FF69628-5CEC-41CE-8CF9-7797602CDFCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playprism.Services.TournamentService.API", "Services\TournamentService\Playprism.Services.TournamentService.API\Playprism.Services.TournamentService.API.csproj", "{86F447A6-AD72-411E-9467-94615C99879D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playprism.Services.TournamentService.API", "Services\TournamentService\Playprism.Services.TournamentService.API\Playprism.Services.TournamentService.API.csproj", "{86F447A6-AD72-411E-9467-94615C99879D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playprism.Services.TournamentService.BLL", "Services\TournamentService\Playprism.Services.TournamentService.BLL\Playprism.Services.TournamentService.BLL.csproj", "{C9AEFB44-667E-4518-986C-757F7B6AF0CD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playprism.Services.TournamentService.DAL", "Services\TournamentService\Playprism.Services.TournamentService.DAL\Playprism.Services.TournamentService.DAL.csproj", "{DF33C518-9C40-4F5F-BEF6-8E36FDA129A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playprism.Services.TournamentService.UnitTests", "Services\TournamentService\Playprism.Services.TournamentService.UnitTests\Playprism.Services.TournamentService.UnitTests.csproj", "{A7F4E9B4-D7C7-4F5A-9951-177FB85BF165}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playprism.Services.TournamentService.UnitTests", "Services\TournamentService\Playprism.Services.TournamentService.UnitTests\Playprism.Services.TournamentService.UnitTests.csproj", "{A7F4E9B4-D7C7-4F5A-9951-177FB85BF165}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthService", "AuthService", "{CF7E4700-C381-4CA4-8CEC-B458E611588A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Playprism.Services.AuthService.API", "Services\AuthService\Playprism.Services.AuthService.API\Playprism.Services.AuthService.API.csproj", "{32C5B344-8F34-4CA7-978A-D25E94AF26C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TeamService", "TeamService", "{C17B8F51-BB04-4ADF-8D09-630D1D401570}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playprism.Services.TeamService.API", "Services\TeamService\Playprism.Services.TeamService.API\Playprism.Services.TeamService.API.csproj", "{B47159D6-BE60-4978-B767-A799AB1C0B8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +45,14 @@ Global
 		{A7F4E9B4-D7C7-4F5A-9951-177FB85BF165}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7F4E9B4-D7C7-4F5A-9951-177FB85BF165}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7F4E9B4-D7C7-4F5A-9951-177FB85BF165}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C5B344-8F34-4CA7-978A-D25E94AF26C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C5B344-8F34-4CA7-978A-D25E94AF26C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C5B344-8F34-4CA7-978A-D25E94AF26C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C5B344-8F34-4CA7-978A-D25E94AF26C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B47159D6-BE60-4978-B767-A799AB1C0B8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B47159D6-BE60-4978-B767-A799AB1C0B8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B47159D6-BE60-4978-B767-A799AB1C0B8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B47159D6-BE60-4978-B767-A799AB1C0B8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +63,10 @@ Global
 		{C9AEFB44-667E-4518-986C-757F7B6AF0CD} = {0FF69628-5CEC-41CE-8CF9-7797602CDFCD}
 		{DF33C518-9C40-4F5F-BEF6-8E36FDA129A0} = {0FF69628-5CEC-41CE-8CF9-7797602CDFCD}
 		{A7F4E9B4-D7C7-4F5A-9951-177FB85BF165} = {0FF69628-5CEC-41CE-8CF9-7797602CDFCD}
+		{CF7E4700-C381-4CA4-8CEC-B458E611588A} = {8B33A918-0B9E-4C34-A099-3539E0B4ACA5}
+		{32C5B344-8F34-4CA7-978A-D25E94AF26C8} = {CF7E4700-C381-4CA4-8CEC-B458E611588A}
+		{C17B8F51-BB04-4ADF-8D09-630D1D401570} = {8B33A918-0B9E-4C34-A099-3539E0B4ACA5}
+		{B47159D6-BE60-4978-B767-A799AB1C0B8C} = {C17B8F51-BB04-4ADF-8D09-630D1D401570}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F504BE91-86C8-4689-8757-D11E4D5A1A6E}
