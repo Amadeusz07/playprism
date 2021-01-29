@@ -34,10 +34,17 @@ $playprism-frontend-theme: mat-light-theme((
 @include angular-material-theme($playprism-frontend-theme);
 
 // Variables
-$primary-background-color: #2c2c2c;
+$primary-background-color: #080e1d;
+$primary-container-color: #020408;
 $primary-color: #18a0fb;
+$primary-font-color: #18a0fb;
 
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: $primary-background-color; }
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+  background-color: $primary-background-color; 
+  color: $primary-font-color;
+}
