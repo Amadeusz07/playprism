@@ -18,7 +18,7 @@ namespace Playprism.Services.TeamService.API.Filters
         public void OnActionExecuted(ActionExecutedContext context)
         {
         }
-
+        
         public void OnActionExecuting(ActionExecutingContext context)
         {
             var userId = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);

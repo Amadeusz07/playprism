@@ -88,3 +88,6 @@ classDiagram
 What needs typical crud
 - Tournament
 - 
+
+Mockups
+https://www.figma.com/proto/jFskEgDJAPl2dLoKPQjVOP/Playprism?node-id=12%3A1557&viewport=470%2C966%2C0.3873078227043152&scaling=min-zoom
