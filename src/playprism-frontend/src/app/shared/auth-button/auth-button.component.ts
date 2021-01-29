@@ -10,5 +10,4 @@ import { AuthService } from '@auth0/auth0-angular';
 export class AuthButtonComponent {
 
   constructor(@Inject(DOCUMENT) public document: Document, public auth: AuthService) {}
-  
 }

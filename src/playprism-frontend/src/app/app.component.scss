@@ -1,0 +1,10 @@
+@import "../styles.scss";
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+    justify-content: space-around ;
+}
+.center {
+    button {
+        margin: 1rem;
+    }
+}
