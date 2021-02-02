@@ -30,7 +30,7 @@ namespace Playprism.Services.TournamentService.API
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalog API", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Tournament API", Version = "v1" });
             });
         }
 
@@ -45,7 +45,7 @@ namespace Playprism.Services.TournamentService.API
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog API v1");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Tournament API v1");
             });
 
             app.UseHttpsRedirection();

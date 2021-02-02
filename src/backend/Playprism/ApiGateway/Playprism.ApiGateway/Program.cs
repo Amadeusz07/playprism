@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using MMLib.SwaggerForOcelot.DependencyInjection;
 
 namespace Playprism.ApiGateway
 {
@@ -21,6 +17,17 @@ namespace Playprism.ApiGateway
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    if (hostingContext.HostingEnvironment.IsDevelopment())
+                    {
+                        config.AddJsonFile("ocelot.json");
+                    }
+                    else
+                    {
+                        config.AddJsonFile("ocelot.json");
+                    }
                 });
     }
 }
