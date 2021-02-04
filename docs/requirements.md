@@ -1,5 +1,5 @@
 # Requirements
-## TournamentService
+## Tournament Service
 ### Create Tournament
 - Select discipline
 - Select platform
@@ -7,7 +7,7 @@
 - Type of participant team/player
 - Number of teams/players (512) then min/max number of players in team
 - Timezone
-### Configure tournament
+### Configure tournament settings
 - Start Date
 - Registration ends Date (if null it's not used) then register time ends on checkin/start date
 - Checkin Date (if null then it's not used)
@@ -49,45 +49,49 @@
     - Group: eg. 1st match, 2nd match
     - League: eg. 1st fixture, 2nd fixture
 
-### Classes (to refactor)
+## Pages Content
+### Browse_Tournaments
+Filter by:
+- Name
+- Status (past, incoming, ongoing)
+- Format
+- Platform (eg. PS4, PS5, PC, XB0X)
+### View_Tournament
+Informations presented on a page:
+- Name
+- Type of participant team/player
+- Max and assigned number of teams/players eg. 12/32
+- Platform (eg. PS4, PC)
+- Registration ends Date
+- Checkin start Date 
+- Checkin Time (in minutes / hours)
+- Tournament Start Date (after Checkin Date)
+- Location
+    - offline tournament, place where tournament will be played,
+    - might be just "Online"
+- Link Official Website
+- Logo
+- Description
+- Prizes (text description)
+- Rules
+- Contact data 
+    - email
+    - phone number
+- Stream urls (name, language, URL)
+- Region/country allowed to play in tournament
+- Timezone
+- Tournament type/format
+    - Single Elimination
+    - Groups
+    - League
+- Sponsors
+    - link
+    - image/logo
+- Bracket view
+- Matches view (not for Single Elimination)
 
-```mermaid
-classDiagram
-    class Tournament{
-        +int Id
-        +string Name
-        -etc
-    }
-    class MatchDefinition{
-        +int Id
-        +int TournamentId
-        +bool IsConfirmationNeeded
-        +int NumberOfGames
-        +bool IsScoreBased
-    }
-    class Round {
-        +int Id
-        +int TournamentId
-        +int Order
-        +int NumberOfPlayers
-        +int NumberOfMatches
-        +DateTime StartDate
-        +DateTime EndDate
-        +bool Finished
-    }
-    class Match{
-        +int Id
-        +int TournamentId
-        +int RoundId
-        +dateTime MatchDate
-        +bool Confirmed
-    }
-```
-
-### Business Logic Layer
-What needs typical crud
-- Tournament
-- 
+Functions on page:
+- Sign up to tournament
 
 Mockups
 https://www.figma.com/proto/jFskEgDJAPl2dLoKPQjVOP/Playprism?node-id=12%3A1557&viewport=470%2C966%2C0.3873078227043152&scaling=min-zoom
