@@ -1,0 +1,35 @@
+@import '../../../../styles.scss';
+
+.image-container {
+    height: 100%;
+    width: 100%;
+    img {
+        max-height: 40%;
+    }
+}
+.tournaments-container {
+    background-color: $primary-container-color;
+    margin: 3rem;
+    height: 100%;
+    .tournaments-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        .tournament-card {
+            margin: 1rem;
+            min-width: 20%;
+            min-height: 20%;
+            text-align: center;
+            background-color: #000;
+            color: $primary-font-color;
+            border-radius: 0;
+            border: 2px $primary-font-color solid;
+            .tournament-card-footer {
+                background-color: $primary-font-color;
+                color: $secondary-font-color;
+                border: 0;
+            }
+        }
+    }
+}

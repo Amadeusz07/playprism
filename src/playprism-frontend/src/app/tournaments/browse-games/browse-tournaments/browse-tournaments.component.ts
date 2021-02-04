@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TournamentFormatEnum } from 'src/app/models/enums/tournament-format.enum';
+import { Tournament } from 'src/app/models/tournament.model';
+import { TournamentService } from 'src/app/services/tournament.service';
 
 @Component({
   selector: 'app-browse-tournaments',
@@ -7,9 +11,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BrowseTournamentsComponent implements OnInit {
 
-  constructor() { }
+  public tournaments: Tournament[] = [];
+  public tournamentFormat = TournamentFormatEnum;
 
-  ngOnInit(): void {
+  constructor(private tournamentService: TournamentService, private router: Router, private route: ActivatedRoute) { }
+
+  async ngOnInit(): Promise<void> {
+    const disciplineId = this.route.snapshot.paramMap.get('disciplineId');
+    if (disciplineId) {
+      this.tournaments = await this.tournamentService.getTournaments(disciplineId);
+    }
   }
 
 }

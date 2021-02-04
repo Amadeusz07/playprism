@@ -11,7 +11,8 @@
         justify-content: space-around ;
     }
     .center {
-        button {
+        .toolbar-button {
+            color: $secondary-font-color;
             margin: 1rem;
         }
     }

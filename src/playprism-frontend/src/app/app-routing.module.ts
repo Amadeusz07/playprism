@@ -19,7 +19,7 @@ const routes: Routes = [
     children: [
       { path: '', component: BrowseGamesComponent },
       {
-        path: ':gameId/tournaments',
+        path: ':disciplineId/tournaments',
         children: [
           {  path: '', component: BrowseTournamentsComponent },
           {  path: ':tournamentId', component: TournamentComponent }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 using Playprism.Services.TournamentService.BLL.Interfaces.CompetitionOrganizer;
+using System.Collections.Generic;
 
 namespace Playprism.Services.TournamentService.API.Controllers
 {
@@ -19,6 +20,14 @@ namespace Playprism.Services.TournamentService.API.Controllers
         {
             _crudService = crudService;
             _competitionProcess = competitionProcess;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<TournamentEntity>>> Get([FromQuery] int disciplineId)
+        {
+            var entities = await _crudService.GetTournamentsByDiscipline(disciplineId);
+            return Ok(entities);
         }
 
         [HttpGet("{id}")]

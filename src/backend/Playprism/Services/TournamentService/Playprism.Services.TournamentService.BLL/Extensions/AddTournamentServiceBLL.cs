@@ -13,6 +13,7 @@ namespace Playprism.Services.TournamentService.BLL.Extensions
             services.AddTransient<ICrudService, CrudService>();
             services.AddTransient<IMatchSettingsService, MatchSettingsService>();
             services.AddTransient<IMatchService, MatchService>();
+            services.AddTransient<IBrowserService, BrowserService>();
                 
             services.AddTransient<ICompetitionProcess, SingleEliminationProcess>();
         }

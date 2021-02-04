@@ -48,7 +48,7 @@ namespace Playprism.Services.TournamentService.API
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Tournament API v1");
             });
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

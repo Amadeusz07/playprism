@@ -5,6 +5,7 @@ using Playprism.Services.TournamentService.DAL.Interfaces;
 using System.Threading.Tasks;
 using AutoMapper;
 using Playprism.Services.TournamentService.BLL.Exceptions;
+using System.Collections.Generic;
 
 namespace Playprism.Services.TournamentService.BLL.Services
 {
@@ -71,6 +72,11 @@ namespace Playprism.Services.TournamentService.BLL.Services
             var result = await _participantRepository.AddAsync(entity);
             return result;
         }
-        
+
+        public async Task<IEnumerable<TournamentEntity>> GetTournamentsByDiscipline(int disciplineId)
+        {
+            var tournaments = await _tournamentRepository.GetAsync(x => x.DisciplineId == disciplineId);
+            return tournaments;
+        }
     }
 }

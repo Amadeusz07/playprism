@@ -6,13 +6,13 @@
         <button mat-flat-button color="primary">EXPLORE GAMES</button>
       </a>
       <a routerLink="manager">
-        <button mat-flat-button color="primary" *ngIf='auth.isAuthenticated$ | async'>TOURNAMENT MANAGER</button>
+        <button mat-flat-button color="primary" *ngIf='auth.isAuthenticated$ | async' class="toolbar-button">TOURNAMENT MANAGER</button>
       </a>
       <a routerLink="matches">
-        <button mat-flat-button color="primary" *ngIf='auth.isAuthenticated$ | async'>MY MATCHES</button>
+        <button mat-flat-button color="primary" *ngIf='auth.isAuthenticated$ | async' class="toolbar-button">MY MATCHES</button>
       </a>
       <a routerLink="teams">
-        <button mat-flat-button color="primary" *ngIf='auth.isAuthenticated$ | async'>MY TEAMS</button>
+        <button mat-flat-button color="primary" *ngIf='auth.isAuthenticated$ | async' class="toolbar-button">MY TEAMS</button>
       </a>
     </div>
   

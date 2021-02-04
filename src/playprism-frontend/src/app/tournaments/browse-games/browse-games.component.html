@@ -1,4 +1,16 @@
 <div class="browse-games">
-    <input />
-    game
+    <mat-form-field class="search-field">
+        <mat-label>Game</mat-label>
+        <input type="tel" matInput placeholder="Search for a game">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <div class="discipline-list">
+        <mat-card 
+            *ngFor="let discipline of disciplines" 
+            class="discipline-card" 
+            [routerLink]="['.', discipline.id, 'tournaments']">
+                <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+            <mat-card-footer>{{ discipline.name }}</mat-card-footer>
+        </mat-card>
+    </div>
 </div>

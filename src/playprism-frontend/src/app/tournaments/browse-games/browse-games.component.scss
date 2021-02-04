@@ -2,6 +2,30 @@
 
 .browse-games {
     background-color: $primary-container-color;
-    margin: 1rem;
+    margin: 3rem;
     height: 100%;
+    .search-field {
+        margin: 1rem;
+        color: $secondary-font-color;
+        background-color: $primary-background-color;
+    }
+    .discipline-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        .discipline-card {
+            margin: 1rem;
+            max-width: 20%;
+            min-height: 20%;
+            text-align: center;
+            background-color: #000;
+            color: $primary-font-color;
+            border-radius: 0;
+            transition: 0.5s;
+            :hover {
+                cursor: pointer;
+            }
+          }
+    }
 }
