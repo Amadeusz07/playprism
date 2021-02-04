@@ -9,14 +9,14 @@ using System.Collections.Generic;
 
 namespace Playprism.Services.TournamentService.BLL.Services
 {
-    internal class CrudService: ICrudService
+    internal class TournamentService: ITournamentService
     {
         private readonly ITournamentRepository _tournamentRepository;
         private readonly IParticipantRepository _participantRepository;
         private readonly IMatchSettingsService _matchSettingsService;
         private readonly IMapper _mapper;
 
-        public CrudService(ITournamentRepository tournamentRepository, 
+        public TournamentService(ITournamentRepository tournamentRepository, 
             IParticipantRepository participantRepository, 
             IMatchSettingsService matchSettingsService,
             IMapper mapper)

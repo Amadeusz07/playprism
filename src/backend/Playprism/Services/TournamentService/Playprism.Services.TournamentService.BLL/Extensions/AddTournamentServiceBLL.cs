@@ -10,7 +10,7 @@ namespace Playprism.Services.TournamentService.BLL.Extensions
     {
         public static void AddTournamentService(this IServiceCollection services)
         {
-            services.AddTransient<ICrudService, CrudService>();
+            services.AddTransient<ITournamentService, Services.TournamentService>();
             services.AddTransient<IMatchSettingsService, MatchSettingsService>();
             services.AddTransient<IMatchService, MatchService>();
             services.AddTransient<IBrowserService, BrowserService>();

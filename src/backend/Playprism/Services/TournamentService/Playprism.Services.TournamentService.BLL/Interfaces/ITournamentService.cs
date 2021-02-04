@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Playprism.Services.TournamentService.BLL.Interfaces
 {
-    public interface ICrudService
+    public interface ITournamentService
     {
         Task<IEnumerable<TournamentEntity>> GetTournamentsByDiscipline(int disciplineId);
         Task<TournamentEntity> GetTournamentAsync(int id);

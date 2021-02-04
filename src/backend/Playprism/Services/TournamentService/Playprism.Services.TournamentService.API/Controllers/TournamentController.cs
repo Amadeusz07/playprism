@@ -13,12 +13,12 @@ namespace Playprism.Services.TournamentService.API.Controllers
     [Route("api/v1/[controller]")]
     public class TournamentController : ControllerBase
     {
-        private readonly ICrudService _crudService;
+        private readonly ITournamentService _tournamentService;
         private ICompetitionProcess _competitionProcess;
 
-        public TournamentController(ICrudService crudService, ICompetitionProcess competitionProcess)
+        public TournamentController(ITournamentService tournamentService, ICompetitionProcess competitionProcess)
         {
-            _crudService = crudService;
+            _tournamentService = tournamentService;
             _competitionProcess = competitionProcess;
         }
 
@@ -26,7 +26,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TournamentEntity>>> Get([FromQuery] int disciplineId)
         {
-            var entities = await _crudService.GetTournamentsByDiscipline(disciplineId);
+            var entities = await _tournamentService.GetTournamentsByDiscipline(disciplineId);
             return Ok(entities);
         }
 
@@ -35,7 +35,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<TournamentEntity>> GetById(int id)
         {
-            var entity = await _crudService.GetTournamentAsync(id);
+            var entity = await _tournamentService.GetTournamentAsync(id);
             if (entity == null)
                 return NotFound();
 
@@ -52,7 +52,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
                 return BadRequest();
             }
 
-            var result = await _crudService.AddTournamentAsync(entity);
+            var result = await _tournamentService.AddTournamentAsync(entity);
             return Accepted(result);
         }
 
@@ -73,7 +73,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
 
             try
             {
-                await _crudService.UpdateTournamentAsync(entity);
+                await _tournamentService.UpdateTournamentAsync(entity);
             }
             catch (EntityNotFoundException)
             {
@@ -87,7 +87,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         public async Task<ActionResult> Delete(int id)
         {
-            await _crudService.DeleteTournamentAsync(id);
+            await _tournamentService.DeleteTournamentAsync(id);
             return Accepted();
         }
 
@@ -104,7 +104,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             // todo: playerId/participantId has to be get from JWT
             try
             {
-                await _crudService.AddNewParticipantAsync(participantEntity);
+                await _tournamentService.AddNewParticipantAsync(participantEntity);
             }
             catch (EntityNotFoundException)
             {
@@ -117,7 +117,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> StartTournament(int id)
         {
-            var tournament = await _crudService.GetTournamentAsync(id);
+            var tournament = await _tournamentService.GetTournamentAsync(id);
             await _competitionProcess.GenerateBracketAsync(tournament);
 
             return Ok();
@@ -130,5 +130,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             await _competitionProcess.FinishRoundAsync(roundId);
             return Ok();
         }
+
+
     }
 }

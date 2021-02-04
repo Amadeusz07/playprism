@@ -27,8 +27,8 @@ namespace Playprism.Services.TournamentService.BLL.Services
                     .OrderByDescending(x => x.Count())
                     .Select(x => x.First().Discipline);
 
-            var emptyDisciplines = (await _disciplineRepository.GetAsync(x => !disciplinesByPopularity.Select(r => r.Id).Contains(x.Id)))
-                .OrderBy(x => x.Name);
+            var emptyDisciplines = await _disciplineRepository.GetAsync(x => !disciplinesByPopularity.Select(r => r.Id).Contains(x.Id));
+            emptyDisciplines = emptyDisciplines.OrderBy(x => x.Name).ToList();
             disciplinesByPopularity = disciplinesByPopularity.Concat(emptyDisciplines);
 
             if (count.HasValue)
