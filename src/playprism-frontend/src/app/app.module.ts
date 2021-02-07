@@ -24,6 +24,7 @@ import { ConfigureTournamentComponent } from './tournaments-manager/configure-to
 import { TeamsComponent } from './teams/teams.component';
 import { CreateTeamComponent } from './teams/create-team/create-team.component';
 import { EditTeamComponent } from './teams/edit-team/edit-team.component';
+import { BracketComponent } from './shared/bracket/bracket.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { EditTeamComponent } from './teams/edit-team/edit-team.component';
     ConfigureTournamentComponent,
     TeamsComponent,
     CreateTeamComponent,
-    EditTeamComponent
+    EditTeamComponent,
+    BracketComponent
   ],
   imports: [
     BrowserModule,
