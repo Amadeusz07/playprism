@@ -1,5 +1,5 @@
 export interface Discipline {
-    id: number,
-    name: string,
-    logoPath: string
+    id: number;
+    name: string;
+    logoPath: string;
 }

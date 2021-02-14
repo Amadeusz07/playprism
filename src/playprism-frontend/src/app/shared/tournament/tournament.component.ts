@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Match, Round } from 'src/app/models/bracket.model';
+import { ActivatedRoute } from '@angular/router';
+import { Bracket, Match, Round } from 'src/app/models/bracket.model';
+import { TournamentService } from 'src/app/services/tournament.service';
 
 @Component({
   selector: 'app-tournament',
@@ -7,38 +9,44 @@ import { Match, Round } from 'src/app/models/bracket.model';
   styleUrls: ['./tournament.component.scss']
 })
 export class TournamentComponent implements OnInit {
-  bracket = [
+  bracket2 = [
     <Round>{
+      roundDate: new Date(2020, 1, 1),
       matches: [
         <Match>{
           participant1: 'Test1',
           participant2: 'Test2',
-          participantScore1: 3,
-          participantScore2: 2,
+          participant1Score: 3,
+          participant2Score: 2,
         },
         <Match>{
           participant1: 'Test3',
           participant2: 'Test4',
-          participantScore1: 0,
-          participantScore2: 1
+          participant1Score: 0,
+          participant2Score: 1
         },
       ],
     },
     <Round>{
-      nextRound: <Round>{},
       matches: [
         <Match>{
           participant1: 'TBD',
           participant2: 'TBD',
-          participantScore1: null,
-          participantScore2: null,
+          participant1Score: null,
+          participant2Score: null,
         }
       ]
     }
   ];
-  constructor() { }
+  public bracket: Bracket;
 
-  ngOnInit(): void {
+  constructor(private tournamentService: TournamentService, private route: ActivatedRoute) { }
+
+  async ngOnInit(): Promise<void> {
+    const tournamentId = this.route.snapshot.paramMap.get('tournamentId');
+    if (tournamentId) {
+      this.bracket = await this.tournamentService.getTournamentBracket(tournamentId);
+    }
   }
 
 }

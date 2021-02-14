@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Playprism.Services.TournamentService.BLL.Common;
 using Playprism.Services.TournamentService.BLL.Interfaces.CompetitionOrganizer;
 using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
+using Playprism.Services.TournamentService.BLL.Dtos;
+using Playprism.Services.TournamentService.BLL.Exceptions;
 
 namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
 {
@@ -41,8 +44,8 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             var participants = await _participantRepository.GetAsync(x => x.TournamentId == tournament.Id);
             if (participants != null)
             {
-                var rounds = await GenerateRoundsAsync(tournament);
-                var matches = await GenerateMatchesAsync(rounds, participants.Count());
+                var rounds = await GenerateRoundsAsync(tournament, participants.Count());
+                var matches = await GenerateMatchesAsync(rounds);
                 await ShuffleAsync(
                     matches.GroupBy(x => x.RoundId)
                         .OrderBy(x => x.Key)
@@ -51,7 +54,7 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             }
         }
 
-        private async Task<IEnumerable<RoundEntity>> GenerateRoundsAsync(TournamentEntity tournament)
+        private async Task<IEnumerable<RoundEntity>> GenerateRoundsAsync(TournamentEntity tournament, int participantsCount)
         {
             const int numberOfMatchesInLastRound = 1;
             var defaultMatchDefinition = (await _matchDefinitionRepository
@@ -61,60 +64,81 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             for (var i = 0; i < tournament.MaxNumberOfPlayers; i++)
             {
                 var previousRound = rounds.LastOrDefault();
-                if (previousRound != null && previousRound?.NumberOfCompetitors / 2 == numberOfMatchesInLastRound)
+                var lastRoundCreated = previousRound != null &&
+                                       previousRound?.NumberOfCompetitors / 2 == numberOfMatchesInLastRound;
+                if (lastRoundCreated)
                 {
                     break;
                 }
+                
                 var newRound = new RoundEntity()
                 {
                     TournamentId = tournament.Id,
                     MatchDefinitionId = defaultMatchDefinition.Id,
                     Order = i,
-                    NumberOfCompetitors = previousRound?.NumberOfCompetitors / 2 ?? tournament.MaxNumberOfPlayers,
-                    NumberOfMatches = previousRound?.NumberOfMatches / 2 ?? tournament.MaxNumberOfPlayers / 2,
                     StartDate = null,
                     EndDate = null,
                     Finished = false,
                     Started = false,
                     Matches = new List<MatchEntity>()
                 };
-                
+                var numberOfCompetitors = previousRound?.NumberOfCompetitors / 2 ?? tournament.MaxNumberOfPlayers;
+                var enoughCompetitors = numberOfCompetitors / 2 < participantsCount;
+                if (enoughCompetitors)
+                {
+                    newRound.NumberOfCompetitors = numberOfCompetitors;
+                    newRound.NumberOfMatches = numberOfCompetitors / 2;
+                }
+                else
+                {
+                    var numberOfCompetitorsInNextRound = numberOfCompetitors / 2;
+                    newRound.NumberOfCompetitors = numberOfCompetitorsInNextRound;
+                    newRound.NumberOfMatches = numberOfCompetitorsInNextRound / 2;
+                }
                 rounds.Add(newRound);
                 await _roundRepository.AddAsync(newRound);
             }
             
             return rounds;
         }
-
-        private async Task<IEnumerable<MatchEntity>> GenerateMatchesAsync(IEnumerable<RoundEntity> rounds, int participantsCount)
+        
+        private async Task<IEnumerable<MatchEntity>> GenerateMatchesAsync(IEnumerable<RoundEntity> rounds)
         {
-            foreach (var round in rounds)
+            for (var i = 0; i < rounds.Count(); i++)
             {
-                if (round.NumberOfCompetitors / 2 < participantsCount)
+                var round = rounds.ElementAt(i);
+                IEnumerator<MatchEntity> previousMatches = null;
+                if (i != 0)
                 {
-                    for (var i = 0; i < round.NumberOfMatches; i++)
+                    var previousRound = rounds.ElementAt(i - 1);
+                    previousMatches = previousRound.Matches.GetEnumerator();
+                }
+                for (var j = 0; j < round.NumberOfMatches; j++)
+                {
+                    var newMatch = new MatchEntity()
                     {
-                        var newMatch = new MatchEntity()
-                        {
-                            TournamentId = round.TournamentId,
-                            RoundId = round.Id,
-                            MatchDate = null,
-                            Participant1Id = null,
-                            Participant2Id = null,
-                            PreviousMatch1Id = null,
-                            PreviousMatch2Id = null, 
-                            Result = null,
-                            Played = false,
-                            Confirmed = !round.MatchDefinition.ConfirmationNeeded
-                        };
-                        round.Matches.Add(newMatch);
+                        TournamentId = round.TournamentId,
+                        RoundId = round.Id,
+                        MatchDate = null,
+                        Participant1Id = null,
+                        Participant2Id = null,
+                        Result = null,
+                        Played = false,
+                        Confirmed = !round.MatchDefinition.ConfirmationNeeded
+                    };
+                    if (previousMatches != null)
+                    {
+                        previousMatches.MoveNext();
+                        newMatch.PreviousMatch1Id = previousMatches.Current.Id;
+                        previousMatches.MoveNext();
+                        newMatch.PreviousMatch2Id = previousMatches.Current.Id;
                     }
+                    round.Matches.Add(newMatch);
+                    await _matchRepository.AddAsync(newMatch);
                 }
             }
-
-            var newMatches = rounds.SelectMany(x => x.Matches);
-            await _matchRepository.AddRangeAsync(newMatches);
             
+            var newMatches = rounds.SelectMany(x => x.Matches);
             return newMatches;
         }
 
@@ -152,20 +176,121 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
 
         public async Task FinishRoundAsync(int roundId)
         {
-            var round = await _roundRepository.FinishRoundAsync(roundId);
-            var nextRound = await _roundRepository.GetNextRoundAsync(round);
+            var finishedRound = await _roundRepository.FinishRoundAsync(roundId);
+            var nextRound = await _roundRepository.GetNextRoundAsync(finishedRound);
             if (nextRound == null)
             {
-                var tournament = await _tournamentRepository.GetByIdAsync(round.TournamentId);
+                var tournament = await _tournamentRepository.GetByIdAsync(finishedRound.TournamentId);
                 tournament.Finished = true;
                 tournament.EndDate = DateTime.UtcNow;
                 await _tournamentRepository.UpdateAsync(tournament);
             }
             else
             {
-                var winnersFromPreviousRound = round.GetWinnerIds();
-                await ShuffleAsync(nextRound.Matches, winnersFromPreviousRound);
+                var winnersFromPreviousRound = finishedRound.GetWinnersByMatchId();
+                await SetupNextRoundMatches(nextRound, winnersFromPreviousRound);
             }
         }
+
+        private async Task SetupNextRoundMatches(RoundEntity nextRound, Dictionary<int, int?> winnerIdsByMatchId)
+        {
+            foreach (var match in nextRound.Matches)
+            {
+                match.Participant1Id = winnerIdsByMatchId[match.PreviousMatch1Id.Value];
+                match.Participant2Id = winnerIdsByMatchId[match.PreviousMatch2Id.Value];
+
+                await _matchRepository.UpdateAsync(match);
+            }
+        }
+        
+        public async Task<BracketResponse> GenerateResponseBracketAsync(int tournamentId)
+        {
+            var bracket = new BracketResponse();
+            var rounds = await _roundRepository.GetAsync(
+                x => x.TournamentId == tournamentId, 
+                x => x.OrderByDescending(y => y.Order), 
+                "Matches",
+                true
+            );
+            if (rounds == null)
+            {
+                throw new EntityNotFoundException();
+            }
+            var participants = await _participantRepository.GetAsync(x => x.TournamentId == tournamentId);
+            
+            foreach (var round in rounds)
+            {
+                bracket.Rounds.Add(new RoundResponse()
+                {
+                    Id = round.Id,
+                    RoundDate = round.StartDate
+                });
+            }
+
+            for (int i = 0; i < rounds.Count; i++)
+            {
+                foreach (var match in rounds[i].Matches)
+                {
+                    var currentRoundBracket = bracket.Rounds.ElementAt(i);
+                    if (!currentRoundBracket.Matches.Any())
+                    {
+                        currentRoundBracket.Matches.Add(new MatchResponse()
+                        {
+                            Id = match.Id,
+                            MatchDate = match.MatchDate,
+                            Participant1 = participants.SingleOrDefault(x => x.Id == match.Participant1Id)?.Name,
+                            Participant2 = participants.SingleOrDefault(x => x.Id == match.Participant2Id)?.Name,
+                            Participant1Score = match.Participant1Score,
+                            Participant2Score = match.Participant2Score,
+                            Result = match.Result
+                        });
+                    }
+
+                    if (i + 1 <= bracket.Rounds.Count - 1)
+                    {
+                        var previousRoundBracket = bracket.Rounds.ElementAt(i + 1);
+
+                        if (match.PreviousMatch1Id != null)
+                        {
+                            var previousMatch1 = rounds[i + 1].Matches.Single(x => x.Id == match.PreviousMatch1Id);
+                            previousRoundBracket.Matches.Add(new MatchResponse()
+                            {
+                                Id = previousMatch1.Id,
+                                MatchDate = previousMatch1.MatchDate,
+                                Participant1 = participants.SingleOrDefault(x => x.Id == previousMatch1.Participant1Id)
+                                    ?.Name,
+                                Participant2 = participants.SingleOrDefault(x => x.Id == previousMatch1.Participant2Id)
+                                    ?.Name,
+                                Participant1Score = previousMatch1.Participant1Score,
+                                Participant2Score = previousMatch1.Participant2Score,
+                                Result = previousMatch1.Result
+                            });
+                        }
+
+                        if (match.PreviousMatch2Id != null)
+                        {
+                            var previousMatch2 = rounds[i + 1].Matches.Single(x => x.Id == match.PreviousMatch2Id);
+                            previousRoundBracket.Matches.Add(new MatchResponse()
+                            {
+                                Id = previousMatch2.Id,
+                                MatchDate = previousMatch2.MatchDate,
+                                Participant1 = participants.SingleOrDefault(x => x.Id == previousMatch2.Participant1Id)
+                                    ?.Name,
+                                Participant2 = participants.SingleOrDefault(x => x.Id == previousMatch2.Participant2Id)
+                                    ?.Name,
+                                Participant1Score = previousMatch2.Participant1Score,
+                                Participant2Score = previousMatch2.Participant2Score,
+                                Result = previousMatch2.Result
+                            });
+                        }
+                    }
+                }
+            }
+
+            bracket.Rounds.Reverse();
+            return bracket;
+        }
+
+
     }
 }

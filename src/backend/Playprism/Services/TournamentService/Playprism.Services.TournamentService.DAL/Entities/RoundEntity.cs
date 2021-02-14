@@ -25,7 +25,7 @@ namespace Playprism.Services.TournamentService.DAL.Entities
         public virtual MatchDefinitionEntity MatchDefinition { get; set; }
         public ICollection<MatchEntity> Matches { get; set; }
         
-        public IEnumerable<int> GetWinnerIds()
+        public Dictionary<int, int?> GetWinnersByMatchId()
         {
             if (!Finished)
             {
@@ -42,16 +42,19 @@ namespace Playprism.Services.TournamentService.DAL.Entities
                 throw new InvalidOperationException($"Round {Id} has null match results");
             }
 
-            var winners = new List<int>();
+            var winners = new Dictionary<int, int?>();
             foreach (var match in Matches)
             {
                 switch (match.Result)
                 {
                     case 1:
-                        winners.Add(match.Participant1Id.Value);
+                        winners.Add(match.Id, match.Participant1Id.Value);
                         break;
                     case 2:
-                        winners.Add(match.Participant2Id.Value);
+                        winners.Add(match.Id, match.Participant2Id.Value);
+                        break;
+                    default:
+                        winners.Add(match.Id, null);
                         break;
                 }
             }

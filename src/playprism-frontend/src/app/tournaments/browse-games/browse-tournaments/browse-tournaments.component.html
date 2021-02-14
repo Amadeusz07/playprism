@@ -25,14 +25,17 @@
           </mat-form-field>
     </div>
     <div class="tournaments-list">
-        <mat-card *ngFor="let tournament of tournaments" class="tournament-card">
-            <h3>{{ tournament.name }}</h3>
-            <p>Organized by tofill</p>
-            <p>{{ tournament.startDate }}</p>
-            <p>{{ tournament.maxNumberOfPlayers }}</p>
-            <p>{{ tournamentFormat[tournament.format] }}</p>
-            <mat-card-footer class="tournament-card-footer">View tournament</mat-card-footer>
+        <mat-card 
+            *ngFor="let tournament of tournaments" 
+            class="tournament-card">
+                <h3>{{ tournament.name }}</h3>
+                <p>Organized by tofill</p>
+                <p>{{ tournament.startDate }}</p>
+                <p>{{ tournament.maxNumberOfPlayers }}</p>
+                <p>{{ tournamentFormat[tournament.format] }}</p>
+                <mat-card-footer class="tournament-card-footer" [routerLink]="['.', tournament.id]">
+                    View tournament
+                </mat-card-footer>
         </mat-card>
     </div>
 </div>
-<app-tournament></app-tournament>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -27,8 +28,14 @@ namespace Playprism.Services.TournamentService.DAL.Repositories
             var entity = MainDbContext.Rounds
                 .Include(x => x.Matches)
                 .First(x => x.Id == roundId);
+
+
+            if (entity.Finished)
+            {
+                throw new ValidationException("Round is already finished");
+            }
             
-            var toAutoResult = entity.Matches
+             var toAutoResult = entity.Matches
                 .Where(x => x.Participant1Id == null || x.Participant2Id == null);
             foreach (var matchToAutoResult in toAutoResult)
             {
@@ -49,7 +56,7 @@ namespace Playprism.Services.TournamentService.DAL.Repositories
         {
             return await MainDbContext.Rounds
                 .Include(x => x.Matches)
-                .FirstOrDefaultAsync(x => x.Order == currentRound.Order + 1);
+                .FirstOrDefaultAsync(x => x.TournamentId == currentRound.TournamentId && x.Order == currentRound.Order + 1);
         }
         
         public async Task<RoundEntity> GetPreviousRoundAsync(RoundEntity currentRound)

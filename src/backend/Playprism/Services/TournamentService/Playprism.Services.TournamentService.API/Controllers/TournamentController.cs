@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 using Playprism.Services.TournamentService.BLL.Interfaces.CompetitionOrganizer;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Playprism.Services.TournamentService.BLL.Dtos;
 
 namespace Playprism.Services.TournamentService.API.Controllers
 {
@@ -14,7 +16,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
     public class TournamentController : ControllerBase
     {
         private readonly ITournamentService _tournamentService;
-        private ICompetitionProcess _competitionProcess;
+        private readonly ICompetitionProcess _competitionProcess;
 
         public TournamentController(ITournamentService tournamentService, ICompetitionProcess competitionProcess)
         {
@@ -125,12 +127,26 @@ namespace Playprism.Services.TournamentService.API.Controllers
 
         [HttpPost("{id}/rounds/{roundId}/close")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> CloseRound(int roundId)
         {
-            await _competitionProcess.FinishRoundAsync(roundId);
+            try
+            {
+                await _competitionProcess.FinishRoundAsync(roundId);
+            }
+            catch(ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             return Ok();
         }
 
-
+        [HttpGet("{id}/bracket")]
+        [ProducesResponseType(typeof(BracketResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<BracketResponse>> GetBracket(int id)
+        {
+            var bracket = await _competitionProcess.GenerateResponseBracketAsync(id);
+            return Ok(bracket);
+        }
     }
 }
