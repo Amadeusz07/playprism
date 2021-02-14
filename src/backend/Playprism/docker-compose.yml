@@ -2,11 +2,11 @@ version: '3.4'
 
 services:
   playprismapi:
-    image: playprismapi
+    image: tournamentapi
     build:
       context: .
       dockerfile: Services/TournamentService/Playprism.Services.TournamentService.API/Dockerfile
-    container_name: playprismapi
+    container_name: tournamentapi
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80

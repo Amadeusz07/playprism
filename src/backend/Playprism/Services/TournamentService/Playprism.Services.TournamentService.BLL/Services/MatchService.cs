@@ -78,24 +78,23 @@ namespace Playprism.Services.TournamentService.BLL.Services
                 await _matchRepository.UpdateAsync(match);
             }
 
-            // match.Round = null; // only
             return match;
         }
         
         // for now public, might be used to valid on a fly data in frontend
         public bool IsMatchResultValid(MatchEntity match, MatchDefinitionEntity matchDefinition)
         {
-            if (matchDefinition.NumberOfGames % 2 != 1)
-            {
-                throw new ArgumentException("Number of games should be not divisible by two");    
-            }
+            // todo: it shouldn't be the part of this method, much more like for MatchDefinition CRUD methods
+            // if (matchDefinition.NumberOfGames % 2 != 1)
+            // {
+            //     throw new ArgumentException("Number of games should be not divisible by two");    
+            // }
             
             if (match.Participant1Score < 0 || match.Participant2Score < 0)
             {
                 throw new ValidationException($"One of scores of match {match.Id} is less that 0");
             }
 
-            
             if (!matchDefinition.ScoreBased)
             {
                 if (match.Result == 0)
@@ -118,18 +117,18 @@ namespace Playprism.Services.TournamentService.BLL.Services
             {
                 case 0:
                     if (match.Participant1Score != match.Participant2Score)
-                        throw new ValidationException($"Scores are not presenting result of match {match.Id}");
+                        throw new ValidationException($"Scores are not representing result of match {match.Id}");
                     break;
                 case 1:
                     if (match.Participant1Score <= match.Participant2Score)
-                        throw new ValidationException($"Scores are not presenting result of match {match.Id}");
+                        throw new ValidationException($"Scores are not representing result of match {match.Id}");
                     break;
                 case 2:
                     if (match.Participant1Score >= match.Participant2Score)
-                        throw new ValidationException($"Scores are not presenting result of match {match.Id}");
+                        throw new ValidationException($"Scores are not representing result of match {match.Id}");
                     break;
                 default:
-                    throw new ArgumentException($"Result of match {match.Id} is not correct");
+                    throw new ValidationException($"Result of match {match.Id} is not correct");
             }
 
             return true;

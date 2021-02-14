@@ -47,16 +47,16 @@ namespace Playprism.Services.TournamentService.UnitTests.BLL.Services.Competitio
 
         //}
 
-        //private void SetupRepositoryData()
-        //{
-        //    _roundRepositoryMock.Setup(x => x.GetAsync(
-        //        It.IsAny<Expression<Func<RoundEntity, bool>>>(),
-        //        It.IsAny<Func<IQueryable<RoundEntity>, IOrderedQueryable<RoundEntity>>>(),
-        //        It.IsAny<string>(),
-        //        It.IsAny<bool>())).ReturnsAsync(new List<RoundEntity>()
-        //    {
+        private void SetupRepositoryData()
+        {
+            _roundRepositoryMock.Setup(x => x.GetAsync(
+                It.IsAny<Expression<Func<RoundEntity, bool>>>(),
+                It.IsAny<Func<IQueryable<RoundEntity>, IOrderedQueryable<RoundEntity>>>(),
+                It.IsAny<string>(),
+                It.IsAny<bool>())).ReturnsAsync(new List<RoundEntity>()
+            {
 
-        //    });
-        //}
+            });
+        }
     }
 }

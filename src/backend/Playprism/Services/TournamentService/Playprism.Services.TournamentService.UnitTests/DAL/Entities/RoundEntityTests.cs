@@ -20,15 +20,21 @@ namespace Playprism.Services.TournamentService.UnitTests.DAL.Entities
                 Finished = true,
                 Matches = new List<MatchEntity>()
                 {
-                    new MatchEntity() { Participant1Id = 99, Participant2Id = 98, Result = participant1WinnerResult, Played = true, Confirmed = true },
-                    new MatchEntity() { Participant1Id = 97, Participant2Id = 96, Result = participant2WinnerResult, Played = true, Confirmed = true },
-                    new MatchEntity() { Participant1Id = 95, Participant2Id = 94, Result = drawResult, Played = true, Confirmed = true },
-                    new MatchEntity() { Participant1Id = null, Participant2Id = null, Result = emptyAutoResult, Played = true, Confirmed = true }
+                    new MatchEntity() { Id = 50, Participant1Id = 99, Participant2Id = 98, Result = participant1WinnerResult, Played = true, Confirmed = true },
+                    new MatchEntity() { Id = 51, Participant1Id = 97, Participant2Id = 96, Result = participant2WinnerResult, Played = true, Confirmed = true },
+                    new MatchEntity() { Id = 52, Participant1Id = 95, Participant2Id = 94, Result = drawResult, Played = true, Confirmed = true },
+                    new MatchEntity() { Id = 53, Participant1Id = null, Participant2Id = null, Result = emptyAutoResult, Played = true, Confirmed = true }
                 }
             };
-            var expectedResult = new List<int> { 99, 96 };
+            var expectedResult = new Dictionary<int, int?>()
+            {
+                { 50, 99 },
+                { 51, 96 },
+                { 52, null },
+                { 53, null }
+            };
 
-            var result = roundEntity.GetWinnerIds();
+            var result = roundEntity.GetWinnersByMatchId();
             
             Assert.AreEqual(expectedResult, result);
         }
@@ -41,7 +47,7 @@ namespace Playprism.Services.TournamentService.UnitTests.DAL.Entities
                 Finished = false
             };
 
-            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnerIds());
+            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnersByMatchId());
         }
 
         [Test]
@@ -57,7 +63,7 @@ namespace Playprism.Services.TournamentService.UnitTests.DAL.Entities
                 }
             };
 
-            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnerIds());
+            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnersByMatchId());
         }
         
         [Test]
@@ -73,7 +79,7 @@ namespace Playprism.Services.TournamentService.UnitTests.DAL.Entities
                 }
             };
 
-            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnerIds());
+            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnersByMatchId());
         }
         
         [Test]
@@ -89,7 +95,7 @@ namespace Playprism.Services.TournamentService.UnitTests.DAL.Entities
                 }
             };
 
-            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnerIds());
+            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnersByMatchId());
         }
 
         [Test]
@@ -104,7 +110,7 @@ namespace Playprism.Services.TournamentService.UnitTests.DAL.Entities
                 }
             };
 
-            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnerIds());
+            Assert.Throws<InvalidOperationException>(() => roundEntity.GetWinnersByMatchId());
         }
     }
 }
