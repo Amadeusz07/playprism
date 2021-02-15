@@ -13,18 +13,41 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Build image
+  displayName: Build and Push images
   jobs:  
   - job: Build
-    displayName: Build
+    displayName: Build and Push images
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: Docker@2
-      displayName: Build and Push
+      inputs:
+        containerRegistry: 'Docker Hub'
+        command: 'login'
+    - task: Docker@2
+      displayName: Build and Push ApiGateway
+      inputs:
+        command: buildAndPush
+        repository: blueh10/apigateway
+        Dockerfile: '**/ApiGateway/Playprism.ApiGateway/Dockerfile'
+        buildContext: $(Build.Repository.LocalPath)/src/backend/Playprism
+        tags: |
+          build-on-agent
+    - task: Docker@2
+      displayName: Build and Push TournamentService
       inputs:
         command: buildAndPush
         repository: blueh10/tournament.api
-        Dockerfile: '**/Playprism.Services.TournamentService.API/Dockerfile'
+        Dockerfile: '**/Services/TournamentService/Playprism.Services.TournamentService.API/Dockerfile'
+        buildContext: $(Build.Repository.LocalPath)/src/backend/Playprism
         tags: |
-          latest
+          build-on-agent
+    - task: Docker@2
+      displayName: Build and Push TeamService
+      inputs:
+        command: buildAndPush
+        repository: blueh10/team.api
+        Dockerfile: '**/Services/TeamService/Playprism.Services.TeamService.API/Dockerfile'
+        buildContext: $(Build.Repository.LocalPath)/src/backend/Playprism
+        tags: |
+          build-on-agent

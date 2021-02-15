@@ -4,9 +4,9 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Services/TournamentService/Playprism.Services.TournamentService.API", "Services/Playprism.Services.TournamentService.API/"]
-COPY ["Services/TournamentService/Playprism.Services.TournamentService.BLL", "Services/Playprism.Services.TournamentService.BLL/"]
-COPY ["Services/TournamentService/Playprism.Services.TournamentService.DAL", "Services/Playprism.Services.TournamentService.DAL/"]
+COPY ["Services/TournamentService/Playprism.Services.TournamentService.API/", "Services/Playprism.Services.TournamentService.API/"]
+COPY ["Services/TournamentService/Playprism.Services.TournamentService.BLL/", "Services/Playprism.Services.TournamentService.BLL/"]
+COPY ["Services/TournamentService/Playprism.Services.TournamentService.DAL/", "Services/Playprism.Services.TournamentService.DAL/"]
 RUN dotnet restore "Services/Playprism.Services.TournamentService.API/Playprism.Services.TournamentService.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Playprism.Services.TournamentService.API"
