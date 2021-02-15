@@ -21,9 +21,10 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: Docker@2
-      displayName: Build an Tournament Service image
+      displayName: Build and Push
       inputs:
-        command: build
-        dockerfile: '**Services/TournamentService/Playprism.Services.TournamentService.API/Dockerfile'
+        command: buildAndPush
+        repository: blueh10/tournament.api
+        Dockerfile: '**/Playprism.Services.TournamentService.API/Dockerfile'
         tags: |
-          $(tag)
+          latest
