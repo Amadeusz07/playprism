@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 using Playprism.Services.TournamentService.BLL.Interfaces;
 using Playprism.Services.TournamentService.DAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Playprism.Services.TournamentService.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/tournament/{tournamentId}/[controller]")]
     public class MatchDefinitionController: ControllerBase

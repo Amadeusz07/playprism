@@ -38,6 +38,10 @@ namespace Playprism.Services.TournamentService.BLL.Services
         public async Task DeleteTournamentAsync(int id)
         {
             var entity = await _tournamentRepository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                throw new EntityNotFoundException();
+            }
             await _tournamentRepository.DeleteAsync(entity);
         }
 

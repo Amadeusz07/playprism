@@ -17,7 +17,7 @@ namespace Playprism.Services.TournamentService.DAL.Entities
         [Required]
         public string Name { get; set; }
         [Required]
-        public int OwnerId { get; set; }
+        public string OwnerId { get; set; }
         [Required]
         public bool AreTeams { get; set; }
         [Required]

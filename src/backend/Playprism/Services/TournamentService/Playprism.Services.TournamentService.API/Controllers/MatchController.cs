@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Playprism.Services.TournamentService.BLL.Interfaces;
@@ -7,6 +8,7 @@ using Playprism.Services.TournamentService.DAL.Entities;
 
 namespace Playprism.Services.TournamentService.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/tournament/{tournamentId}/[controller]")]
     public class MatchController : ControllerBase

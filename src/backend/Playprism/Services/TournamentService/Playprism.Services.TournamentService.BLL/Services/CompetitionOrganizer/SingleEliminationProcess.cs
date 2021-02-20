@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Playprism.Services.TournamentService.BLL.Common;
+﻿using Playprism.Services.TournamentService.BLL.Common;
+using Playprism.Services.TournamentService.BLL.Dtos;
+using Playprism.Services.TournamentService.BLL.Exceptions;
 using Playprism.Services.TournamentService.BLL.Interfaces.CompetitionOrganizer;
 using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
-using Playprism.Services.TournamentService.BLL.Dtos;
-using Playprism.Services.TournamentService.BLL.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
 {

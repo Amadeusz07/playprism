@@ -54,7 +54,7 @@ import { BracketComponent } from './shared/bracket/bracket.component';
       audience: 'https://playprism/api/v1',
       redirectUri: window.location.origin,
       httpInterceptor: {
-        allowedList: [ 'http://localhost:5000/api/v1/*' ],
+        allowedList: [ 'http://localhost:5000/api/*' ]
       }
     }),
     BrowserAnimationsModule,
