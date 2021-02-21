@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,16 +6,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Playprism.Services.TeamService.API.Repositories;
+using Playprism.Services.TeamService.API.Filters;
 using Playprism.Services.TeamService.API.Interfaces.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Services;
+using Playprism.Services.TeamService.API.Repositories;
 using Playprism.Services.TeamService.API.Services;
-using Playprism.Services.TeamService.API.Filters;
 
 namespace Playprism.Services.TeamService.API
 {
     public class Startup
     {
+        private const string AuthenticationProviderKey = "AuthKey";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -45,6 +47,21 @@ namespace Playprism.Services.TeamService.API
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Team API", Version = "v1" });
             });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = AuthenticationProviderKey;
+                options.DefaultChallengeScheme = AuthenticationProviderKey;
+            }).AddJwtBearer(AuthenticationProviderKey, options =>
+            {
+                options.Authority = "https://dev-e821827o.eu.auth0.com/";
+                options.Audience = "https://playprism/api/v1";
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("TeamOwnerPolicy", policy => policy.Requirements.Add(new TeamOwnerRequirement()));
+            }); 
+            services.AddSingleton<IAuthorizationHandler, TeamOwnerHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,9 +79,9 @@ namespace Playprism.Services.TeamService.API
             });
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

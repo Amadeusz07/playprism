@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
+import { AuthModule } from '@auth0/auth0-angular';
 import { AuthButtonComponent } from './shared/auth-button/auth-button.component';
 import { UserProfileComponent } from './shared/user-profile/user-profile.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -25,6 +25,8 @@ import { TeamsComponent } from './teams/teams.component';
 import { CreateTeamComponent } from './teams/create-team/create-team.component';
 import { EditTeamComponent } from './teams/edit-team/edit-team.component';
 import { BracketComponent } from './shared/bracket/bracket.component';
+import { AuthHttpExtendedInterceptor } from './interceptors/auth-extended.interceptor';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,10 @@ import { BracketComponent } from './shared/bracket/bracket.component';
       audience: 'https://playprism/api/v1',
       redirectUri: window.location.origin,
       httpInterceptor: {
-        allowedList: [ 'http://localhost:5000/api/*' ]
+        allowedList: [ 
+          `${environment.API_URL_TEAM}/*`, 
+          `${environment.API_URL_TOURNAMENT}/*` 
+        ],
       }
     }),
     BrowserAnimationsModule,
@@ -65,7 +70,7 @@ import { BracketComponent } from './shared/bracket/bracket.component';
     MatInputModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

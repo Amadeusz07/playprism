@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace Playprism.Services.TournamentService.API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     public class TournamentController : ControllerBase
@@ -37,6 +36,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             return Ok(entities);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -49,6 +49,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             return Ok(entity);
         }
 
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -64,6 +65,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             return Accepted(result);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,6 +100,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         public async Task<ActionResult> Delete(int id)
@@ -112,6 +115,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             return Accepted();
         }
 
+        [Authorize]
         [HttpPost("join")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -122,7 +126,6 @@ namespace Playprism.Services.TournamentService.API.Controllers
             {
                 return BadRequest();
             }
-            // todo: playerId/participantId has to be get from JWT
             try
             {
                 participantEntity.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -134,7 +137,8 @@ namespace Playprism.Services.TournamentService.API.Controllers
             }
             return Accepted();
         }
-        
+
+        [Authorize]
         [HttpPost("{id}/start")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> StartTournament(int id)
@@ -150,6 +154,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("{id}/rounds/{roundId}/close")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -176,12 +181,6 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(typeof(BracketResponse), StatusCodes.Status200OK)]
         public async Task<ActionResult<BracketResponse>> GetBracket(int id)
         {
-            var tournament = await _tournamentService.GetTournamentAsync(id);
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, tournament, "TournamentOwnerPolicy");
-            if (!authorizationResult.Succeeded)
-            {
-                return Forbid();
-            }
             var bracket = await _competitionProcess.GenerateResponseBracketAsync(id);
             return Ok(bracket);
         }

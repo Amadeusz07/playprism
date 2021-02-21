@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Moq;
 using NUnit.Framework;
 using Playprism.Services.TournamentService.BLL.Services;
 using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace Playprism.Services.TournamentService.UnitTests.BLL.Services
 {

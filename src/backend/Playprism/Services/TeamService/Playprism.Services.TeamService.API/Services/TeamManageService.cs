@@ -42,7 +42,7 @@ namespace Playprism.Services.TeamService.API.Services
             return await _teamRepository.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<TeamEntity>> GetTeamsAsync(int userId)
+        public async Task<IEnumerable<TeamEntity>> GetTeamsAsync(string userId)
         {
             var teams = await _teamRepository.GetAsync(x => x.OwnerId == userId);
             var memberTeams = await _playerRepository.GetMemberTeamsAsync(userId);
@@ -56,17 +56,17 @@ namespace Playprism.Services.TeamService.API.Services
             throw new NotImplementedException();
         }
 
-        public Task JoinTeamAsync(int userId, int teamId)
+        public Task JoinTeamAsync(string userId, int teamId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TeamEntity> LeaveTeamAsync(int userId, int teamId)
+        public Task<TeamEntity> LeaveTeamAsync(string userId, int teamId)
         {
             throw new NotImplementedException();
         }
 
-        public Task RefuseTeamAsync(int userId, int teamId)
+        public Task RefuseTeamAsync(string userId, int teamId)
         {
             throw new NotImplementedException();
         }

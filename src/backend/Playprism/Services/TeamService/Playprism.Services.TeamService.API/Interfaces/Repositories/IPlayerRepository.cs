@@ -6,6 +6,6 @@ namespace Playprism.Services.TeamService.API.Interfaces.Repositories
 {
     public interface IPlayerRepository: IRepository<PlayerEntity>
     {
-        Task<IEnumerable<TeamEntity>> GetMemberTeamsAsync(int userId);
+        Task<IEnumerable<TeamEntity>> GetMemberTeamsAsync(string userId);
     }
 }
