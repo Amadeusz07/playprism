@@ -149,6 +149,11 @@ namespace Playprism.Services.TournamentService.API.Controllers
             {
                 return Forbid();
             }
+            if (tournament == null)
+            {
+                return NotFound();
+            }
+
             await _competitionProcess.GenerateBracketAsync(tournament);
 
             return Ok();

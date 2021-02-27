@@ -34,10 +34,6 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
 
         public async Task GenerateBracketAsync(TournamentEntity tournament)
         {
-            if (tournament.MaxNumberOfPlayers <= 1)
-            {
-                throw new ArgumentException("Number of players in tournament should be >= 2");
-            }
             await _matchRepository.ClearAsync(tournament.Id);
             await _roundRepository.ClearAsync(tournament.Id);
             var participants = await _participantRepository.GetAsync(x => x.TournamentId == tournament.Id);
@@ -49,7 +45,7 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
                     matches.GroupBy(x => x.RoundId)
                         .OrderBy(x => x.Key)
                         .First(x => x.Any()), 
-                    participants.Select(x => x.Id));
+                    participants.Select(x => (int?)x.Id));
             }
         }
 
@@ -141,29 +137,24 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             return newMatches;
         }
 
-        private async Task<IEnumerable<MatchEntity>> ShuffleAsync(IEnumerable<MatchEntity> matches, IEnumerable<int> participantIds)
+        private async Task<IEnumerable<MatchEntity>> ShuffleAsync(IEnumerable<MatchEntity> matches, IEnumerable<int?> participantIds)
         {
-            var random = new Random();
+            var totalNumberOfPlayers = matches.Count() * 2;
             var pool = participantIds.ToList();
+            var numberOfEmptyParticipants = totalNumberOfPlayers - pool.Count();
+            for (int i = 0; i < numberOfEmptyParticipants; i++)
+            {
+                pool.Add(null);
+            }
+
+            var random = new Random();
             foreach (var match in matches)
             {
-                if (!pool.Any())
-                {
-                    match.Participant1Id = null;
-                    match.Participant2Id = null;
-                    await _matchRepository.UpdateAsync(match);
-                    break;
-                }
-                var randomParticipant = pool[random.Next(pool.Count())];
+                var randomParticipant = pool[random.Next(pool.Count)];
                 match.Participant1Id = randomParticipant;
                 pool.Remove(randomParticipant);
-                if (!pool.Any())
-                {
-                    match.Participant2Id = null;
-                    await _matchRepository.UpdateAsync(match);
-                    break;
-                }
-                randomParticipant = pool[random.Next(pool.Count())];
+
+                randomParticipant = pool[random.Next(pool.Count)];
                 match.Participant2Id = randomParticipant;
                 pool.Remove(randomParticipant);
 
@@ -204,7 +195,6 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
         
         public async Task<BracketResponse> GenerateResponseBracketAsync(int tournamentId)
         {
-            var bracket = new BracketResponse();
             var rounds = await _roundRepository.GetAsync(
                 x => x.TournamentId == tournamentId, 
                 x => x.OrderByDescending(y => y.Order), 
@@ -215,8 +205,10 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             {
                 throw new EntityNotFoundException();
             }
+
             var participants = await _participantRepository.GetAsync(x => x.TournamentId == tournamentId);
-            
+
+            var bracket = new BracketResponse();
             foreach (var round in rounds)
             {
                 bracket.Rounds.Add(new RoundResponse()
@@ -230,20 +222,7 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             {
                 foreach (var match in rounds[i].Matches)
                 {
-                    var currentRoundBracket = bracket.Rounds.ElementAt(i);
-                    if (!currentRoundBracket.Matches.Any())
-                    {
-                        currentRoundBracket.Matches.Add(new MatchResponse()
-                        {
-                            Id = match.Id,
-                            MatchDate = match.MatchDate,
-                            Participant1 = participants.SingleOrDefault(x => x.Id == match.Participant1Id)?.Name,
-                            Participant2 = participants.SingleOrDefault(x => x.Id == match.Participant2Id)?.Name,
-                            Participant1Score = match.Participant1Score,
-                            Participant2Score = match.Participant2Score,
-                            Result = match.Result
-                        });
-                    }
+                    BracketResponseAddMatch(participants, bracket, i, match);
 
                     if (i + 1 <= bracket.Rounds.Count - 1)
                     {
@@ -290,6 +269,22 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             return bracket;
         }
 
-
+        private void BracketResponseAddMatch(IReadOnlyList<ParticipantEntity> participants, BracketResponse bracket, int i, MatchEntity match)
+        {
+            var currentRoundBracket = bracket.Rounds.ElementAt(i);
+            if (!currentRoundBracket.Matches.Any())
+            {
+                currentRoundBracket.Matches.Add(new MatchResponse()
+                {
+                    Id = match.Id,
+                    MatchDate = match.MatchDate,
+                    Participant1 = participants.SingleOrDefault(x => x.Id == match.Participant1Id)?.Name,
+                    Participant2 = participants.SingleOrDefault(x => x.Id == match.Participant2Id)?.Name,
+                    Participant1Score = match.Participant1Score,
+                    Participant2Score = match.Participant2Score,
+                    Result = match.Result
+                });
+            }
+        }
     }
 }

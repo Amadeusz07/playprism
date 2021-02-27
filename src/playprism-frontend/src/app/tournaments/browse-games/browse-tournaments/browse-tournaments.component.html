@@ -25,17 +25,22 @@
           </mat-form-field>
     </div>
     <div class="tournaments-list">
-        <mat-card 
-            *ngFor="let tournament of tournaments" 
-            class="tournament-card">
-                <h3>{{ tournament.name }}</h3>
-                <p>Organized by tofill</p>
-                <p>{{ tournament.startDate }}</p>
-                <p>{{ tournament.maxNumberOfPlayers }}</p>
-                <p>{{ tournamentFormat[tournament.format] }}</p>
-                <mat-card-footer class="tournament-card-footer" [routerLink]="['.', tournament.id]">
-                    View tournament
-                </mat-card-footer>
-        </mat-card>
+        <ng-template *ngIf="tournaments.length == 0 else noTournamentsFound">
+            <mat-card 
+                *ngFor="let tournament of tournaments" 
+                class="tournament-card">
+                    <h3>{{ tournament.name }}</h3>
+                    <p>Organized by tofill</p>
+                    <p>{{ tournament.startDate }}</p>
+                    <p>{{ tournament.maxNumberOfPlayers }}</p>
+                    <p>{{ tournamentFormat[tournament.format] }}</p>
+                    <mat-card-footer class="tournament-card-footer" [routerLink]="['.', tournament.id]">
+                        View tournament
+                    </mat-card-footer>
+            </mat-card>
+        </ng-template>    
+        <ng-template #noTournamentsFound>
+            <div><p>No tournaments in given discipline</p></div>
+        </ng-template>
     </div>
 </div>
