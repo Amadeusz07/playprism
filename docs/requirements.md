@@ -55,43 +55,45 @@ Filter by:
 - Name
 - Status (past, incoming, ongoing)
 - Format
-- Platform (eg. PS4, PS5, PC, XB0X)
 ### View_Tournament
 Informations presented on a page:
 - Name
-- Type of participant team/player
 - Max and assigned number of teams/players eg. 12/32
 - Platform (eg. PS4, PC)
 - Registration ends Date
 - Checkin start Date 
 - Checkin Time (in minutes / hours)
 - Tournament Start Date (after Checkin Date)
-- Location
-    - offline tournament, place where tournament will be played,
-    - might be just "Online"
-- Link Official Website
-- Logo
+- Link to Official Website
+- `Logo`
 - Description
+    - Location
+        - offline tournament, place where tournament will be played,
+        - might be just "Online"
 - Prizes (text description)
 - Rules
+    - below rules as a text or image region/country allowed to play in tournament
 - Contact data 
     - email
     - phone number
-- Stream urls (name, language, URL)
-- Region/country allowed to play in tournament
-- Timezone
+- `Stream urls (name, language, URL)`
+- `Region/country allowed to play in tournament`
+- `Timezone`
 - Tournament type/format
     - Single Elimination
     - Groups
     - League
-- Sponsors
-    - link
-    - image/logo
-- Bracket view
+- `Sponsors`
+    - `link`
+    - `image/logo`
+- Bracket view (separate tab)
 - Matches view (not for Single Elimination)
 
 Functions on page:
 - Sign up to tournament
+    - as player
+    - as team (with additional popup)
+- Present info that user is already registered
 
 Mockups
 https://www.figma.com/proto/jFskEgDJAPl2dLoKPQjVOP/Playprism?node-id=12%3A1557&viewport=470%2C966%2C0.3873078227043152&scaling=min-zoom
