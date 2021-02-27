@@ -15,7 +15,37 @@ stages:
 - stage: Build
   displayName: Build and Push images
   jobs:  
+  - job: SonarQube
+    displayName: SonarQube analysis
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+        feedsToUse: 'select'
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'SonarCloud connection'
+        organization: 'lechniakamadeusz07'
+        scannerMode: 'MSBuild'
+        projectKey: 'lechniakamadeusz07_Playprism'
+        projectName: 'Playprism'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**/*.csproj'
+    - task: SonarCloudAnalyze@1
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '60'
   - job: Build
+    dependsOn: SonarQube
     displayName: Build and Push images
     pool:
       vmImage: 'ubuntu-latest'
