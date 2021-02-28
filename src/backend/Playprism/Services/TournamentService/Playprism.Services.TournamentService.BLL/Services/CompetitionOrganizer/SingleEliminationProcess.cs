@@ -141,7 +141,7 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
         {
             var totalNumberOfPlayers = matches.Count() * 2;
             var pool = participantIds.ToList();
-            var numberOfEmptyParticipants = totalNumberOfPlayers - pool.Count();
+            var numberOfEmptyParticipants = totalNumberOfPlayers - pool.Count;
             for (int i = 0; i < numberOfEmptyParticipants; i++)
             {
                 pool.Add(null);
@@ -224,7 +224,8 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
                 {
                     BracketResponseAddMatch(participants, bracket, i, match);
 
-                    if (i + 1 <= bracket.Rounds.Count - 1)
+                    var isLastRound = i + 1 <= bracket.Rounds.Count - 1;
+                    if (isLastRound)
                     {
                         var previousRoundBracket = bracket.Rounds.ElementAt(i + 1);
 

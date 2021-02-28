@@ -7,10 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Playprism.Services.TeamService.API.Filters;
+using Playprism.Services.TeamService.API.Interface.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Services;
+using Playprism.Services.TeamService.API.Models;
 using Playprism.Services.TeamService.API.Repositories;
 using Playprism.Services.TeamService.API.Services;
+using RestSharp;
 
 namespace Playprism.Services.TeamService.API
 {
@@ -38,10 +41,16 @@ namespace Playprism.Services.TeamService.API
                     );
             });
 
+            var auth0Section = Configuration.GetSection("Auth0");
+            services.Configure<AuthConfig>(auth0Section);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IPlayerRepository), typeof(PlayerRepository));
             services.AddScoped(typeof(ITeamRepository), typeof(TeamRepository));
+            services.AddScoped(typeof(ITeamPlayerAssignmentRepository), typeof(TeamPlayerAssignmentRepository));
+            services.AddScoped<IAuth0Repository, Auth0Repository>();
             services.AddScoped<ITeamManageService, TeamManageService>();
+            services.AddScoped<IPlayerService, PlayerService>();
+            services.AddTransient<IRestClient, RestClient>();
 
             services.AddSwaggerGen(options =>
             {
@@ -54,8 +63,8 @@ namespace Playprism.Services.TeamService.API
                 options.DefaultChallengeScheme = AuthenticationProviderKey;
             }).AddJwtBearer(AuthenticationProviderKey, options =>
             {
-                options.Authority = "https://dev-e821827o.eu.auth0.com/";
-                options.Audience = "https://playprism/api/v1";
+                options.Authority = auth0Section.GetValue<string>("Authority");
+                options.Audience = auth0Section.GetValue<string>("Audience");
             });
             services.AddAuthorization(options =>
             {
