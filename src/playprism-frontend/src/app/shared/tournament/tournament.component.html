@@ -1,2 +1,63 @@
 <!-- based on type -->
-<app-bracket [bracket]="bracket"></app-bracket>
+<div class="tournament-container" *ngIf="tournament">
+    <mat-tab-group mat-align-tabs="start">
+        <mat-tab label="INFORMATIONS">
+            <div class="informations">
+                <div class="informations-left">
+                    <div class="description">
+                        <h3>Description</h3>
+                        <p>{{ tournament.description }}</p>
+                    </div>
+                    <div class="rules">
+                        <h3>Rules</h3>
+                        <p>{{ tournament.rules }}</p>
+                    </div>
+                    <div class="prizes">
+                        <h3>Prizes</h3>
+                        <p>{{ tournament.prizes }}</p>
+                    </div>
+                </div>
+
+                <div class="informations-right">
+                    <div class="panel">
+                        <div class="dates">
+                            <h3>Start date</h3>
+                            <p>{{ tournament.startDate |  date:'fullDate' }}</p>
+                            <h3>End date</h3>
+                            <p>{{ tournament.endDate |  date:'fullDate' }}</p>
+                        </div>
+                        <div class="participants">
+                            <p class="numbers">0/{{ tournament.maxNumberOfPlayers }}</p>
+                            <p>participants</p>
+                        </div>
+                    </div>
+                    <div class="type">
+                        <h3>Type</h3>
+                        <p>{{ tournamentFormat[tournament.format] }}</p>
+                    </div>
+                    <div class="platform">
+                        <h3>Platform</h3>
+                        <p>{{ tournament.platform }}</p>
+                    </div>
+                    <div class="contact">
+                        <h3>Contact</h3>
+                        <p>Email: {{ tournament.contactEmail }}</p>
+                        <p>Number: {{ tournament.contactNumber }}</p>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="BRACKET">
+            <app-bracket [bracket]="bracket"></app-bracket>
+        </mat-tab>
+        <mat-tab label="MEDIA">
+            <iframe 
+                src="https://player.twitch.tv/?channel=shroud&parent=playprism.com" 
+                frameborder="0" 
+                scrolling="no" 
+                height="378" 
+                width="620">
+            </iframe>
+        </mat-tab>
+      </mat-tab-group>
+</div>

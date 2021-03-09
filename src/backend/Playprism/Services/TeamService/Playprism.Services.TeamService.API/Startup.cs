@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ using Playprism.Services.TeamService.API.Models;
 using Playprism.Services.TeamService.API.Repositories;
 using Playprism.Services.TeamService.API.Services;
 using RestSharp;
+using System;
 
 namespace Playprism.Services.TeamService.API
 {
@@ -40,6 +42,7 @@ namespace Playprism.Services.TeamService.API
                     options => options.MigrationsAssembly("Playprism.Services.TeamService.API")
                     );
             });
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             var auth0Section = Configuration.GetSection("Auth0");
             services.Configure<AuthConfig>(auth0Section);
@@ -87,7 +90,7 @@ namespace Playprism.Services.TeamService.API
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Team API v1");
             });
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseAuthentication();

@@ -19,6 +19,10 @@ export class TournamentService {
     return await this.http.get<Tournament[]>(`${this.API_URL}/tournament`, { params }).toPromise();
   }
 
+  public async getTournament(tournamentId: string): Promise<Tournament> {
+    return await this.http.get<Tournament>(`${this.API_URL}/tournament/${tournamentId}`).toPromise();
+  }
+
   public async getTournamentBracket(tournamentId: string): Promise<Bracket> {
     return await this.http.get<Bracket>(`${this.API_URL}/tournament/${tournamentId}/bracket`).toPromise();
   }

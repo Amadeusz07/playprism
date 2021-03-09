@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Playprism.Services.TeamService.API.Dtos;
 using Playprism.Services.TeamService.API.Entities;
 using Playprism.Services.TeamService.API.Interfaces.Services;
 using System.Collections.Generic;
@@ -24,12 +25,12 @@ namespace Playprism.Services.TeamService.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<TeamEntity>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<AssignmentResponse>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<TeamEntity>>> Get()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var entities = await _teamManageService.GetTeamsAsync(userId);
-
+            //var entities = await _teamManageService.GetTeamsAsync(userId);
+            var entities = await _teamManageService.GetAssignments(userId);
             return Ok(entities);
         }
 
@@ -101,6 +102,8 @@ namespace Playprism.Services.TeamService.API.Controllers
 
         [HttpPost("{id}/invite/{username}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> InvitePlayerToTeam(int id, string username)
         {
             var team = await _teamManageService.GetTeamAsync(id);
@@ -112,6 +115,10 @@ namespace Playprism.Services.TeamService.API.Controllers
             if (team == null)
             {
                 return NotFound();
+            }
+            if (username == "")
+            {
+                return BadRequest();
             }
             await _teamManageService.InvitePlayerAsync(id, username);
 
@@ -133,7 +140,7 @@ namespace Playprism.Services.TeamService.API.Controllers
         public async Task<ActionResult> RefuseTeam(int id)
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            await _teamManageService.JoinTeamAsync(userId, id);
+            await _teamManageService.RefuseTeamAsync(userId, id);
 
             return Accepted();
         }

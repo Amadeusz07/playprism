@@ -1,6 +1,6 @@
 import { TournamentFormatEnum } from "./enums/tournament-format.enum";
 
-export interface Tournament {
+export class Tournament {
     id: number;
     disciplineId: number;
     platform: string;
@@ -32,4 +32,5 @@ export interface Tournament {
     endDate: string | null;
     finished: boolean;
     aborted: boolean;
+    ongoing: boolean;
 }

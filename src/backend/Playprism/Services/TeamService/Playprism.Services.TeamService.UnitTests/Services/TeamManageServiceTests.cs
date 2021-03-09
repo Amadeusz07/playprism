@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Moq;
 using NUnit.Framework;
 using Playprism.Services.TeamService.API.Entities;
 using Playprism.Services.TeamService.API.Interface.Repositories;
@@ -22,6 +23,7 @@ namespace Playprism.Services.TeamService.UnitTests.Services
         private Mock<IAuth0Repository> _auth0RepositoryMock;
         private Mock<IPlayerService> _playerServiceMock;
         private Mock<ITeamPlayerAssignmentRepository> _teamPlayerAssignmentRepositoryMock;
+        private Mock<IMapper> _mapperMock;
 
         private TeamManageService _serviceUnderTest;
 
@@ -39,12 +41,14 @@ namespace Playprism.Services.TeamService.UnitTests.Services
             _auth0RepositoryMock = new Mock<IAuth0Repository>();
             _playerServiceMock = new Mock<IPlayerService>();
             _teamPlayerAssignmentRepositoryMock = new Mock<ITeamPlayerAssignmentRepository>();
+            _mapperMock = new Mock<IMapper>();
 
             _serviceUnderTest = new TeamManageService(_teamRepositoryMock.Object, 
                 _playerRepositoryMock.Object, 
                 _auth0RepositoryMock.Object, 
                 _playerServiceMock.Object, 
-                _teamPlayerAssignmentRepositoryMock.Object
+                _teamPlayerAssignmentRepositoryMock.Object,
+                _mapperMock.Object
             );
         }
 

@@ -32,6 +32,10 @@ namespace Playprism.Services.TeamService.API.Repositories
             IRestResponse response = await _restClient.ExecuteAsync(request);
             if (!response.IsSuccessful)
             {
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new Exception("Got unauthorized response from Auth0");
+                }
                 //TODO: log error
                 return null;
             }

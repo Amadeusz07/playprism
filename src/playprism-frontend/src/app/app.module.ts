@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card'
 import { MatInputModule } from '@angular/material/input';
+import { MatTabsModule } from '@angular/material/tabs'
 import { BrowseGamesComponent } from './tournaments/browse-games/browse-games.component';
 import { BrowseTournamentsComponent } from './tournaments/browse-games/browse-tournaments/browse-tournaments.component';
 import { TournamentComponent } from './shared/tournament/tournament.component';
@@ -27,6 +28,8 @@ import { EditTeamComponent } from './teams/edit-team/edit-team.component';
 import { BracketComponent } from './shared/bracket/bracket.component';
 import { AuthHttpExtendedInterceptor } from './interceptors/auth-extended.interceptor';
 import { environment } from 'src/environments/environment';
+import { FormsModule } from '@angular/forms';
+import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
 
 @NgModule({
   declarations: [
@@ -44,12 +47,14 @@ import { environment } from 'src/environments/environment';
     TeamsComponent,
     CreateTeamComponent,
     EditTeamComponent,
-    BracketComponent
+    BracketComponent,
+    TournamentStatusPipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
     AuthModule.forRoot({
       domain: 'dev-e821827o.eu.auth0.com',
       clientId: 'BfS5VVPmKwqKlWPqDqdpiisJhwtpC7sw',
@@ -67,7 +72,8 @@ import { environment } from 'src/environments/environment';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatInputModule
+    MatInputModule,
+    MatTabsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true }

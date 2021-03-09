@@ -1,22 +1,14 @@
 <div class="image-container">
     <!-- <img src="https://static.antyweb.pl/wp-content/uploads/2019/07/10200433/fortnite-pokonany-loeague-of-legends-twitch-antyweb.jpg" alt=""> -->
-    <h1>Tournaments: test</h1>
+    <h1>Tournaments: TODO</h1>
 </div>
 <div class="tournaments-container">
     <div class="filters">
         <mat-form-field class="search-field">
-            <mat-label>Game</mat-label>
+            <mat-label>Tournament name</mat-label>
             <input type="tel" matInput placeholder="Search for a tournament">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
-        <mat-form-field appearance="fill">
-            <mat-label>Status</mat-label>
-            <select matNativeControl>
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-            </select>
-          </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Format</mat-label>
             <select matNativeControl>
@@ -24,23 +16,22 @@
             </select>
           </mat-form-field>
     </div>
-    <div class="tournaments-list">
-        <ng-template *ngIf="tournaments.length == 0 else noTournamentsFound">
-            <mat-card 
-                *ngFor="let tournament of tournaments" 
-                class="tournament-card">
-                    <h3>{{ tournament.name }}</h3>
-                    <p>Organized by tofill</p>
-                    <p>{{ tournament.startDate }}</p>
-                    <p>{{ tournament.maxNumberOfPlayers }}</p>
-                    <p>{{ tournamentFormat[tournament.format] }}</p>
-                    <mat-card-footer class="tournament-card-footer" [routerLink]="['.', tournament.id]">
-                        View tournament
-                    </mat-card-footer>
-            </mat-card>
-        </ng-template>    
-        <ng-template #noTournamentsFound>
-            <div><p>No tournaments in given discipline</p></div>
-        </ng-template>
+    <div class="tournaments-list" *ngIf="tournaments.length > 0; else noTournamentsFound">
+        <mat-card 
+            *ngFor="let tournament of tournaments" 
+            class="tournament-card">
+                <h3>{{ tournament.name }}</h3>
+                <p>Organized by TODO</p>
+                <p>{{ tournament.startDate | date:'fullDate'}}</p>
+                <p>{{ tournament.maxNumberOfPlayers }}</p>
+                <p>Status: <span [ngClass]="(tournament | tournamentStatus) | lowercase">{{ tournament | tournamentStatus }}</span></p>
+                <!-- <p>{{ tournamentFormat[tournament.format] }}</p> -->
+                <mat-card-footer class="tournament-card-footer" [routerLink]="['.', tournament.id]">
+                    View tournament
+                </mat-card-footer>
+        </mat-card>
     </div>
+    <ng-template #noTournamentsFound>
+        <div class="empty-discipline"><p>No tournaments in given discipline</p></div>
+    </ng-template>
 </div>

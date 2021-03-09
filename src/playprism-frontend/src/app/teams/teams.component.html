@@ -1,1 +1,52 @@
-<p>teams works!</p>
+ <div class="teams-container">
+    <div class="assignments" *ngIf="assignments">
+        <ul>
+            <li *ngFor="let assignment of assignments" class="assignment">
+                <h3>{{ assignment.team.name}} {{ assignment.active ? "(Current team)" : "" }}</h3>
+                <div class="invitation">
+                    <mat-form-field ngClass="whiteInput">
+                        <mat-label>Username</mat-label>
+                        <input [(ngModel)]="usernameToInvite" type="text" matInput />
+                        <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-stroked-button 
+                        color="primary" 
+                        (click)="invite(assignment.team.id)" 
+                        [disabled]="usernameToInvite == ''">
+                            Invite
+                    </button>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-stroked-button 
+                        color="primary" 
+                        (click)="join(assignment.team.id)" 
+                        [disabled]="assignment.active">
+                            Join
+                    </button>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-stroked-button 
+                        color="warn" 
+                        (click)="refuse(assignment.team.id)" 
+                        [disabled]="assignment.active">
+                            Refuse
+                    </button>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-stroked-button 
+                        color="warn" 
+                        (click)="leave(assignment.team.id)" 
+                        [disabled]="!assignment.active">
+                            Leave
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

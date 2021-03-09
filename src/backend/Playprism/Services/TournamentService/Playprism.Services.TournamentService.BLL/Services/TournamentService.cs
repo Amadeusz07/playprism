@@ -33,6 +33,10 @@ namespace Playprism.Services.TournamentService.BLL.Services
             {
                 throw new ArgumentException("Number of players in tournament should be >= 2");
             }
+            entity.Aborted = false;
+            entity.Ongoing = false;
+            entity.Published = false;
+            entity.Finished = false;
             var result = await _tournamentRepository.AddAsync(entity);
             await _matchSettingsService.CreateDefaultSettingsAsync(result.Id);
             
@@ -61,8 +65,6 @@ namespace Playprism.Services.TournamentService.BLL.Services
             {
                 throw new EntityNotFoundException();
             }
-
-
 
             tournament = _mapper.Map(entity, tournament);
             await _tournamentRepository.UpdateAsync(tournament);

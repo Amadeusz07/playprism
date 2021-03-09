@@ -1,14 +1,13 @@
 # Introduction
-
+Platform for creating and managing esport tournaments based on microservices with Docker. Built with .NET Core and Angular.
 # Getting Started
 
-## Migrations
-1. Go to the DAL folder
-2. Run command
-- dotnet ef --startup-project ../Playprism.Services.TournamentService.API/ database update
-- dotnet ef --startup-project ../Playprism.Services.TournamentService.API/ migrations add FirstMigration
+## Prerequisites
 
-## Generate SQLs
-dotnet ef --startup-project ./ database update -script -SourceMigration:0
+- Docker
 
-update-database -script -SourceMigration:[name of the migration] -TargetMigration:[name of the migration]
+## Installation
+
+### With Docker
+1. cd src/backend/playprism
+2. docker-compose up
