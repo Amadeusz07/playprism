@@ -16,6 +16,6 @@ namespace Playprism.Services.TeamService.API.Interfaces.Services
         Task InvitePlayerAsync(int id, string username);
         Task JoinTeamAsync(string userId, int teamId);
         Task RefuseTeamAsync(string userId, int teamId);
-        Task<TeamEntity> LeaveTeamAsync(string userId, int teamId);
+        Task LeaveTeamAsync(string userId, int teamId);
     }
 }

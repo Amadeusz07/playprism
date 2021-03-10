@@ -36,7 +36,6 @@ namespace Playprism.Services.TournamentService.API.Controllers
             return Ok(entities);
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

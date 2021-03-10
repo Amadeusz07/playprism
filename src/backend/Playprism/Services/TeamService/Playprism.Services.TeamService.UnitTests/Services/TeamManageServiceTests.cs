@@ -10,6 +10,7 @@ using Playprism.Services.TeamService.API.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -29,6 +30,7 @@ namespace Playprism.Services.TeamService.UnitTests.Services
 
         private const string teamName = "TestTestName";
         private const int teamId = 4;
+        private const int teamId2 = 5;
         private const string username = "TestUsername";
         private const int playerId = 5;
         private const string userId = "userid";
@@ -118,7 +120,7 @@ namespace Playprism.Services.TeamService.UnitTests.Services
         }
 
         [Test]
-        public void InvitePlayer_ShouldNotAddAssignmentWhenUserNotFound()
+        public void InvitePlayerAsync_ShouldNotAddAssignmentWhenUserNotFound()
         {
             _auth0RepositoryMock.Setup(x => x.SearchUserByNameAsync(username)).ReturnsAsync(new UserInfo()
             {
@@ -141,7 +143,7 @@ namespace Playprism.Services.TeamService.UnitTests.Services
         }
 
         [Test]
-        public async Task InvitePlayer_ShouldThrowExceptionWhenNotAllowed()
+        public async Task InvitePlayerAsync_ShouldThrowExceptionWhenNotAllowed()
         {
             _auth0RepositoryMock.Setup(x => x.SearchUserByNameAsync(username))
                 .Returns(Task.FromResult<UserInfo>(null));
@@ -149,6 +151,141 @@ namespace Playprism.Services.TeamService.UnitTests.Services
             await _serviceUnderTest.InvitePlayerAsync(teamId, username);
 
             _teamPlayerAssignmentRepositoryMock.Verify(x => x.AddAsync(It.IsAny<TeamPlayerAssignmentEntity>()), Times.Never);
+        }
+
+        [Test]
+        public async Task JoinTeamAsync_ShouldUpdateAssignment()
+        {
+            var assignments = new List<TeamPlayerAssignmentEntity>()
+            {
+                new TeamPlayerAssignmentEntity()
+                {
+                    PlayerId = playerId,
+                    TeamId = teamId,
+                    Accepted = false,
+                    Active = false,
+                },
+                new TeamPlayerAssignmentEntity()
+                {
+                    PlayerId = playerId,
+                    TeamId = teamId2,
+                    LeaveDate = DateTime.Now,
+                    Accepted = true,
+                    Active = false,
+                }
+            };
+            SetupPlayerRepositoryMockGetAsync(assignments);
+
+            await _serviceUnderTest.JoinTeamAsync(userId, teamId);
+
+            _teamPlayerAssignmentRepositoryMock.Verify(x => x.UpdateAsync(It.Is<TeamPlayerAssignmentEntity>(a =>
+                a.TeamId == teamId &&
+                a.PlayerId == playerId &&
+                a.Accepted == true &&
+                a.Active == true &&
+                a.ResponseDate != null &&
+                a.LeaveDate == null
+            )), Times.Once);
+        }
+
+        [Test]
+        public void JoinTeamAsync_ShouldNotAcceptWhenAlreadyHasTeam()
+        {
+            var assignments = new List<TeamPlayerAssignmentEntity>()
+            {
+                new TeamPlayerAssignmentEntity()
+                {
+                    PlayerId = playerId,
+                    TeamId = teamId,
+                    Accepted = false,
+                    Active = false,
+                },
+                new TeamPlayerAssignmentEntity()
+                {
+                    PlayerId = playerId,
+                    TeamId = teamId2,
+                    Active = true,
+                }
+            };
+            SetupPlayerRepositoryMockGetAsync(assignments);
+
+            Assert.ThrowsAsync<ValidationException>(() => _serviceUnderTest.JoinTeamAsync(userId, teamId));
+        }
+
+        [Test]
+        public async Task LeaveTeamAsync_ShouldUpdateAssignment()
+        {
+            var assignments = new List<TeamPlayerAssignmentEntity>()
+            {
+                new TeamPlayerAssignmentEntity()
+                {
+                    PlayerId = playerId,
+                    TeamId = teamId,
+                    Accepted = true,
+                    Active = true,
+                    InviteDate = DateTime.Now,
+                    ResponseDate = DateTime.Now.AddDays(1),
+                    LeaveDate = null
+                }
+            };
+            SetupPlayerRepositoryMockGetAsync(assignments);
+
+            await _serviceUnderTest.LeaveTeamAsync(userId, teamId);
+
+            _teamPlayerAssignmentRepositoryMock.Verify(x => x.UpdateAsync(It.Is<TeamPlayerAssignmentEntity>(a =>
+                a.TeamId == teamId &&
+                a.PlayerId == playerId &&
+                a.Accepted == true &&
+                a.Active == false &&
+                a.ResponseDate != null &&
+                a.InviteDate != null &&
+                a.LeaveDate != null
+            )), Times.Once);
+        }
+
+        [Test]
+        public async Task RefuseTeamAsync_ShouldUpdateAssignment()
+        {
+            var assignments = new List<TeamPlayerAssignmentEntity>()
+            {
+                new TeamPlayerAssignmentEntity()
+                {
+                    PlayerId = playerId,
+                    TeamId = teamId,
+                    Accepted = false,
+                    Active = false,
+                    InviteDate = DateTime.Now,
+                }
+            };
+            SetupPlayerRepositoryMockGetAsync(assignments);
+
+            await _serviceUnderTest.RefuseTeamAsync(userId, teamId);
+
+            _teamPlayerAssignmentRepositoryMock.Verify(x => x.UpdateAsync(It.Is<TeamPlayerAssignmentEntity>(a =>
+                a.TeamId == teamId &&
+                a.PlayerId == playerId &&
+                a.Accepted == false &&
+                a.Active == false &&
+                a.ResponseDate != null &&
+                a.LeaveDate == null
+            )), Times.Once);
+        }
+
+        private void SetupPlayerRepositoryMockGetAsync(List<TeamPlayerAssignmentEntity> toReturn)
+        {
+            _playerRepositoryMock.Setup(x => x.GetAsync(
+                It.IsAny<Expression<Func<PlayerEntity, bool>>>(),
+                It.IsAny<Func<IQueryable<PlayerEntity>, IOrderedQueryable<PlayerEntity>>>(),
+                It.IsAny<string>(),
+                It.IsAny<bool>())).ReturnsAsync(new List<PlayerEntity>
+                {
+                    new PlayerEntity()
+                    {
+                        Id = playerId,
+                        UserId = userId,
+                        Assignments = toReturn
+                    }
+                });
         }
     }
 }

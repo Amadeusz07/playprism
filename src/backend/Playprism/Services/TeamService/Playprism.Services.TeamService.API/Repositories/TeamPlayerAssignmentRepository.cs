@@ -13,6 +13,11 @@ namespace Playprism.Services.TeamService.API.Repositories
         {
         }
 
+        /// <summary>
+        /// Gets pending and active assignments
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<TeamPlayerAssignmentEntity>> GetAssignmentsAsync(string userId)
         {
             var player = MainDbContext.Players.FirstOrDefault(x => x.UserId == userId);
@@ -23,7 +28,10 @@ namespace Playprism.Services.TeamService.API.Repositories
 
             return await MainDbContext.TeamPlayerAssignments
                 .Include(x => x.Team)
-                .Where(x => x.PlayerId == player.Id)
+                .Where(x => 
+                    (x.PlayerId == player.Id) &&
+                    (x.Active || (!x.Active && x.ResponseDate == null))
+                )
                 .ToListAsync();
         }
 

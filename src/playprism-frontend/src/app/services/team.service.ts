@@ -15,7 +15,6 @@ export class TeamService {
   }
 
   public async sendInvite(teamId: number, username: string): Promise<any> {
-    // return await this.http.post(`${this.API_URL}/team/${teamId}/invite`, { username: username }).toPromise();
     return await this.http.post(`${this.API_URL}/team/${teamId}/invite/${username}`, null).toPromise();
   }
 

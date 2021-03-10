@@ -60,8 +60,6 @@ namespace Playprism.Services.TeamService.API.Services
         {
             var teams = await _teamRepository.GetAsync(x => x.OwnerId == userId);
             var memberTeams = (await _playerRepository.GetMemberTeamsAsync(userId)).ToList();
-
-            //teams.ToList().AddRange(memberTeams);
             teams = teams.Concat(memberTeams).ToList();
             return teams;
         }
@@ -109,8 +107,7 @@ namespace Playprism.Services.TeamService.API.Services
 
         public async Task JoinTeamAsync(string userId, int teamId)
         {
-            var entities = await _playerRepository.GetAsync(x => x.UserId == userId, includeString: "Assignments");
-            var assignment = ValidateAssignment(teamId, entities);
+            var assignment = await GetAndValidateAssignmentAsync(userId, teamId);
 
             assignment.Accepted = true;
             assignment.Active = true;
@@ -119,8 +116,9 @@ namespace Playprism.Services.TeamService.API.Services
             await _teamPlayerAssignmentRepository.UpdateAsync(assignment);
         }
 
-        private TeamPlayerAssignmentEntity ValidateAssignment(int teamId, IReadOnlyList<PlayerEntity> entities)
+        private async Task<TeamPlayerAssignmentEntity> GetAndValidateAssignmentAsync(string userId, int teamId)
         {
+            var entities = await _playerRepository.GetAsync(x => x.UserId == userId, includeString: "Assignments");
             if (!entities.Any())
             {
                 throw new EntityNotFoundException($"Player not found");
@@ -133,7 +131,7 @@ namespace Playprism.Services.TeamService.API.Services
             var isActiveMemberOfAnyTeam = player.Assignments.Any(x => x.Active);
             if (isActiveMemberOfAnyTeam)
             {
-                throw new InvalidOperationException("User already has team");
+                throw new ValidationException("User already has team");
             }
             var assignment = player.Assignments.SingleOrDefault(x => x.TeamId == teamId);
             if (assignment == null)
@@ -144,14 +142,45 @@ namespace Playprism.Services.TeamService.API.Services
             return assignment;
         }
 
-        public Task<TeamEntity> LeaveTeamAsync(string userId, int teamId)
+        public async Task LeaveTeamAsync(string userId, int teamId)
         {
-            throw new NotImplementedException();
+            var assignment = await GetAssignmentAsync(userId, teamId);
+            if (!assignment.Active || !assignment.Accepted)
+            {
+                throw new ValidationException("Assignment is not active already or was not accepted beforehand");
+            }
+
+            assignment.Active = false;
+            assignment.LeaveDate = DateTime.UtcNow;
+            await _teamPlayerAssignmentRepository.UpdateAsync(assignment);
         }
 
-        public Task RefuseTeamAsync(string userId, int teamId)
+        public async Task RefuseTeamAsync(string userId, int teamId)
         {
-            throw new NotImplementedException();
+            var assignment = await GetAssignmentAsync(userId, teamId);
+            if (assignment.Active || assignment.Accepted || assignment.ResponseDate != null)
+            {
+                throw new ValidationException("Can\'t refuse already active or accepted assignment");
+            }
+
+            assignment.ResponseDate = DateTime.UtcNow;
+            await _teamPlayerAssignmentRepository.UpdateAsync(assignment);
+        }
+
+        private async Task<TeamPlayerAssignmentEntity> GetAssignmentAsync(string userId, int teamId)
+        {
+            var player = (await _playerRepository.GetAsync(x => x.UserId == userId, includeString: "Assignments")).FirstOrDefault();
+            if (player == null)
+            {
+                throw new EntityNotFoundException("Player not found");
+            }
+            var assignment = player.Assignments.FirstOrDefault(x => x.TeamId == teamId);
+            if (assignment == null)
+            {
+                throw new EntityNotFoundException("Assignment not found");
+            }
+
+            return assignment;
         }
 
         public Task<TeamEntity> UpdateTeamAsync(TeamEntity entity)

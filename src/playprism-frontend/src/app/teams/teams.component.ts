@@ -13,23 +13,31 @@ export class TeamsComponent implements OnInit {
   constructor(private teamService: TeamService) { }
 
   public async ngOnInit(): Promise<any> {
-    this.assignments = await this.teamService.getMyTeams();
+    await this.getAssignments();
   }
 
-  public invite(teamId: number): void {
-    this.teamService.sendInvite(teamId, this.usernameToInvite);
+  public async invite(teamId: number): Promise<void> {
+    await this.teamService.sendInvite(teamId, this.usernameToInvite);
+    await this.getAssignments();
   }
 
-  public join(teamId: number): void {
-    this.teamService.joinTeam(teamId);
+  public async join(teamId: number): Promise<void> {
+    await this.teamService.joinTeam(teamId);
+    await this.getAssignments();
   }
 
-  public leave(teamId: number): void {
-    this.teamService.leaveTeam(teamId);
+  public async leave(teamId: number): Promise<void> {
+    await this.teamService.leaveTeam(teamId);
+    await this.getAssignments();
   }
 
-  public refuse(teamId: number): void {
+  public async refuse(teamId: number): Promise<void> {
     this.teamService.refuseTeam(teamId);
+    await this.getAssignments();
+  }
+
+  public async getAssignments() {
+    this.assignments = await this.teamService.getMyTeams();
   }
 
 }

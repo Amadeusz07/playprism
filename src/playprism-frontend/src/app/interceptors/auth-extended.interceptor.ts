@@ -9,7 +9,8 @@ export class AuthHttpExtendedInterceptor extends AuthHttpInterceptor {
     private whitelist = [
         { url: '/discipline$', method: 'GET' },
         { url: '/tournament$', method: 'GET' },
-        { url: '\/tournament\/[0-9]*\/bracket', method: 'GET' }
+        { url: '/tournament\/[0-9]*$', method: 'GET' },
+        { url: '\/tournament\/[0-9]*\/bracket$', method: 'GET' }
     ];
 
     private isWhitelisted(url: string, method: string): boolean {
