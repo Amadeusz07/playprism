@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Bracket, Match, Round } from 'src/app/models/bracket.model';
+import { Bracket } from 'src/app/models/bracket.model';
 import { TournamentFormatEnum } from 'src/app/models/enums/tournament-format.enum';
-import { Tournament } from 'src/app/models/tournament.model';
+import { TournamentDetails } from 'src/app/models/tournaments/tournaments-details.model';
 import { TournamentService } from 'src/app/services/tournament.service';
 
 @Component({
@@ -13,7 +13,7 @@ import { TournamentService } from 'src/app/services/tournament.service';
 export class TournamentComponent implements OnInit {
   public tournamentFormat = TournamentFormatEnum;
   public bracket: Bracket;
-  public tournament: Tournament;
+  public tournament: TournamentDetails;
 
   constructor(private tournamentService: TournamentService, private route: ActivatedRoute) { }
 
@@ -23,6 +23,10 @@ export class TournamentComponent implements OnInit {
       this.bracket = await this.tournamentService.getTournamentBracket(tournamentId);
       this.tournament = await this.tournamentService.getTournament(tournamentId);
     }
+  }
+
+  public join(): void {
+
   }
 
 }

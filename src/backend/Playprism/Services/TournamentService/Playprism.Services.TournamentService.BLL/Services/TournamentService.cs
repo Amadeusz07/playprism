@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 using System.Collections.Generic;
+using Playprism.Services.TournamentService.BLL.Dtos;
+using System.Linq;
 
 namespace Playprism.Services.TournamentService.BLL.Services
 {
@@ -13,16 +15,19 @@ namespace Playprism.Services.TournamentService.BLL.Services
     {
         private readonly ITournamentRepository _tournamentRepository;
         private readonly IParticipantRepository _participantRepository;
+        private readonly IRepository<DisciplineEntity> _disciplineRepository;
         private readonly IMatchSettingsService _matchSettingsService;
         private readonly IMapper _mapper;
 
         public TournamentService(ITournamentRepository tournamentRepository, 
-            IParticipantRepository participantRepository, 
+            IParticipantRepository participantRepository,
+            IRepository<DisciplineEntity> disciplineRepository,
             IMatchSettingsService matchSettingsService,
             IMapper mapper)
         {
             _tournamentRepository = tournamentRepository;
             _participantRepository = participantRepository;
+            _disciplineRepository = disciplineRepository;
             _matchSettingsService = matchSettingsService;
             _mapper = mapper;
         }
@@ -58,6 +63,16 @@ namespace Playprism.Services.TournamentService.BLL.Services
             return await _tournamentRepository.GetByIdAsync(id);
         }
 
+        public async Task<TournamentDetailsResponse> GetTournamentDetailsAsync(int id)
+        {
+            var entity = (await _tournamentRepository.GetAsync(
+                x => x.Id == id,
+                includes: new string[] { "Participants", "Discipline" }
+            )).FirstOrDefault();
+
+            return _mapper.Map<TournamentDetailsResponse>(entity);
+        }
+
         public async Task<TournamentEntity> UpdateTournamentAsync(TournamentEntity entity)
         {
             var tournament = await _tournamentRepository.GetByIdAsync(entity.Id);
@@ -85,10 +100,13 @@ namespace Playprism.Services.TournamentService.BLL.Services
             return result;
         }
 
-        public async Task<IEnumerable<TournamentEntity>> GetTournamentsByDiscipline(int disciplineId)
+        public async Task<IEnumerable<TournamentListItemResponse>> GetTournamentsByDisciplineAsync(int disciplineId)
         {
-            var tournaments = await _tournamentRepository.GetAsync(x => x.DisciplineId == disciplineId);
-            return tournaments;
+            var entities = await _tournamentRepository.GetAsync(
+                x => x.DisciplineId == disciplineId, 
+                includes: new string[] { "Participants", "Discipline" });
+
+            return _mapper.Map<IEnumerable<TournamentListItemResponse>>(entities);
         }
     }
 }

@@ -1,4 +1,16 @@
 <!-- based on type -->
+<div class="tournament-title">
+    <h1>{{ tournament.name }}</h1>
+    <h4>organized by {{ tournament.ownerName }}</h4>
+    <button 
+        id="basic" 
+        type="button"
+        mat-stroked-button 
+        color="primary" 
+        (click)="join()">
+            Join
+    </button>
+</div>
 <div class="tournament-container" *ngIf="tournament">
     <mat-tab-group mat-align-tabs="start">
         <mat-tab label="INFORMATIONS">
@@ -27,7 +39,7 @@
                             <p>{{ tournament.endDate |  date:'fullDate' }}</p>
                         </div>
                         <div class="participants">
-                            <p class="numbers">0/{{ tournament.maxNumberOfPlayers }}</p>
+                            <p class="numbers">{{ tournament.currentNumberOfPlayers }}/{{ tournament.maxNumberOfPlayers }}</p>
                             <p>participants</p>
                         </div>
                     </div>

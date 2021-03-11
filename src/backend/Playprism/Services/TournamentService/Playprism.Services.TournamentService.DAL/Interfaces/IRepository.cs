@@ -19,7 +19,7 @@ namespace Playprism.Services.TournamentService.DAL.Interfaces
         Task<IReadOnlyList<T>> GetAsync(
             Expression<Func<T, bool>> predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            List<Expression<Func<T, object>>> includes = null,
+            string[] includes = null,
             bool disableTracking = true);
         Task<T> GetByIdAsync(int id);
         Task<T> AddAsync(T entity);

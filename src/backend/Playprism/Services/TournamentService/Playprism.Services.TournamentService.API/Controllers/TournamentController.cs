@@ -29,19 +29,19 @@ namespace Playprism.Services.TournamentService.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<TournamentEntity>>> Get([FromQuery] int disciplineId)
+        [ProducesResponseType(typeof(TournamentListItemResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<TournamentListItemResponse>>> Get([FromQuery] int disciplineId)
         {
-            var entities = await _tournamentService.GetTournamentsByDiscipline(disciplineId);
+            var entities = await _tournamentService.GetTournamentsByDisciplineAsync(disciplineId);
             return Ok(entities);
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TournamentDetailsResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<TournamentEntity>> GetById(int id)
+        public async Task<ActionResult<TournamentDetailsResponse>> GetById(int id)
         {
-            var entity = await _tournamentService.GetTournamentAsync(id);
+            var entity = await _tournamentService.GetTournamentDetailsAsync(id);
             if (entity == null)
                 return NotFound();
 
@@ -60,6 +60,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             }
 
             entity.OwnerId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            entity.OwnerName = User.FindFirst(ClaimTypes.Name).Value;
             var result = await _tournamentService.AddTournamentAsync(entity);
             return Accepted(result);
         }
@@ -86,16 +87,12 @@ namespace Playprism.Services.TournamentService.API.Controllers
             {
                 return Forbid();
             }
-
-            try
-            {
-                await _tournamentService.UpdateTournamentAsync(entity);
-            }
-            catch (EntityNotFoundException)
+            if (tournament == null)
             {
                 return NotFound();
             }
 
+            await _tournamentService.UpdateTournamentAsync(entity);
             return NoContent();
         }
 

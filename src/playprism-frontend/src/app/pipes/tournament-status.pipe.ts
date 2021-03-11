@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Tournament } from '../models/tournament.model';
+import { Tournament } from '../models/tournaments/tournament.model';
 
 @Pipe({
   name: 'tournamentStatus'

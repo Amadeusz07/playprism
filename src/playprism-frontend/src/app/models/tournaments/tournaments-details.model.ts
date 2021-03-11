@@ -1,36 +1,34 @@
-import { TournamentFormatEnum } from "./enums/tournament-format.enum";
+import { TournamentFormatEnum } from "../enums/tournament-format.enum";
+import { Tournament } from "./tournament.model";
 
-export class Tournament {
+export interface TournamentDetails extends Tournament {
     id: number;
-    disciplineId: number;
     platform: string;
     name: string;
-    ownerId: number;
+    disciplineName: string;
+    ownerName: string;
     areTeams: boolean;
+    currentNumberOfPlayers: number;
     maxNumberOfPlayers: number;
     timezone: string;
-    startDate: string | null;
-    registrationEndDate: string | null;
-    checkInDate: string | null;
-    checkInTime: string | null;
+    startDate: Date | string | null;
+    registrationEndDate: Date | string | null;
+    checkInDate: Date | string | null;
+    checkInTime: Date | string | null;
     location: string;
     website: string;
     logoPath: string;
     description: string;
     prizes: string;
     rules: string;
-    rulesPath: string;
     contactEmail: string;
     contactNumber: string;
     format: TournamentFormatEnum;
     inviteOnly: boolean;
     registrationApprovalNeeded: boolean;
-    minNumberOfPlayersInTeam: number | null;
-    maxNumberOfPlayersInTeam: number | null;
     published: boolean;
-    createDate: string;
-    endDate: string | null;
+    endDate: Date | string | null;
+    ongoing: boolean;
     finished: boolean;
     aborted: boolean;
-    ongoing: boolean;
 }
