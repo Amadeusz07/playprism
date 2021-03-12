@@ -8,7 +8,7 @@ import { TeamService } from '../services/team.service';
   styleUrls: ['./teams.component.scss']
 })
 export class TeamsComponent implements OnInit {
-  public assignments: TeamPlayerAssignment[];
+  public assignments: TeamPlayerAssignment[] = [];
   public usernameToInvite = '';
   constructor(private teamService: TeamService) { }
 

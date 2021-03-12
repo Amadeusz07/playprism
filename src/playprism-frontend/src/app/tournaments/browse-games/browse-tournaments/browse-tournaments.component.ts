@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TournamentFormatEnum } from 'src/app/models/enums/tournament-format.enum';
+import { TournamentStatusEnum } from 'src/app/models/enums/tournament-status.enum';
 import { TournamentListItem } from 'src/app/models/tournaments/tournament-list-item.model';
 import { DisciplineService } from 'src/app/services/discipline.service';
 import { TournamentService } from 'src/app/services/tournament.service';
@@ -11,9 +12,9 @@ import { TournamentService } from 'src/app/services/tournament.service';
   styleUrls: ['./browse-tournaments.component.scss']
 })
 export class BrowseTournamentsComponent implements OnInit {
-
+  public tournamentStatus = TournamentStatusEnum;
+  public keys = Object.keys;
   public tournaments: TournamentListItem[] = [];
-  public tournamentFormat = TournamentFormatEnum;
   public disciplineName: string;
 
   constructor(private tournamentService: TournamentService, private disciplineService: DisciplineService, private route: ActivatedRoute) { }

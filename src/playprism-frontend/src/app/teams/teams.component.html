@@ -1,18 +1,18 @@
  <div class="teams-container">
-    <div class="assignments" *ngIf="assignments">
-        <ul>
-            <li *ngFor="let assignment of assignments" class="assignment">
-                <h3>{{ assignment.team.name}} {{ assignment.active ? "(Current team)" : "" }}</h3>
+    <div class="assignments" *ngIf="assignments.length > 0; else noTeams">
+        <mat-list role="list">
+            <mat-list-item *ngFor="let assignment of assignments" class="assignment">
                 <div class="invitation">
-                    <mat-form-field ngClass="whiteInput">
+                    <span class="team-name">{{ assignment.team.name}} {{ assignment.active ? "(Current team)" : "" }}</span>
+                    <mat-form-field ngClass="whiteInput" class="search-field">
                         <mat-label>Username</mat-label>
                         <input [(ngModel)]="usernameToInvite" type="text" matInput />
                         <mat-icon matSuffix>search</mat-icon>
                     </mat-form-field>
-                    <button 
+                    <button
                         id="basic" 
                         type="button" 
-                        mat-stroked-button 
+                        mat-flat-button 
                         color="primary" 
                         (click)="invite(assignment.team.id)" 
                         [disabled]="usernameToInvite == ''">
@@ -21,7 +21,7 @@
                     <button 
                         id="basic" 
                         type="button" 
-                        mat-stroked-button 
+                        mat-flat-button 
                         color="primary" 
                         (click)="join(assignment.team.id)" 
                         [disabled]="assignment.active">
@@ -30,7 +30,7 @@
                     <button 
                         id="basic" 
                         type="button" 
-                        mat-stroked-button 
+                        mat-flat-button 
                         color="warn" 
                         (click)="refuse(assignment.team.id)" 
                         [disabled]="assignment.active">
@@ -39,14 +39,19 @@
                     <button 
                         id="basic" 
                         type="button" 
-                        mat-stroked-button 
+                        mat-flat-button 
                         color="warn" 
                         (click)="leave(assignment.team.id)" 
                         [disabled]="!assignment.active">
                             Leave
                     </button>
                 </div>
-            </li>
-        </ul>
+            </mat-list-item>
+        </mat-list>
     </div>
+    <ng-template #noTeams>
+        <div class="no-teams">
+            You have no teams or pending invitations
+        </div>
+    </ng-template>
 </div>

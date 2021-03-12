@@ -9,12 +9,12 @@
             <input type="tel" matInput placeholder="Search for a tournament">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
-          <mat-form-field appearance="fill">
-            <mat-label>Format</mat-label>
-            <select matNativeControl>
-                <option *ngFor="let type of tournamentFormat | keyvalue" val="type.value">{{ type.value }}</option>
-            </select>
-          </mat-form-field>
+        <mat-form-field>
+            <mat-label>Status</mat-label>
+            <mat-select matNativeControl>
+                <mat-option *ngFor="let symbol of keys(tournamentStatus)" [value]="symbol">{{symbol}}</mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
     <div class="tournaments-list" *ngIf="tournaments; else noTournamentsFound">
         <mat-card 

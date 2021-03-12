@@ -1,0 +1,27 @@
+<ng-container *ngIf="areTeams; else singlePlayers">
+    <ng-container [ngSwitch]="tournamentStatus">
+        <button 
+            id="basic" 
+            type="button" 
+            mat-flat-button 
+            color="primary" 
+            (click)="join()" 
+            *ngSwitchCase="tournamentStatusEnum.Ongoing">
+                Register team to the tournament
+        </button>
+    </ng-container>
+</ng-container>
+<ng-template #singlePlayers>
+    <ng-container [ngSwitch]="tournamentStatus.toString()">
+        <button 
+            id="basic" 
+            type="button" 
+            mat-flat-button 
+            color="primary" 
+            (click)="join()" 
+            [disabled]="false"
+            *ngSwitchCase="tournamentStatusEnum.Ongoing">
+                Register to the tournament
+        </button>
+    </ng-container>
+</ng-template>

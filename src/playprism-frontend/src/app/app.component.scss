@@ -6,14 +6,13 @@
     .container {
         display: block;
         margin: 3rem;
-        background-color: rgb(226, 225, 225);
     }
     .mat-toolbar-row, .mat-toolbar-single-row {
         justify-content: space-around ;
     }
     .center {
         .toolbar-button {
-            color: $secondary-font-color;
+            // color: $secondary-font-color;
             margin: 1rem;
         }
     }

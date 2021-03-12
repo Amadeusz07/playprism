@@ -4,14 +4,25 @@
     background-color: $primary-container-color;
     margin: 3rem;
     height: 100%;
-    // input {
-    //     background-color: white;
-    // }
-    button {
-        background-color: white;
+    .no-teams {
+        text-align: center;
+        padding: 2rem;
     }
-}
-
-.whiteInput {
-    background-color: white;
+    .assignments {
+        padding: 2rem;
+        .assignment {
+            .invitation {
+                .team-name {
+                    color: mat-color($playprism-custom-theme-primary);
+                    margin-right: 2rem;
+                }
+                .search-field {
+                    color: mat-color($playprism-custom-theme-primary);
+                }
+                button {
+                    margin-left: 1rem
+                }
+            }
+        }
+    }
 }

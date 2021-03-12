@@ -14,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card'
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs'
+import { MatSelectModule } from '@angular/material/select';
+import { MatListModule } from '@angular/material/list';
 import { BrowseGamesComponent } from './tournaments/browse-games/browse-games.component';
 import { BrowseTournamentsComponent } from './tournaments/browse-games/browse-tournaments/browse-tournaments.component';
 import { TournamentComponent } from './shared/tournament/tournament.component';
@@ -30,6 +32,8 @@ import { AuthHttpExtendedInterceptor } from './interceptors/auth-extended.interc
 import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
 import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
+import { JoinButtonComponent } from './shared/tournament/join-button/join-button.component';
+import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -48,7 +52,8 @@ import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
     CreateTeamComponent,
     EditTeamComponent,
     BracketComponent,
-    TournamentStatusPipe
+    TournamentStatusPipe,
+    JoinButtonComponent
   ],
   imports: [
     BrowserModule,
@@ -73,11 +78,18 @@ import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
     MatButtonModule,
     MatCardModule,
     MatInputModule,
-    MatTabsModule
+    MatTabsModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatListModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true },
+    TournamentStatusPipe
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [
+    TournamentStatusPipe
+  ]
 })
 export class AppModule { }

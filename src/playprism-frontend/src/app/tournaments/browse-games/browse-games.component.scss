@@ -6,8 +6,7 @@
     height: 100%;
     .search-field {
         margin: 1rem;
-        color: $secondary-font-color;
-        background-color: $primary-background-color;
+        color:mat-color($playprism-custom-theme-primary);
     }
     .discipline-list {
         display: flex;
@@ -20,7 +19,7 @@
             min-height: 20%;
             text-align: center;
             background-color: #000;
-            color: $primary-font-color;
+            color: mat-color($playprism-custom-theme-primary);
             border-radius: 0;
             transition: 0.5s;
             :hover {

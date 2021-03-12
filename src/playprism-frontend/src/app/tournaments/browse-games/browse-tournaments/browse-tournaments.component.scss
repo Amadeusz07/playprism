@@ -10,8 +10,14 @@
 .tournaments-container {
     background-color: $primary-container-color;
     margin: 3rem;
-    padding: 1rem 0 2rem 0;
+    padding: 2rem;
     height: 100%;
+    .filters {
+        .search-field {
+            margin: 1rem;
+            color: mat-color($playprism-custom-theme-primary);
+        }
+    }
     .tournaments-list {
         display: flex;
         flex-direction: row;
@@ -23,25 +29,24 @@
             min-height: 20%;
             text-align: center;
             background-color: #000;
-            color: $primary-font-color;
+            color: mat-color($playprism-custom-theme-primary);
             border-radius: 0;
-            border: 2px $primary-font-color solid;
+            border: 2px mat-color($playprism-custom-theme-primary) solid;
             .incoming {
                 color: orange;
             }
             .ongoing {
                 color: green
             }
-            .aborted
-            .ended {
+            .aborted, .ended {
                 color: red;
             }
             .blocked {
                 color: gray
             }
             .tournament-card-footer {
-                background-color: $primary-font-color;
-                color: $secondary-font-color;
+                background-color: mat-color($playprism-custom-theme-primary);
+                color: $primary-font-color-white;
                 border: 0;
                 cursor: pointer;
             }
