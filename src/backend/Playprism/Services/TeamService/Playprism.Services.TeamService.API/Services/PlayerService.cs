@@ -16,6 +16,12 @@ namespace Playprism.Services.TeamService.API.Services
             _playerRepository = playerRepository;
         }
 
+        public async Task<PlayerEntity> GetPlayerByUserIdAsync(string userId)
+        {
+            var player = (await _playerRepository.GetAsync(x => x.UserId == userId)).FirstOrDefault();
+            return player;
+        }
+
         public async Task<PlayerEntity> GetPlayerByUserInfoAsync(UserInfo userInfo)
         {
             PlayerEntity player;

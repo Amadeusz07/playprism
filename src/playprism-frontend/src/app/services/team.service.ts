@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { Player } from '../models/player.model';
 import { TeamPlayerAssignment } from '../models/team-player-assignment.model';
+import { Team } from '../models/team.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +11,14 @@ import { TeamPlayerAssignment } from '../models/team-player-assignment.model';
 export class TeamService {
   private API_URL = environment.API_URL_TEAM;
   constructor(private http: HttpClient) { }
+
+  public async getPlayerInfo(): Promise<Player> {
+    return await this.http.get<Player>(`${this.API_URL}/player`).toPromise();
+  }
+
+  public async getMyTeam(): Promise<Team> {
+    return await this.http.get<Team>(`${this.API_URL}/team/current-team`).toPromise();
+  }
 
   public async getMyTeams(): Promise<TeamPlayerAssignment[]> {
     return await this.http.get<TeamPlayerAssignment[]>(`${this.API_URL}/team`).toPromise();

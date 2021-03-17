@@ -64,6 +64,21 @@ namespace Playprism.Services.TeamService.API.Services
             return teams;
         }
 
+        public async Task<TeamEntity> GetCurrentTeamAsync(string userId)
+        {
+            var team = (await _teamRepository.GetAsync(x => x.OwnerId == userId)).FirstOrDefault();
+            if (team == null)
+            {
+                var assignments = await _teamPlayerAssignmentRepository.GetAssignmentsAsync(userId);
+                team = assignments.FirstOrDefault(x => x.Active)?.Team;
+                if (team != null)
+                {
+                    team.Assignments = null; // TODO: create fix => DTO
+                }
+            }
+            return team;
+        }
+
         public async Task<IEnumerable<AssignmentResponse>> GetAssignments(string userId)
         {
             var assignments = await _teamPlayerAssignmentRepository.GetAssignmentsAsync(userId);

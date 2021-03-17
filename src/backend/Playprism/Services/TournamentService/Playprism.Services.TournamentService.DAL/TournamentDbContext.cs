@@ -10,7 +10,6 @@ namespace Playprism.Services.TournamentService.DAL
         }
 
         public DbSet<DisciplineEntity> Disciplines { get; set; }
-        public DbSet<GameEntity> Games { get; set; }
         public DbSet<MatchDefinitionEntity> MatchDefinitions { get; set; }
         public DbSet<MatchEntity> Matches { get; set; }
         public DbSet<ParticipantEntity> Participants { get; set; }

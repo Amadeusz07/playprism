@@ -1,0 +1,8 @@
+@import '../../../../styles.scss';
+
+.ongoing {
+    color: mat-color($playprism-custom-theme-accent);
+}
+.completed {
+    color: mat-color($playprism-custom-theme-warn);
+}

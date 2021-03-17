@@ -14,5 +14,6 @@ namespace Playprism.Services.TournamentService.BLL.Interfaces
         Task<TournamentEntity> UpdateTournamentAsync(TournamentEntity entity);
         Task DeleteTournamentAsync(int id);
         Task<ParticipantEntity> AddNewParticipantAsync(ParticipantEntity entity);
+        Task<CanJoinResponse> CanJoinTournament(JoinTournamentRequest joinRequest, int tournamentId);
     }
 }

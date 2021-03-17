@@ -8,6 +8,7 @@ using Playprism.Services.TournamentService.BLL.Exceptions;
 using System.Collections.Generic;
 using Playprism.Services.TournamentService.BLL.Dtos;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Playprism.Services.TournamentService.BLL.Services
 {
@@ -93,7 +94,13 @@ namespace Playprism.Services.TournamentService.BLL.Services
             {
                 throw new EntityNotFoundException();
             }
-            
+            var canJoin = await CanJoinTournament(
+                new JoinTournamentRequest { CandidateId = tournament.AreTeams ? entity.TeamId : entity.PlayerId, Name = entity.Name },
+                tournament.Id);
+            if (!canJoin.Accepted)
+            {
+                throw new ValidationException(canJoin.Message);
+            }
             entity.Approved = !tournament.RegistrationApprovalNeeded;
             entity.RegistrationDate = DateTime.UtcNow;
             var result = await _participantRepository.AddAsync(entity);
@@ -107,6 +114,39 @@ namespace Playprism.Services.TournamentService.BLL.Services
                 includes: new string[] { "Participants", "Discipline" });
 
             return _mapper.Map<IEnumerable<TournamentListItemResponse>>(entities);
+        }
+
+        public async Task<CanJoinResponse> CanJoinTournament(JoinTournamentRequest joinRequest, int tournamentId)
+        {
+            var tournament = (await _tournamentRepository.GetAsync(x => x.Id == tournamentId, includeString: "Participants")).First();
+            if (tournament.Participants.Count >= tournament.MaxNumberOfPlayers)
+            {
+                return new CanJoinResponse { Accepted = false, Message = "Tournament is full" };
+            }
+            if (tournament.AreTeams)
+            {
+                var registration = tournament.Participants.FirstOrDefault(x => x.TeamId == joinRequest.CandidateId);
+                if (registration != null)
+                {
+                    var message = registration.Approved ? 
+                        "Your team has been added to the tournament" : 
+                        "Register request sent to the tournament\'s organizer";
+                    return new CanJoinResponse { Accepted = false, Message = message };
+                }
+            }
+            else
+            {
+                var registration = tournament.Participants.FirstOrDefault(x => x.PlayerId == joinRequest.CandidateId);
+                if (registration != null)
+                {
+                    var message = registration.Approved ?
+                        "You have been added to the tournament" :
+                        "Register request sent to the tournament\'s organizer";
+                    return new CanJoinResponse { Accepted = false, Message = message };
+                }
+            }
+
+            return new CanJoinResponse { Accepted = true, Message = "Ok" };
         }
     }
 }

@@ -3,9 +3,12 @@
     <div class="tournament-title">
         <h1>{{ tournament.name }}</h1>
         <h4>organized by {{ tournament.ownerName }}</h4>
-        <app-join-button
+        <app-join-button 
+            *ngIf="(authService.isAuthenticated$ | async) && canJoin" 
             [areTeams]="tournament.areTeams"
-            [tournamentStatus]="tournamentStatus">
+            [tournamentStatus]="tournamentStatus" 
+            [canJoin]="canJoin" 
+            (clicked)="join()">
         </app-join-button>
     </div>
     <div class="tournament-container">
@@ -30,13 +33,20 @@
                     <div class="informations-right">
                         <div class="panel">
                             <div class="dates">
+                                <ng-container *ngIf="tournamentStatus == tournamentStatusEnum.Incoming || tournamentStatus == tournamentStatusEnum.Ongoing">
+                                    <h3>Check in date</h3>
+                                    <p>{{ tournament.checkInDate | date:'fullDate' }}</p>
+                                </ng-container>
                                 <h3>Start date</h3>
-                                <p>{{ tournament.startDate |  date:'fullDate' }}</p>
-                                <h3>End date</h3>
-                                <p>{{ tournament.endDate |  date:'fullDate' }}</p>
+                                <p>{{ tournament.startDate | date:'fullDate' }}</p>
+                                <ng-container *ngIf="tournamentStatus == tournamentStatusEnum.Ended || tournamentStatus == tournamentStatusEnum.Aborted">
+                                    <h3>End date</h3>
+                                    <p>{{ tournament.endDate | date:'fullDate' }}</p>
+                                </ng-container>
                             </div>
                             <div class="participants">
-                                <p class="numbers">{{ tournament.currentNumberOfPlayers }}/{{ tournament.maxNumberOfPlayers }}</p>
+                                <p class="numbers">{{ tournament.currentNumberOfPlayers }}/{{
+                                    tournament.maxNumberOfPlayers }}</p>
                                 <p>participants</p>
                             </div>
                         </div>
@@ -60,12 +70,8 @@
                 <app-bracket [bracket]="bracket"></app-bracket>
             </mat-tab>
             <mat-tab label="MEDIA">
-                <iframe 
-                    src="https://player.twitch.tv/?channel=shroud&parent=playprism.com" 
-                    frameborder="0" 
-                    scrolling="no" 
-                    height="378" 
-                    width="620">
+                <iframe src="https://player.twitch.tv/?channel=shroud&parent=playprism.com" frameborder="0"
+                    scrolling="no" height="378" width="620">
                 </iframe>
             </mat-tab>
         </mat-tab-group>

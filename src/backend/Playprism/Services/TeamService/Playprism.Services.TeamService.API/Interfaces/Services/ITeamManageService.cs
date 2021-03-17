@@ -9,6 +9,7 @@ namespace Playprism.Services.TeamService.API.Interfaces.Services
     {
         Task<IEnumerable<TeamEntity>> GetTeamsAsync(string userId);
         Task<TeamEntity> GetTeamAsync(int id);
+        Task<TeamEntity> GetCurrentTeamAsync(string userId);
         Task<IEnumerable<AssignmentResponse>> GetAssignments(string userId);
         Task<TeamEntity> AddTeamAsync(TeamEntity entity);
         Task<TeamEntity> UpdateTeamAsync(TeamEntity entity);

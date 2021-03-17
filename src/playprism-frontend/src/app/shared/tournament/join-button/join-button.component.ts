@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CanJoin } from 'src/app/models/can-join.model';
 import { TournamentStatusEnum } from 'src/app/models/enums/tournament-status.enum';
 
 @Component({
@@ -11,11 +12,11 @@ export class JoinButtonComponent implements OnInit {
 
   @Input() areTeams: boolean;
   @Input() tournamentStatus: TournamentStatusEnum;
+  @Input() canJoin: CanJoin;
+  @Output() clicked: EventEmitter<any> = new EventEmitter();
 
   public labels: {
-    registrationPending: 'Register request sent to the tournament\'s organizer',
-    teamAdded: 'Your team has been added to the tournament',
-    playerAdded: 'You have been added to the tournament'
+    registrationPending: 'Register request sent to the tournament\'s organizer'
   }
 
   constructor() { }
@@ -24,7 +25,7 @@ export class JoinButtonComponent implements OnInit {
   }
 
   public join() {
-    return;
+    this.clicked.emit();
   }
 
 }

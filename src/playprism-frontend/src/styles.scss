@@ -3,7 +3,7 @@
 @include mat-core();
 
 $playprism-custom-theme-primary: mat-palette($mat-blue, 500);
-$playprism-custom-theme-accent: mat-palette($mat-pink, A200, A300, A400);
+$playprism-custom-theme-accent: mat-palette($mat-green, A200, A300, A400);
 $playprism-custom-theme-warn: mat-palette($mat-red, A200, A300, A400);
 
 $playprism-custom-theme: mat-dark-theme(

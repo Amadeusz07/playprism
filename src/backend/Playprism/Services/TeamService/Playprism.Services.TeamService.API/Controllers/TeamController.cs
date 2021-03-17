@@ -29,9 +29,18 @@ namespace Playprism.Services.TeamService.API.Controllers
         public async Task<ActionResult<IEnumerable<TeamEntity>>> Get()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //var entities = await _teamManageService.GetTeamsAsync(userId);
             var entities = await _teamManageService.GetAssignments(userId);
+
             return Ok(entities);
+        }
+
+        [HttpGet("current-team")]
+        [ProducesResponseType(typeof(TeamEntity), StatusCodes.Status200OK)]
+        public async Task<ActionResult<TeamEntity>> GetCurrentTeam()
+        {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await _teamManageService.GetCurrentTeamAsync(userId);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

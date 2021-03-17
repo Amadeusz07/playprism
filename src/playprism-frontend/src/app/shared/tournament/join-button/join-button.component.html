@@ -1,27 +1,34 @@
-<ng-container *ngIf="areTeams; else singlePlayers">
-    <ng-container [ngSwitch]="tournamentStatus">
-        <button 
-            id="basic" 
-            type="button" 
-            mat-flat-button 
-            color="primary" 
-            (click)="join()" 
-            *ngSwitchCase="tournamentStatusEnum.Ongoing">
-                Register team to the tournament
-        </button>
+<ng-container [ngSwitch]="tournamentStatus">
+    <ng-container *ngSwitchCase="tournamentStatusEnum.Incoming">
+        <ng-container *ngIf="areTeams; else singlePlayers">
+            <button 
+                id="basic" 
+                type="button" 
+                mat-flat-button 
+                color="primary" 
+                (click)="join()" 
+                *ngIf="canJoin.accepted">
+                    Register team to the tournament
+            </button>
+            <p *ngIf="!canJoin.accepted">{{ canJoin.message }}</p>
+        </ng-container>
+        <ng-template #singlePlayers>
+            <button 
+                id="basic" 
+                type="button" 
+                mat-flat-button 
+                color="primary" 
+                (click)="join()" 
+                *ngIf="canJoin.accepted">
+                    Register to the tournament
+            </button>
+            <p *ngIf="!canJoin.accepted">{{ canJoin.message }}</p>
+        </ng-template>
+    </ng-container>
+    <ng-container *ngSwitchCase="tournamentStatusEnum.Ongoing">
+        <p class="ongoing">Ongoing tournament</p>
+    </ng-container>
+    <ng-container *ngSwitchCase="tournamentStatusEnum.Ended">
+        <p class="completed">Completed tournament</p>
     </ng-container>
 </ng-container>
-<ng-template #singlePlayers>
-    <ng-container [ngSwitch]="tournamentStatus.toString()">
-        <button 
-            id="basic" 
-            type="button" 
-            mat-flat-button 
-            color="primary" 
-            (click)="join()" 
-            [disabled]="false"
-            *ngSwitchCase="tournamentStatusEnum.Ongoing">
-                Register to the tournament
-        </button>
-    </ng-container>
-</ng-template>

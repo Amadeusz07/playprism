@@ -6,6 +6,7 @@ namespace Playprism.Services.TeamService.API.Interfaces.Services
 {
     public interface IPlayerService
     {
+        Task<PlayerEntity> GetPlayerByUserIdAsync(string userId);
         Task<PlayerEntity> GetPlayerByUserInfoAsync(UserInfo userInfo);
     }
 }

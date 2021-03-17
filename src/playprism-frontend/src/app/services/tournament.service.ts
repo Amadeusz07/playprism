@@ -2,6 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Bracket } from '../models/bracket.model';
+import { CanJoin } from '../models/can-join.model';
+import { Player } from '../models/player.model';
+import { Team } from '../models/team.model';
 import { TournamentListItem } from '../models/tournaments/tournament-list-item.model';
 import { TournamentDetails } from '../models/tournaments/tournaments-details.model';
 
@@ -26,5 +29,30 @@ export class TournamentService {
 
   public async getTournamentBracket(tournamentId: string): Promise<Bracket> {
     return await this.http.get<Bracket>(`${this.API_URL}/tournament/${tournamentId}/bracket`).toPromise();
+  }
+
+  public async joinTournamentAsTeam(tournamentId: number, team: Team): Promise<any> {
+    var participant = {
+        tournamentId: tournamentId,
+        teamId: team.id,
+        name: team.name
+    };
+    var test = await this.http.post(`${this.API_URL}/tournament/join`, participant ).toPromise();
+    console.log(test);
+  }
+
+  public async joinTournamentAsPlayer(tournamentId: number, player: Player): Promise<any> {
+    var participant = {
+      tournamentId: tournamentId,
+      playerId: player.id,
+      teamId: 0,
+      name: player.name
+    };
+    var test = await this.http.post(`${this.API_URL}/tournament/join`, participant ).toPromise();
+    console.log(test);
+  }
+
+  public async canJoinTournament(tournamentId: string, candidateId: number): Promise<CanJoin> {
+    return await this.http.get<CanJoin>(`${this.API_URL}/tournament/${tournamentId}/can-join/${candidateId}`).toPromise();
   }
 }

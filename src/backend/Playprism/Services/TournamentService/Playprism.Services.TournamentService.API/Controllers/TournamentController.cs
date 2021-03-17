@@ -41,6 +41,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<TournamentDetailsResponse>> GetById(int id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
             var entity = await _tournamentService.GetTournamentDetailsAsync(id);
             if (entity == null)
                 return NotFound();
@@ -116,16 +117,20 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> JoinTournament(int id, [FromBody]ParticipantEntity participantEntity)
+        public async Task<ActionResult> JoinTournament(int id, [FromBody]ParticipantEntity participant)
         {
-            if (participantEntity == null)
+            if (participant == null)
+            {
+                return BadRequest();
+            }
+            if (participant.TournamentId == 0)
             {
                 return BadRequest();
             }
             try
             {
-                participantEntity.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                await _tournamentService.AddNewParticipantAsync(participantEntity);
+                participant.UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                await _tournamentService.AddNewParticipantAsync(participant);
             }
             catch (EntityNotFoundException)
             {
@@ -176,6 +181,21 @@ namespace Playprism.Services.TournamentService.API.Controllers
                 return BadRequest(ex.Message);
             }
             return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("{id}/can-join/{candidateId}")]
+        [ProducesResponseType(typeof(CanJoinResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult> CanJoinTournament(int id, int candidateId)
+        {
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await _tournamentService.CanJoinTournament(new JoinTournamentRequest()
+            {
+                Name = null,
+                CandidateId = candidateId
+            }, id);
+
+            return Ok(result);
         }
 
         [HttpGet("{id}/bracket")]
