@@ -1,0 +1,8 @@
+@import '../../styles.scss';
+
+.tournaments-container {
+    @include main-container;
+    table {
+        width: 100%;
+    }
+}

@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs'
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
 import { BrowseGamesComponent } from './tournaments/browse-games/browse-games.component';
 import { BrowseTournamentsComponent } from './tournaments/browse-games/browse-tournaments/browse-tournaments.component';
 import { TournamentComponent } from './shared/tournament/tournament.component';
@@ -81,7 +83,9 @@ import { MatOptionModule } from '@angular/material/core';
     MatTabsModule,
     MatOptionModule,
     MatSelectModule,
-    MatListModule
+    MatListModule,
+    MatTableModule,
+    MatStepperModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true },

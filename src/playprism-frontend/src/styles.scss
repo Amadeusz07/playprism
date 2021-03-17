@@ -1,4 +1,6 @@
 @import '~@angular/material/theming';
+@import './sass/abstract/mixins';
+@import './sass/abstract/variables';
 
 @include mat-core();
 
@@ -13,10 +15,6 @@ $playprism-custom-theme: mat-dark-theme(
 );
 
 @include angular-material-theme($playprism-custom-theme);
-
-$primary-background-color: #080e1d;
-$primary-container-color: #020408;
-$primary-font-color-white: #fff;
 
 html, body { height: 100%; }
 body { 

@@ -1,9 +1,7 @@
 @import '../../styles.scss';
 
 .teams-container {
-    background-color: $primary-container-color;
-    margin: 3rem;
-    height: 100%;
+    @include main-container;
     .no-teams {
         text-align: center;
         padding: 2rem;

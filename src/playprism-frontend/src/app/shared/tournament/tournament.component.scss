@@ -4,10 +4,7 @@
     text-align: center;
 }
 .tournament-container {
-    background-color: $primary-container-color;
-    margin: 3rem;
-    padding: 1rem 0 2rem 0;
-    height: 100%;
+    @include main-container;
     .informations {
         color: $primary-font-color-white;
         display: flex;

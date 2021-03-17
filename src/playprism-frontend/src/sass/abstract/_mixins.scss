@@ -1,0 +1,6 @@
+@mixin main-container {
+    background-color: $primary-container-color;
+    margin: 3rem;
+    height: 100%;
+    padding: 1rem 0 2rem 0;
+}

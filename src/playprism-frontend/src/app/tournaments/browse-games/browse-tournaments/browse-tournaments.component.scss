@@ -8,10 +8,7 @@
     }
 }
 .tournaments-container {
-    background-color: $primary-container-color;
-    margin: 3rem;
-    padding: 2rem;
-    height: 100%;
+    @include main-container;
     .filters {
         .search-field {
             margin: 1rem;

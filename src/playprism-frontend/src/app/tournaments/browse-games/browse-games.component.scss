@@ -1,9 +1,7 @@
 @import '../../../styles.scss';
 
 .browse-games {
-    background-color: $primary-container-color;
-    margin: 3rem;
-    height: 100%;
+    @include main-container;
     .search-field {
         margin: 1rem;
         color:mat-color($playprism-custom-theme-primary);
