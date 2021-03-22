@@ -18,13 +18,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowseGamesComponent } from './tournaments/browse-games/browse-games.component';
 import { BrowseTournamentsComponent } from './tournaments/browse-games/browse-tournaments/browse-tournaments.component';
 import { TournamentComponent } from './shared/tournament/tournament.component';
 import { MatchesListComponent } from './matches/matches-list/matches-list.component';
 import { MatchComponent } from './matches/matches-list/match/match.component';
 import { TournamentsManagerComponent } from './tournaments-manager/tournaments-manager.component';
-import { CreateTournamentComponent } from './tournaments-manager/create-tournament/create-tournament.component';
+import { CreateTournamentDialogComponent } from './tournaments-manager/create-tournament-dialog/create-tournament-dialog.component';
 import { ConfigureTournamentComponent } from './tournaments-manager/configure-tournament/configure-tournament.component';
 import { TeamsComponent } from './teams/teams.component';
 import { CreateTeamComponent } from './teams/create-team/create-team.component';
@@ -32,10 +36,9 @@ import { EditTeamComponent } from './teams/edit-team/edit-team.component';
 import { BracketComponent } from './shared/bracket/bracket.component';
 import { AuthHttpExtendedInterceptor } from './interceptors/auth-extended.interceptor';
 import { environment } from 'src/environments/environment';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
 import { JoinButtonComponent } from './shared/tournament/join-button/join-button.component';
-import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -48,7 +51,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatchesListComponent,
     MatchComponent,
     TournamentsManagerComponent,
-    CreateTournamentComponent,
+    CreateTournamentDialogComponent,
     ConfigureTournamentComponent,
     TeamsComponent,
     CreateTeamComponent,
@@ -62,6 +65,7 @@ import { MatOptionModule } from '@angular/material/core';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     AuthModule.forRoot({
       domain: 'dev-e821827o.eu.auth0.com',
       clientId: 'BfS5VVPmKwqKlWPqDqdpiisJhwtpC7sw',
@@ -85,7 +89,10 @@ import { MatOptionModule } from '@angular/material/core';
     MatSelectModule,
     MatListModule,
     MatTableModule,
-    MatStepperModule
+    MatStepperModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatTooltipModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true },

@@ -16,6 +16,7 @@ namespace Playprism.Services.TournamentService.BLL.Mappings
             CreateMap<TournamentEntity, TournamentDetailsResponse>()
                 .ForMember(x => x.CurrentNumberOfPlayers, opt => opt.MapFrom(x => x.Participants.Count))
                 .ForMember(x => x.DisciplineName, opt => opt.MapFrom(x => x.Discipline.Name));
+            CreateMap<CreateTournamentRequest, TournamentEntity>();
 
             CreateMap<MatchDefinitionEntity, MatchDefinitionEntity>()
                 .ForMember(x => x.Id, o => o.Ignore());

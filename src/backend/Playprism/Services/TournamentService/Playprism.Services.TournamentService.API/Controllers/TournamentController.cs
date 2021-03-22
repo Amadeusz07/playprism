@@ -53,16 +53,16 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<TournamentEntity>> Post([FromBody] TournamentEntity entity)
+        public async Task<ActionResult<TournamentEntity>> Post([FromBody] CreateTournamentRequest request)
         {
-            if (entity == null)
+            if (request == null)
             {
                 return BadRequest();
             }
 
-            entity.OwnerId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            entity.OwnerName = User.FindFirst(ClaimTypes.Name).Value;
-            var result = await _tournamentService.AddTournamentAsync(entity);
+            request.OwnerId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //request.OwnerName = User.FindFirst(ClaimTypes.Email).Value;
+            var result = await _tournamentService.AddTournamentAsync(request);
             return Accepted(result);
         }
 

@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Discipline } from '../models/discipline.model';
+import { DisciplineService } from '../services/discipline.service';
+import { CreateTournamentDialogComponent } from './create-tournament-dialog/create-tournament-dialog.component';
 
 export interface PeriodicElement {
   name: string;
@@ -28,10 +32,24 @@ const ELEMENT_DATA: PeriodicElement[] = [
 export class TournamentsManagerComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
   dataSource = ELEMENT_DATA;
+  public disciplines: Discipline[];
 
-  constructor() { }
+  constructor(private disciplineService: DisciplineService, public dialog: MatDialog) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.disciplines = await this.disciplineService.getDisciplines();
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(CreateTournamentDialogComponent, {
+      width: '35%',
+      data: { disciplines: this.disciplines }
+    });
+
+    // dialogRef.afterClosed().subscribe(result => {
+    //   console.log('The dialog was closed');
+    //   // this.animal = result;
+    // });
   }
 
 }

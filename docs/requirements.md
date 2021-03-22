@@ -67,7 +67,7 @@ It's a popup to initialize tournament with a stepper in it
 1. tournament name
 2. discipline, are teams checkbox
 3. platform
-4. format
+4. `format`
 5. max number of players 
     - max is 64
     - registration needs approval checkbox

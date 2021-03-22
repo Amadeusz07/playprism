@@ -33,16 +33,23 @@ namespace Playprism.Services.TournamentService.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task<TournamentEntity> AddTournamentAsync(TournamentEntity entity)
+        public async Task<TournamentEntity> AddTournamentAsync(CreateTournamentRequest request)
         {
-            if (entity.MaxNumberOfPlayers <= 1)
+            if (string.IsNullOrEmpty(request.OwnerName))
+            {
+                // TODO: should reach out to auth0 for a user's username
+                throw new ValidationException("No owner name provided");
+            }
+            if (request.MaxNumberOfPlayers <= 1)
             {
                 throw new ArgumentException("Number of players in tournament should be >= 2");
             }
+            var entity = _mapper.Map<TournamentEntity>(request);
             entity.Aborted = false;
             entity.Ongoing = false;
             entity.Published = false;
             entity.Finished = false;
+            entity.Timezone = "UTC";
             var result = await _tournamentRepository.AddAsync(entity);
             await _matchSettingsService.CreateDefaultSettingsAsync(result.Id);
             
@@ -110,7 +117,7 @@ namespace Playprism.Services.TournamentService.BLL.Services
         public async Task<IEnumerable<TournamentListItemResponse>> GetTournamentsByDisciplineAsync(int disciplineId)
         {
             var entities = await _tournamentRepository.GetAsync(
-                x => x.DisciplineId == disciplineId, 
+                x => x.DisciplineId == disciplineId && x.Published, 
                 includes: new string[] { "Participants", "Discipline" });
 
             return _mapper.Map<IEnumerable<TournamentListItemResponse>>(entities);
