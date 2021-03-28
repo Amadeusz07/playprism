@@ -81,15 +81,15 @@ namespace Playprism.Services.TournamentService.BLL.Services
             return _mapper.Map<TournamentDetailsResponse>(entity);
         }
 
-        public async Task<TournamentEntity> UpdateTournamentAsync(TournamentEntity entity)
+        public async Task<TournamentEntity> UpdateTournamentAsync(int id, UpdateTournamentRequest request)
         {
-            var tournament = await _tournamentRepository.GetByIdAsync(entity.Id);
+            var tournament = await _tournamentRepository.GetByIdAsync(id);
             if (tournament == null)
             {
                 throw new EntityNotFoundException();
             }
 
-            tournament = _mapper.Map(entity, tournament);
+            tournament = _mapper.Map(request, tournament);
             await _tournamentRepository.UpdateAsync(tournament);
             return tournament;
         }

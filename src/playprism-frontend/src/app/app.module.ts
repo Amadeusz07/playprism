@@ -18,10 +18,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MatOptionModule } from '@angular/material/core';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowseGamesComponent } from './tournaments/browse-games/browse-games.component';
 import { BrowseTournamentsComponent } from './tournaments/browse-games/browse-tournaments/browse-tournaments.component';
 import { TournamentComponent } from './shared/tournament/tournament.component';
@@ -39,6 +43,7 @@ import { environment } from 'src/environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
 import { JoinButtonComponent } from './shared/tournament/join-button/join-button.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -86,17 +91,23 @@ import { JoinButtonComponent } from './shared/tournament/join-button/join-button
     MatInputModule,
     MatTabsModule,
     MatOptionModule,
+    MatNativeDateModule,
     MatSelectModule,
     MatListModule,
     MatTableModule,
     MatStepperModule,
     MatDialogModule,
     MatSlideToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatExpansionModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true },
-    TournamentStatusPipe
+    TournamentStatusPipe,
+    DatePipe
   ],
   bootstrap: [AppComponent],
   exports: [

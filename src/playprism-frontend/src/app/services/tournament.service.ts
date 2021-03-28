@@ -9,6 +9,7 @@ import { Team } from '../models/team.model';
 import { CreateTournament } from '../models/tournaments/create-tournament.model';
 import { TournamentListItem } from '../models/tournaments/tournament-list-item.model';
 import { TournamentDetails } from '../models/tournaments/tournaments-details.model';
+import { UpdateTournamentRequest } from '../models/tournaments/update-tournament-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,13 +38,17 @@ export class TournamentService {
     return this.http.post<TournamentDetails>(`${this.API_URL}/tournament`, model);
   }
 
+  public putTournament(tournamentId: string, tournament: UpdateTournamentRequest): Observable<Object> {
+    return this.http.put(`${this.API_URL}/tournament/${tournamentId}`, tournament);
+  }
+
   public async joinTournamentAsTeam(tournamentId: number, team: Team): Promise<any> {
     var participant = {
         tournamentId: tournamentId,
         teamId: team.id,
         name: team.name
     };
-    await this.http.post(`${this.API_URL}/tournament/join`, participant ).toPromise();
+    return await this.http.post(`${this.API_URL}/tournament/join`, participant ).toPromise();
   
     // TODO: handle error
   }
@@ -55,12 +60,16 @@ export class TournamentService {
       teamId: 0,
       name: player.name
     };
-    await this.http.post(`${this.API_URL}/tournament/join`, participant ).toPromise();
+    return await this.http.post(`${this.API_URL}/tournament/join`, participant ).toPromise();
     
     // TODO: handle error
   }
 
   public async canJoinTournament(tournamentId: string, candidateId: number): Promise<CanJoin> {
     return await this.http.get<CanJoin>(`${this.API_URL}/tournament/${tournamentId}/can-join/${candidateId}`).toPromise();
+  }
+
+  public startTournament(tournamentId: string): Observable<Object> {
+    return this.http.post(`${this.API_URL}/tournament/${tournamentId}/start`, null);
   }
 }

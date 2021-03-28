@@ -71,29 +71,25 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<TournamentEntity>> Put(int id, [FromBody] TournamentEntity entity)
+        public async Task<ActionResult<TournamentEntity>> Put(int id, [FromBody] UpdateTournamentRequest request)
         {
-            if (entity == null)
-            {
-                return BadRequest();
-            }
-            if (id != entity.Id)
+            if (request == null)
             {
                 return BadRequest();
             }
 
-            var tournament = _tournamentService.GetTournamentAsync(id);
+            var tournament = await _tournamentService.GetTournamentAsync(id);
+            if (tournament == null)
+            {
+                return NotFound();
+            }
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, tournament, "TournamentOwnerPolicy");
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
-            if (tournament == null)
-            {
-                return NotFound();
-            }
 
-            await _tournamentService.UpdateTournamentAsync(entity);
+            await _tournamentService.UpdateTournamentAsync(id, request);
             return NoContent();
         }
 
@@ -102,7 +98,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         public async Task<ActionResult> Delete(int id)
         {
-            var tournament = _tournamentService.GetTournamentAsync(id);
+            var tournament = await _tournamentService.GetTournamentAsync(id);
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, tournament, "TournamentOwnerPolicy");
             if (!authorizationResult.Succeeded)
             {
@@ -144,18 +140,18 @@ namespace Playprism.Services.TournamentService.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> StartTournament(int id)
         {
-            var tournament = await _tournamentService.GetTournamentAsync(id);
+            var tournament = await _tournamentService.GetTournamentAsync(id); 
+            if (tournament == null)
+            {
+                return NotFound();
+            }
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, tournament, "TournamentOwnerPolicy");
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
-            if (tournament == null)
-            {
-                return NotFound();
-            }
 
-            await _competitionProcess.GenerateBracketAsync(tournament);
+            await _competitionProcess.StartTournamentAsync(tournament);
 
             return Ok();
         }
@@ -167,6 +163,10 @@ namespace Playprism.Services.TournamentService.API.Controllers
         public async Task<ActionResult> CloseRound(int id, int roundId)
         {
             var tournament = await _tournamentService.GetTournamentAsync(id);
+            if (tournament == null)
+            {
+                return NotFound();
+            }
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, tournament, "TournamentOwnerPolicy");
             if (!authorizationResult.Succeeded)
             {

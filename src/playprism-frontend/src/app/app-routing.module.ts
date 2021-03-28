@@ -39,7 +39,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', component: TournamentsManagerComponent },
-      { path: 'configure/:id', component: ConfigureTournamentComponent }
+      { path: 'configure/:tournamentId', component: ConfigureTournamentComponent }
     ]
   },
   {

@@ -1,0 +1,59 @@
+@import '../../../styles.scss';
+
+.configure-container {
+    @include main-container;
+    .spinner {
+        display: flex;
+        justify-content: center;
+    }
+    .readonly-fields {
+        margin-top: 1rem;
+    }
+    .margin-left {
+        margin-left: 2rem;
+    }
+    .panel {
+        margin-top: 1rem;
+        color: $primary-font-color-white;
+        border-radius: 0;
+        border: 4px mat-color($playprism-custom-theme-primary) solid;
+        display: flex;
+        flex-direction: row;
+        width: 70%;
+        .dates {
+            margin: 0.5rem;
+            width: 60%;
+            h3 {
+                margin: 0;
+                color: mat-color($playprism-custom-theme-primary);
+            }
+            .time {
+                margin-left: 1rem;
+            }
+        }
+        .participants {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #fff;
+            width: 40%;
+            background: mat-color($playprism-custom-theme-primary);
+            .numbers {
+                font-size: 2rem;
+            }
+        }
+    }
+    .email-input-container {
+        margin-top: 1rem;
+    }
+    .text-area-input {
+        width: 50%;
+    }
+    .confirmation-needed {
+        margin-bottom: 1rem;
+    }
+    .save {
+        margin-top: 1rem;
+    }
+}

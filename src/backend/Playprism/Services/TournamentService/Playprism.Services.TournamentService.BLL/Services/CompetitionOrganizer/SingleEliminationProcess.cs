@@ -33,13 +33,14 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             _matchDefinitionRepository = matchDefinitionRepository;
         }
 
-        public async Task StartTournamentAsync(int tournamentId)
+        public async Task StartTournamentAsync(TournamentEntity tournament)
         {
-            var tournament = (await _tournamentRepository.GetAsync(x => x.Id == tournamentId, includeString: "Participants")).Single();
-            if (tournament.Participants.Count < 2)
-            {
-                throw new ValidationException("Tournament has to contain at least 2 participants");
-            }
+            //tournament = (await _tournamentRepository.GetAsync(x => x.Id == tournament.Id, includeString: "Participants", disableTracking: true)).Single();
+            //var tournament = await _tournamentRepository.GetByIdAsync(tournamentId);
+            //if (tournament.Participants.Count < 2)
+            //{
+            //    throw new ValidationException("Tournament has to contain at least 2 participants");
+            //}
             tournament.Ongoing = true;
             await _tournamentRepository.UpdateAsync(tournament);
             await GenerateBracketAsync(tournament);

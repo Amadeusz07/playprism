@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { Discipline } from 'src/app/models/discipline.model';
 import { CreateTournament } from 'src/app/models/tournaments/create-tournament.model';
@@ -30,7 +30,6 @@ export class CreateTournamentDialogComponent implements OnInit {
   constructor(private tournamentService: TournamentService, 
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute,
     public dialogRef: MatDialogRef<CreateTournamentDialogComponent>, 
     private formBuilder: FormBuilder, 
     @Inject(MAT_DIALOG_DATA) public data: { disciplines: Discipline[] }) { }

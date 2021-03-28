@@ -73,7 +73,7 @@ namespace Playprism.Services.TeamService.API.Services
                 team = assignments.FirstOrDefault(x => x.Active)?.Team;
                 if (team != null)
                 {
-                    team.Assignments = null; // TODO: create fix => DTO
+                    team.Assignments = null; // TODO: create DTO for that to avoid assigning nulls
                 }
             }
             return team;
@@ -82,7 +82,24 @@ namespace Playprism.Services.TeamService.API.Services
         public async Task<IEnumerable<AssignmentResponse>> GetAssignments(string userId)
         {
             var assignments = await _teamPlayerAssignmentRepository.GetAssignmentsAsync(userId);
-            return _mapper.Map<IEnumerable<AssignmentResponse>>(assignments);
+            var response = _mapper.Map<List<AssignmentResponse>>(assignments);
+            var asOwner = (await _teamRepository
+                .GetAsync(x => x.OwnerId == userId))
+                .FirstOrDefault();
+            // TODO: below should be moved into extended AssignmentResponse DTO
+            if (asOwner != null)
+            {
+                asOwner.Name = asOwner.Name + " (Owner)";
+                response.Add(new AssignmentResponse()
+                {
+                    PlayerId = 0,
+                    TeamId = asOwner.Id,
+                    Accepted = true,
+                    Active = false,
+                    Team = _mapper.Map<TeamResponse>(asOwner)
+                });
+            }
+            return response;
         }
 
         public async Task InvitePlayerAsync(int id, string username)
