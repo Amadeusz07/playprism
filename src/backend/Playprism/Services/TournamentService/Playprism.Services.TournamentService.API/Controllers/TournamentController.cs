@@ -50,6 +50,17 @@ namespace Playprism.Services.TournamentService.API.Controllers
         }
 
         [Authorize]
+        [HttpGet("my-tournaments")]
+        [ProducesResponseType(typeof(TournamentListItemResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<TournamentListItemResponse>> GetMyTournaments()
+        {
+            var ownerId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var tournaments = await _tournamentService.GetTournamentsByOwnerIdAsync(ownerId);
+
+            return Ok(tournaments);
+        }
+
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(TournamentEntity), StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

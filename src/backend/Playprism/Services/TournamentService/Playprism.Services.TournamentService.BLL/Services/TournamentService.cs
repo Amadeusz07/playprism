@@ -114,6 +114,15 @@ namespace Playprism.Services.TournamentService.BLL.Services
             return result;
         }
 
+        public async Task<IEnumerable<TournamentListItemResponse>> GetTournamentsByOwnerIdAsync(string ownerId)
+        {
+            var entities = await _tournamentRepository.GetAsync(
+                x => x.OwnerId == ownerId,
+                includes: new string[] { "Participants", "Discipline" });
+
+            return _mapper.Map<IEnumerable<TournamentListItemResponse>>(entities);
+        }
+
         public async Task<IEnumerable<TournamentListItemResponse>> GetTournamentsByDisciplineAsync(int disciplineId)
         {
             var entities = await _tournamentRepository.GetAsync(

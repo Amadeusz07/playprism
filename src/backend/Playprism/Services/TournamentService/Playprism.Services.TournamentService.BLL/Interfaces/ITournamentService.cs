@@ -9,6 +9,7 @@ namespace Playprism.Services.TournamentService.BLL.Interfaces
     {
         Task<IEnumerable<TournamentListItemResponse>> GetTournamentsByDisciplineAsync(int disciplineId);
         Task<TournamentEntity> GetTournamentAsync(int id);
+        Task<IEnumerable<TournamentListItemResponse>> GetTournamentsByOwnerIdAsync(string ownerId);
         Task<TournamentDetailsResponse> GetTournamentDetailsAsync(int id);
         Task<TournamentEntity> AddTournamentAsync(CreateTournamentRequest entity);
         Task<TournamentEntity> UpdateTournamentAsync(int id, UpdateTournamentRequest request);

@@ -26,6 +26,10 @@ export class TournamentService {
     return await this.http.get<TournamentListItem[]>(`${this.API_URL}/tournament`, { params }).toPromise();
   }
 
+  public async getMyTournaments(): Promise<TournamentListItem[]> {
+    return await this.http.get<TournamentListItem[]>(`${this.API_URL}/tournament/my-tournaments`).toPromise();
+  }
+
   public async getTournament(tournamentId: string): Promise<TournamentDetails> {
     return await this.http.get<TournamentDetails>(`${this.API_URL}/tournament/${tournamentId}`).toPromise();
   }
@@ -42,6 +46,10 @@ export class TournamentService {
     return this.http.put(`${this.API_URL}/tournament/${tournamentId}`, tournament);
   }
 
+  public deleteTournament(tournamentId: string): Observable<Object> {
+    return this.http.delete(`${this.API_URL}/tournament/${tournamentId}`);
+  }
+  
   public async joinTournamentAsTeam(tournamentId: number, team: Team): Promise<any> {
     var participant = {
         tournamentId: tournamentId,

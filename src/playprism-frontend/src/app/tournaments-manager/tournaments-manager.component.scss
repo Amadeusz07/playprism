@@ -2,11 +2,32 @@
 
 .tournaments-container {
     @include main-container;
+    h2 {
+        text-align: center;
+    }
     .create-button {
         float: right;
         margin: 0 1rem 1rem 0;
     }
     table {
         width: 100%;
+        .incoming {
+            color: orange;
+        }
+        .ongoing {
+            color: green
+        }
+        .aborted, .ended {
+            color: red;
+        }
+        .blocked {
+            color: gray
+        }
+        .actions {
+            text-align: center;
+            button {
+                margin-left: 1rem;
+            }
+        }
     }
 }
