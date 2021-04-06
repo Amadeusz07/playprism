@@ -5,6 +5,7 @@ using Playprism.Services.TeamService.API.Dtos;
 using Playprism.Services.TeamService.API.Entities;
 using Playprism.Services.TeamService.API.Interfaces.Services;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -62,7 +63,14 @@ namespace Playprism.Services.TeamService.API.Controllers
         public async Task<ActionResult<TeamEntity>> Post([FromBody] TeamEntity entity)
         {
             entity.OwnerId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            entity = await _teamManageService.AddTeamAsync(entity);
+            try
+            {
+                entity = await _teamManageService.AddTeamAsync(entity);
+            }
+            catch (ValidationException ex)
+            {
+                return Conflict(ex.Message);
+            }
 
             return Accepted(entity);
         }

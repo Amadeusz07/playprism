@@ -2,6 +2,10 @@
 
 .teams-container {
     @include main-container;
+    .create-button {
+        float: right;
+        margin: 0 1rem 1rem 0;
+    }
     .no-teams {
         text-align: center;
         padding: 2rem;

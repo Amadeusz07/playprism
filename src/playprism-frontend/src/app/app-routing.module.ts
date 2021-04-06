@@ -8,7 +8,6 @@ import { MatchesListComponent } from './matches/matches-list/matches-list.compon
 import { MatchComponent } from './matches/matches-list/match/match.component';
 import { TournamentsManagerComponent } from './tournaments-manager/tournaments-manager.component';
 import { ConfigureTournamentComponent } from './tournaments-manager/configure-tournament/configure-tournament.component';
-import { CreateTeamComponent } from './teams/create-team/create-team.component';
 import { EditTeamComponent } from './teams/edit-team/edit-team.component';
 import { TeamsComponent } from './teams/teams.component';
 
@@ -47,7 +46,6 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', component: TeamsComponent },
-      { path: 'create-team', component: CreateTeamComponent },
       { path: 'edit/:id', component: EditTeamComponent }
     ]
   },

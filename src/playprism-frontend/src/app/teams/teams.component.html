@@ -1,4 +1,13 @@
  <div class="teams-container">
+    <button 
+        class="create-button" 
+        id="basic" 
+        type="button" 
+        mat-flat-button
+        color="primary"
+        (click)="openDialog()">
+            Create
+    </button>
     <div class="assignments" *ngIf="assignments.length > 0; else noTeams">
         <mat-list role="list">
             <mat-list-item *ngFor="let assignment of assignments" class="assignment">
