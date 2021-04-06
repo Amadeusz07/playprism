@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Player } from '../models/player.model';
 import { TeamPlayerAssignment } from '../models/team-player-assignment.model';
@@ -38,6 +39,10 @@ export class TeamService {
 
   public async refuseTeam(teamId: number): Promise<any> {
     return await this.http.post(`${this.API_URL}/team/${teamId}/refuse`, null).toPromise();
+  }
+
+  public postTeam(team: Team): Observable<Team> {
+    return this.http.post<Team>(`${this.API_URL}/team`, team);
   }
 
 

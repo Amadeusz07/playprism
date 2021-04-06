@@ -34,6 +34,16 @@ namespace Playprism.Services.TeamService.API.Services
 
         public async Task<TeamEntity> AddTeamAsync(TeamEntity entity)
         {
+            var hasTeam = (await _teamRepository.GetAsync(x => x.OwnerId == entity.OwnerId)).Any();
+            if (hasTeam)
+            {
+                throw new ValidationException("You already have a team");
+            }
+            hasTeam = (await _teamPlayerAssignmentRepository.GetAssignmentsAsync(entity.OwnerId)).Any();
+            if (hasTeam)
+            {
+                throw new ValidationException("You already have a team");
+            }
             var duplicate = await _teamRepository.GetAsync(x => x.Name == entity.Name);
             if (duplicate.Any())
             {

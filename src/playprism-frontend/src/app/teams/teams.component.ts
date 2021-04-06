@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { TeamPlayerAssignment } from '../models/team-player-assignment.model';
 import { TeamService } from '../services/team.service';
+import { CreateTeamDialogComponent } from './create-team-dialog/create-team-dialog.component';
 
 @Component({
   selector: 'app-teams',
@@ -10,7 +12,7 @@ import { TeamService } from '../services/team.service';
 export class TeamsComponent implements OnInit {
   public assignments: TeamPlayerAssignment[] = [];
   public usernameToInvite = '';
-  constructor(private teamService: TeamService) { }
+  constructor(private teamService: TeamService, public dialog: MatDialog) { }
 
   public async ngOnInit(): Promise<any> {
     await this.getAssignments();
@@ -40,4 +42,9 @@ export class TeamsComponent implements OnInit {
     this.assignments = await this.teamService.getMyTeams();
   }
 
+  public openDialog(): void {
+    const dialogRef = this.dialog.open(CreateTeamDialogComponent, {
+      width: '35%'
+    });
+  }
 }
