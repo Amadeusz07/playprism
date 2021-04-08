@@ -6,6 +6,7 @@ namespace Playprism.Services.TournamentService.DAL.Interfaces
 {
     public interface IMatchRepository: IRepository<MatchEntity>
     {
+        Task<IEnumerable<MatchEntity>> GetIncomingMatchesAsync(int participantId);
         Task<IEnumerable<MatchEntity>> AddRangeAsync(IEnumerable<MatchEntity> entities);
         Task<MatchEntity> GetFullByIdAsync(int id);
         Task ClearAsync(int tournamentId);

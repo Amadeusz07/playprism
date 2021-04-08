@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Playprism.Services.TournamentService.BLL.Dtos;
 using Playprism.Services.TournamentService.DAL.Entities;
 
 namespace Playprism.Services.TournamentService.BLL.Interfaces
 {
     public interface IMatchService
     {
+        Task<IEnumerable<MatchDto>> GetIncomingMatchListAsync(string userId);
         Task<MatchEntity> UpdateMatchAsync(MatchEntity entity);
         Task<MatchEntity> ConfirmMatchAsync(int id);
         Task<MatchEntity> SetResultAsync(MatchEntity entity);

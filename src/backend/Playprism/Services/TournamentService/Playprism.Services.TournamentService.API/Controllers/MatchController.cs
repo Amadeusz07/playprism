@@ -1,16 +1,18 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Playprism.Services.TournamentService.BLL.Dtos;
 using Playprism.Services.TournamentService.BLL.Interfaces;
 using Playprism.Services.TournamentService.DAL.Entities;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Playprism.Services.TournamentService.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/tournament/{tournamentId}/[controller]")]
+    [Route("api/v1/[controller]")]
     public class MatchController : ControllerBase
     {
         private readonly IMatchService _matchService;
@@ -18,6 +20,20 @@ namespace Playprism.Services.TournamentService.API.Controllers
         public MatchController(IMatchService matchService)
         {
             _matchService = matchService;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<MatchDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<MatchDto>>> GetIncomingMatches()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var matches = await _matchService.GetIncomingMatchListAsync(userId);
+            if (matches == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(matches);
         }
 
         [HttpPost("{id}/confirm")]

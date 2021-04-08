@@ -25,6 +25,10 @@ namespace Playprism.Services.TournamentService.BLL.Mappings
 
             CreateMap<MatchEntity, MatchEntity>()
                 .ForMember(x => x.Id, o => o.Ignore());
+            CreateMap<MatchEntity, MatchDto>()
+                .ForMember(x => x.MatchDefinition, opt => opt.MapFrom(x => x.Round.MatchDefinition))
+                .ForMember(x => x.Participant1Name, opt => opt.Ignore())
+                .ForMember(x => x.Participant2Name, opt => opt.Ignore());
         }
     }
 }

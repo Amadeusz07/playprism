@@ -1,3 +1,6 @@
-<div class="matches-container">
-    Matches
+<div class="matches-container" *ngIf="matches">
+    <p *ngFor="let match in matches">{{ match.participant1Name }}  {{ match.participant2Name }}</p>
+</div>
+<div class="matches-container" *ngIf="error">
+    <p>{{ error }}</p>
 </div>
