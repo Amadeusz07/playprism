@@ -14,5 +14,9 @@ export class MatchService {
 
   public getIncomingMatches(): Observable<Match[]> {
     return this.http.get<Match[]>(`${this.API_URL}/match`);
-  } 
+  }
+
+  public submitResult(match: Match): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/match/${match.id}/submitResult`, match);
+  }
 }

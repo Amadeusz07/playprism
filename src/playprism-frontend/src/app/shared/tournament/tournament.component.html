@@ -35,13 +35,13 @@
                             <div class="dates">
                                 <ng-container *ngIf="tournamentStatus == tournamentStatusEnum.Incoming || tournamentStatus == tournamentStatusEnum.Ongoing">
                                     <h3>Check in date</h3>
-                                    <p>{{ tournament.checkInDate | date:'fullDate' }}</p>
+                                    <p>{{ tournament.checkInDate | date:'short' }}</p>
                                 </ng-container>
                                 <h3>Start date</h3>
-                                <p>{{ tournament.startDate | date:'fullDate' }}</p>
+                                <p>{{ tournament.startDate | date:'short' }}</p>
                                 <ng-container *ngIf="tournamentStatus == tournamentStatusEnum.Ended || tournamentStatus == tournamentStatusEnum.Aborted">
                                     <h3>End date</h3>
-                                    <p>{{ tournament.endDate | date:'fullDate' }}</p>
+                                    <p>{{ tournament.endDate | date:'short' }}</p>
                                 </ng-container>
                             </div>
                             <div class="participants">

@@ -44,6 +44,7 @@ import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
 import { JoinButtonComponent } from './shared/tournament/join-button/join-button.component';
 import { DatePipe } from '@angular/common';
 import { CreateTeamDialogComponent } from './teams/create-team-dialog/create-team-dialog.component';
+import { EditMatchResultComponent } from './matches/matches-list/edit-match-result/edit-match-result.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { CreateTeamDialogComponent } from './teams/create-team-dialog/create-tea
     BracketComponent,
     TournamentStatusPipe,
     JoinButtonComponent,
-    CreateTeamDialogComponent
+    CreateTeamDialogComponent,
+    EditMatchResultComponent
   ],
   imports: [
     BrowserModule,

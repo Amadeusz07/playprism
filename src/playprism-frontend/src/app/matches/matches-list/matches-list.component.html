@@ -1,5 +1,33 @@
 <div class="matches-container" *ngIf="matches">
-    <p *ngFor="let match in matches">{{ match.participant1Name }}  {{ match.participant2Name }}</p>
+    <div>
+        <button mat-button (click)="accordion.openAll()">Expand All</button>
+        <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+    </div>
+    <mat-accordion multi>
+      <mat-expansion-panel *ngFor="let match of matches">
+        <mat-expansion-panel-header>
+
+          <mat-panel-title>
+            Match Date: {{ match.matchDate | date:'short' }}
+          </mat-panel-title>
+
+          <mat-panel-description>
+              <mat-icon>account_circle</mat-icon>
+              {{ match.participant1Name }}
+              vs.
+              {{ match.participant2Name }}
+              <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        
+        <app-edit-match-result 
+          [match]='match'
+          (onSubmit)="submit($event)">
+        </app-edit-match-result>
+    
+      </mat-expansion-panel>
+
+    </mat-accordion>
 </div>
 <div class="matches-container" *ngIf="error">
     <p>{{ error }}</p>

@@ -63,7 +63,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             var result = await _matchService.SetResultAsync(entity);
 
             return Accepted(result);
-        }        
+        }
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
