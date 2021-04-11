@@ -1,5 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
+using Playprism.Services.TournamentService.BLL.Interfaces.CompetitionOrganizer;
 using Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer;
 using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
@@ -18,7 +19,8 @@ namespace Playprism.Services.TournamentService.UnitTests.BLL.Services.Competitio
         private Mock<ITournamentRepository> _tournamentRepositoryMock;
         private Mock<IRoundRepository> _roundRepositoryMock;
         private Mock<IMatchRepository> _matchRepositoryMock;
-        private Mock<IRepository<MatchDefinitionEntity>> _matchDefinitionRepositoryMock;
+        private Mock<IBracketGenerator> _bracketGeneratorMock;
+        private Mock<IShuffler> _shufflerMock;
 
         private SingleEliminationProcess _serviceUnderTest;
 
@@ -29,34 +31,17 @@ namespace Playprism.Services.TournamentService.UnitTests.BLL.Services.Competitio
             _tournamentRepositoryMock = new Mock<ITournamentRepository>();
             _roundRepositoryMock = new Mock<IRoundRepository>();
             _matchRepositoryMock = new Mock<IMatchRepository>();
-            _matchDefinitionRepositoryMock = new Mock<IRepository<MatchDefinitionEntity>>();
+            _bracketGeneratorMock = new Mock<IBracketGenerator>();
+            _shufflerMock = new Mock<IShuffler>();
 
             _serviceUnderTest = new SingleEliminationProcess(_participantRepositoryMock.Object,
                 _tournamentRepositoryMock.Object,
                 _roundRepositoryMock.Object,
                 _matchRepositoryMock.Object,
-                _matchDefinitionRepositoryMock.Object
+                _bracketGeneratorMock.Object,
+                _shufflerMock.Object
             );
 
-            // SetupRepositoryData();
-        }
-
-        //[Test]
-        //public async Task GenerateResponseBracketAsync_ShouldReturnCorrectBracket()
-        //{
-
-        //}
-
-        private void SetupRepositoryData()
-        {
-            _roundRepositoryMock.Setup(x => x.GetAsync(
-                It.IsAny<Expression<Func<RoundEntity, bool>>>(),
-                It.IsAny<Func<IQueryable<RoundEntity>, IOrderedQueryable<RoundEntity>>>(),
-                It.IsAny<string>(),
-                It.IsAny<bool>())).ReturnsAsync(new List<RoundEntity>()
-            {
-
-            });
         }
     }
 }

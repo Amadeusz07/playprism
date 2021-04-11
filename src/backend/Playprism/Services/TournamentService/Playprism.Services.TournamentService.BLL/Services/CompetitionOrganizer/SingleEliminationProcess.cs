@@ -1,12 +1,10 @@
-﻿using Playprism.Services.TournamentService.BLL.Common;
-using Playprism.Services.TournamentService.BLL.Dtos;
+﻿using Playprism.Services.TournamentService.BLL.Dtos;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 using Playprism.Services.TournamentService.BLL.Interfaces.CompetitionOrganizer;
 using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,19 +16,23 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
         private readonly ITournamentRepository _tournamentRepository;
         private readonly IRoundRepository _roundRepository;
         private readonly IMatchRepository _matchRepository;
-        private readonly IRepository<MatchDefinitionEntity> _matchDefinitionRepository;
+        private readonly IBracketGenerator _bracketGenerator;
+        private readonly IShuffler _shuffler;
 
-        public SingleEliminationProcess(IParticipantRepository participantRepository, 
+        public SingleEliminationProcess(
+            IParticipantRepository participantRepository, 
             ITournamentRepository tournamentRepository, 
             IRoundRepository roundRepository, 
             IMatchRepository matchRepository, 
-            IRepository<MatchDefinitionEntity> matchDefinitionRepository)
+            IBracketGenerator bracketGenerator, 
+            IShuffler shuffler)
         {
             _participantRepository = participantRepository;
             _tournamentRepository = tournamentRepository;
             _roundRepository = roundRepository;
             _matchRepository = matchRepository;
-            _matchDefinitionRepository = matchDefinitionRepository;
+            _bracketGenerator = bracketGenerator;
+            _shuffler = shuffler;
         }
 
         public async Task StartTournamentAsync(TournamentEntity tournament)
@@ -48,134 +50,20 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
 
         public async Task GenerateBracketAsync(TournamentEntity tournament)
         {
-            await _matchRepository.ClearAsync(tournament.Id);
-            await _roundRepository.ClearAsync(tournament.Id);
+            await _bracketGenerator.ClearBracketAsync(tournament.Id);
             var participants = await _participantRepository.GetAsync(x => x.TournamentId == tournament.Id);
-            if (participants != null)
+            if (participants == null)
             {
-                var rounds = await GenerateRoundsAsync(tournament, participants.Count());
-                var matches = await GenerateMatchesAsync(rounds);
-                await ShuffleAsync(
-                    matches.GroupBy(x => x.RoundId)
-                        .OrderBy(x => x.Key)
-                        .First(x => x.Any()), 
-                    participants.Select(x => (int?)x.Id));
-            }
-        }
-
-        private async Task<IEnumerable<RoundEntity>> GenerateRoundsAsync(TournamentEntity tournament, int participantsCount)
-        {
-            const int numberOfMatchesInLastRound = 1;
-            var defaultMatchDefinition = (await _matchDefinitionRepository
-                .GetAsync(x => x.TournamentId == tournament.Id
-                               && x.Name == Consts.DefaultSettingsName)).First();
-            var rounds = new List<RoundEntity>();
-            for (var i = 0; i < tournament.MaxNumberOfPlayers; i++)
-            {
-                var previousRound = rounds.LastOrDefault();
-                var lastRoundCreated = previousRound != null &&
-                                       previousRound?.NumberOfCompetitors / 2 == numberOfMatchesInLastRound;
-                if (lastRoundCreated)
-                {
-                    break;
-                }
-                
-                var newRound = new RoundEntity()
-                {
-                    TournamentId = tournament.Id,
-                    MatchDefinitionId = defaultMatchDefinition.Id,
-                    Order = i,
-                    StartDate = null,
-                    EndDate = null,
-                    Finished = false,
-                    Started = false,
-                    Matches = new List<MatchEntity>()
-                };
-                var numberOfCompetitors = previousRound?.NumberOfCompetitors / 2 ?? tournament.MaxNumberOfPlayers;
-                var enoughCompetitors = numberOfCompetitors / 2 < participantsCount;
-                if (enoughCompetitors)
-                {
-                    newRound.NumberOfCompetitors = numberOfCompetitors;
-                    newRound.NumberOfMatches = numberOfCompetitors / 2;
-                }
-                else
-                {
-                    var numberOfCompetitorsInNextRound = numberOfCompetitors / 2;
-                    newRound.NumberOfCompetitors = numberOfCompetitorsInNextRound;
-                    newRound.NumberOfMatches = numberOfCompetitorsInNextRound / 2;
-                }
-                rounds.Add(newRound);
-                await _roundRepository.AddAsync(newRound);
-            }
-            
-            return rounds;
-        }
-        
-        private async Task<IEnumerable<MatchEntity>> GenerateMatchesAsync(IEnumerable<RoundEntity> rounds)
-        {
-            for (var i = 0; i < rounds.Count(); i++)
-            {
-                var round = rounds.ElementAt(i);
-                IEnumerator<MatchEntity> previousMatches = null;
-                if (i != 0)
-                {
-                    var previousRound = rounds.ElementAt(i - 1);
-                    previousMatches = previousRound.Matches.GetEnumerator();
-                }
-                for (var j = 0; j < round.NumberOfMatches; j++)
-                {
-                    var newMatch = new MatchEntity()
-                    {
-                        TournamentId = round.TournamentId,
-                        RoundId = round.Id,
-                        MatchDate = null,
-                        Participant1Id = null,
-                        Participant2Id = null,
-                        Result = null,
-                        Played = false,
-                        Confirmed = !round.MatchDefinition.ConfirmationNeeded
-                    };
-                    if (previousMatches != null)
-                    {
-                        previousMatches.MoveNext();
-                        newMatch.PreviousMatch1Id = previousMatches.Current.Id;
-                        previousMatches.MoveNext();
-                        newMatch.PreviousMatch2Id = previousMatches.Current.Id;
-                    }
-                    round.Matches.Add(newMatch);
-                    await _matchRepository.AddAsync(newMatch);
-                }
-            }
-            
-            var newMatches = rounds.SelectMany(x => x.Matches);
-            return newMatches;
-        }
-
-        private async Task<IEnumerable<MatchEntity>> ShuffleAsync(IEnumerable<MatchEntity> matches, IEnumerable<int?> participantIds)
-        {
-            var totalNumberOfPlayers = matches.Count() * 2;
-            var pool = participantIds.ToList();
-            var numberOfEmptyParticipants = totalNumberOfPlayers - pool.Count;
-            for (int i = 0; i < numberOfEmptyParticipants; i++)
-            {
-                pool.Add(null);
+                throw new InvalidOperationException("No participtans found for given tournament");
             }
 
-            var random = new Random();
-            foreach (var match in matches)
-            {
-                var randomParticipant = pool[random.Next(pool.Count)];
-                match.Participant1Id = randomParticipant;
-                pool.Remove(randomParticipant);
-
-                randomParticipant = pool[random.Next(pool.Count)];
-                match.Participant2Id = randomParticipant;
-                pool.Remove(randomParticipant);
-
-                await _matchRepository.UpdateAsync(match);
-            }
-
-            return matches;
+            var rounds = await _bracketGenerator.GenerateRoundsAsync(tournament, participants.Count());
+            var matches = await _bracketGenerator.GenerateMatchesAsync(rounds);
+            await _shuffler.ShuffleAsync(
+                matches.GroupBy(x => x.RoundId)
+                    .OrderBy(x => x.Key)
+                    .First(x => x.Any()),
+                participants.Select(x => (int?)x.Id));
         }
 
         public async Task FinishRoundAsync(int roundId)
