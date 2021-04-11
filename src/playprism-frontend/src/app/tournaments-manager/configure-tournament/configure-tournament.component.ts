@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatchDefinition } from 'src/app/models/match-definitions.model';
 import { TournamentDetails } from 'src/app/models/tournaments/tournaments-details.model';
@@ -21,6 +21,7 @@ export class ConfigureTournamentComponent implements OnInit {
     return this.matchDefinitions[0];
   }
   public configureFormGroup: FormGroup;
+  public closeRoundResponse: string | null;
   
   constructor(
     private tournamentService: TournamentService, 
@@ -123,6 +124,25 @@ export class ConfigureTournamentComponent implements OnInit {
 
   public tournamentValidToStart(): boolean {
     return this.tournament.published && this.tournament.currentNumberOfPlayers >= 2 && !this.tournament.ongoing;
+  }
+
+  public closeTournament(): void {
+    this.closeRoundResponse = null;
+    this.tournamentService.closeCurrentRound(this.tournament.id)
+      .subscribe(
+        _ => {
+          this.closeRoundResponse = 'Round is closed and next one is started';
+          this.setupConfiguration(this.tournament.id.toString());
+        },
+        err => {
+          if (err.status == 400) {
+            this.closeRoundResponse = err.error;
+          }
+          else {
+            this.closeRoundResponse = 'Error occured';
+          }
+        }
+      );
   }
 
 }

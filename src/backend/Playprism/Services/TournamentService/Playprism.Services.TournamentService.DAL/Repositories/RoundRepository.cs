@@ -23,6 +23,15 @@ namespace Playprism.Services.TournamentService.DAL.Repositories
             return entities;
         }
 
+        public async Task<RoundEntity> GetRoundToFinishAsync()
+        {
+            return await MainDbContext.Rounds
+                .Include(x => x.Matches)
+                .Where(x => !x.Finished && x.Started)
+                .OrderBy(x => x.Order)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<RoundEntity> FinishRoundAsync(int roundId)
         {
             var entity = MainDbContext.Rounds

@@ -80,4 +80,8 @@ export class TournamentService {
   public startTournament(tournamentId: string): Observable<Object> {
     return this.http.post(`${this.API_URL}/tournament/${tournamentId}/start`, null);
   }
+
+  public closeCurrentRound(tournamentId: number): Observable<any> {
+    return this.http.post(`${this.API_URL}/tournament/${tournamentId}/rounds/close`, null);
+  }
 }

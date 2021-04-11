@@ -2,14 +2,21 @@
     <ng-container *ngIf="!loading && tournament && matchDefinitions && matchDefinitions.length != 0; else loader">
         <h1>Tournament: {{ tournament.name }}</h1>
         <h2>{{ tournament.disciplineName }} on {{ tournament.platform }}</h2>
-        <h2 *ngIf="tournament.published && !tournament.ongoing">Tournament is published</h2>
-        <h2 *ngIf="tournament.published && tournament.ongoing">Tournament is ongoing</h2>
+        <h2 *ngIf="tournament.published && !tournament.ongoing && !tournament.finished">Tournament is published</h2>
+        <h2 *ngIf="tournament.published && tournament.ongoing && !tournament.finished">Tournament is ongoing</h2>
+        <h2 *ngIf="tournament.published && tournament.ongoing && tournament.finished">Tournament is finished</h2>
         <div>
             <button 
                 mat-flat-button color="primary" 
                 [disabled]="!tournamentValidToStart()"
                 *ngIf="!tournament.ongoing"
                 (click)="startTournament()">Start tournament</button>
+        </div>
+        <div *ngIf="tournament.published && tournament.ongoing && !tournament.finished">
+            <button 
+                mat-flat-button color="primary" 
+                (click)="closeTournament()">Close current round</button>
+            <p *ngIf="closeRoundResponse">{{ closeRoundResponse }}</p>
         </div>
         <div class="readonly-fields">
             <mat-checkbox 

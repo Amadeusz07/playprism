@@ -168,10 +168,10 @@ namespace Playprism.Services.TournamentService.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("{id}/rounds/{roundId}/close")]
+        [HttpPost("{id}/rounds/close")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> CloseRound(int id, int roundId)
+        public async Task<ActionResult> CloseRound(int id)
         {
             var tournament = await _tournamentService.GetTournamentAsync(id);
             if (tournament == null)
@@ -185,7 +185,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             }
             try
             {
-                await _competitionProcess.FinishRoundAsync(roundId);
+                await _competitionProcess.CloseRoundAsync();
             }
             catch(ValidationException ex)
             {

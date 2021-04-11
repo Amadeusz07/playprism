@@ -5,6 +5,7 @@ using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -64,24 +65,60 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
                     .OrderBy(x => x.Key)
                     .First(x => x.Any()),
                 participants.Select(x => (int?)x.Id));
+
+            var firstRound = rounds.OrderBy(x => x.Order).First();
+            firstRound.StartDate = DateTime.UtcNow;
+            firstRound.Started = true;
+            await _roundRepository.UpdateAsync(firstRound);
         }
 
-        public async Task FinishRoundAsync(int roundId)
+        public async Task CloseRoundAsync()
         {
-            var finishedRound = await _roundRepository.FinishRoundAsync(roundId);
+            var finishedRound = await FinishRound();
             var nextRound = await _roundRepository.GetNextRoundAsync(finishedRound);
             if (nextRound == null)
             {
-                var tournament = await _tournamentRepository.GetByIdAsync(finishedRound.TournamentId);
-                tournament.Finished = true;
-                tournament.EndDate = DateTime.UtcNow;
-                await _tournamentRepository.UpdateAsync(tournament);
+                await FinishTournament(finishedRound);
             }
             else
             {
                 var winnersFromPreviousRound = finishedRound.GetWinnersByMatchId();
                 await SetupNextRoundMatches(nextRound, winnersFromPreviousRound);
+                nextRound.Started = true;
+                nextRound.StartDate = DateTime.UtcNow;
+                await _roundRepository.UpdateAsync(nextRound);
             }
+        }
+
+        private async Task FinishTournament(RoundEntity finishedRound)
+        {
+            var tournament = await _tournamentRepository.GetByIdAsync(finishedRound.TournamentId);
+            tournament.Finished = true;
+            tournament.EndDate = DateTime.UtcNow;
+            await _tournamentRepository.UpdateAsync(tournament);
+        }
+
+        private async Task<RoundEntity> FinishRound()
+        {
+            var roundToFinish = await _roundRepository.GetRoundToFinishAsync();
+            if (roundToFinish == null)
+            {
+                throw new ValidationException("No rounds available to close");
+            }
+
+            var toAutoResult = roundToFinish.Matches
+                .Where(x => x.Participant1Id == null || x.Participant2Id == null);
+            foreach (var matchToAutoResult in toAutoResult)
+            {
+                matchToAutoResult.AutoResult();
+                await _matchRepository.UpdateAsync(matchToAutoResult);
+            }
+
+            roundToFinish.Finished = true;
+            roundToFinish.EndDate = DateTime.UtcNow;
+            await _roundRepository.UpdateAsync(roundToFinish);
+
+            return roundToFinish;
         }
 
         private async Task SetupNextRoundMatches(RoundEntity nextRound, Dictionary<int, int?> winnerIdsByMatchId)

@@ -8,7 +8,7 @@ namespace Playprism.Services.TournamentService.BLL.Interfaces.CompetitionOrganiz
     {
         Task StartTournamentAsync(TournamentEntity tournament);
         Task GenerateBracketAsync(TournamentEntity tournament);
-        Task FinishRoundAsync(int roundId);
+        Task CloseRoundAsync();
         Task<BracketResponse> GenerateResponseBracketAsync(int tournamentId);
     }
 }
