@@ -3,6 +3,7 @@
 .image-container {
     height: 100%;
     width: 100%;
+    text-align: center;
     img {
         max-height: 40%;
     }
@@ -27,8 +28,8 @@
             text-align: center;
             background-color: #000;
             color: mat-color($playprism-custom-theme-primary);
-            border-radius: 0;
             border: 2px mat-color($playprism-custom-theme-primary) solid;
+            border-radius: 0;
             .incoming {
                 color: orange;
             }
