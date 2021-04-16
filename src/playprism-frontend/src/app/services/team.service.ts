@@ -45,6 +45,7 @@ export class TeamService {
     return this.http.post<Team>(`${this.API_URL}/team`, team);
   }
 
-
-
+  public putTeam(team: Team): Observable<Team> {
+    return this.http.put<Team>(`${this.API_URL}/team/${team.id}`, team);
+  }
 }

@@ -90,8 +90,15 @@ namespace Playprism.Services.TeamService.API.Controllers
             {
                 return NotFound();
             }
+            try
+            {
+                await _teamManageService.UpdateTeamAsync(entity);
+            }
+            catch (ValidationException ex)
+            {
+                return Conflict(ex.Message);
+            }
 
-            await _teamManageService.UpdateTeamAsync(entity);
 
             return NoContent();
         }

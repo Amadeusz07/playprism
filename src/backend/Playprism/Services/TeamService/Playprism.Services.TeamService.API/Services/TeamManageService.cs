@@ -225,9 +225,21 @@ namespace Playprism.Services.TeamService.API.Services
             return assignment;
         }
 
-        public Task<TeamEntity> UpdateTeamAsync(TeamEntity entity)
+        public async Task<TeamEntity> UpdateTeamAsync(TeamEntity team)
         {
-            throw new NotImplementedException();
+            var duplicate = await _teamRepository.GetAsync(x => x.Name == team.Name);
+            if (duplicate.Any())
+            {
+                throw new ValidationException("Team with provided name already exists");
+            }
+
+            var entity = await _teamRepository.GetByIdAsync(team.Id);
+            entity.Name = team.Name;
+            entity.Contact = team.Contact;
+            entity.Description = team.Description;
+            await _teamRepository.UpdateAsync(entity);
+
+            return entity;
         }
     }
 }

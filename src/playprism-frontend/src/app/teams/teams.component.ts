@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TeamPlayerAssignment } from '../models/team-player-assignment.model';
+import { Team } from '../models/team.model';
 import { TeamService } from '../services/team.service';
-import { CreateTeamDialogComponent } from './create-team-dialog/create-team-dialog.component';
+import { TeamDialogComponent } from './team-dialog/team-dialog.component';
 
 @Component({
   selector: 'app-teams',
@@ -41,10 +42,19 @@ export class TeamsComponent implements OnInit {
   public async getAssignments() {
     this.assignments = await this.teamService.getMyTeams();
   }
-
-  public openDialog(): void {
-    const dialogRef = this.dialog.open(CreateTeamDialogComponent, {
-      width: '35%'
+  
+  public openCreateDialog(): void {
+    const dialogRef = this.dialog.open(TeamDialogComponent, {
+      width: '35%',
+      data: { isEdit: false }
     });
+  }
+
+  public openEditDialog(team: Team ): void {
+    const dialogRef = this.dialog.open(TeamDialogComponent, {
+      width: '35%',
+      data: { team: team, isEdit: true }
+    });
+    dialogRef.afterClosed().subscribe(_ => this.getAssignments());
   }
 }

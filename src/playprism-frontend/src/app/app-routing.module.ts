@@ -8,7 +8,6 @@ import { MatchesListComponent } from './matches/matches-list/matches-list.compon
 import { MatchComponent } from './matches/matches-list/match/match.component';
 import { TournamentsManagerComponent } from './tournaments-manager/tournaments-manager.component';
 import { ConfigureTournamentComponent } from './tournaments-manager/configure-tournament/configure-tournament.component';
-import { EditTeamComponent } from './teams/edit-team/edit-team.component';
 import { TeamsComponent } from './teams/teams.component';
 
 const routes: Routes = [
@@ -45,8 +44,7 @@ const routes: Routes = [
     path: 'teams',
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: TeamsComponent },
-      { path: 'edit/:id', component: EditTeamComponent }
+      { path: '', component: TeamsComponent }
     ]
   },
   { path: '',   redirectTo: '/browse/games', pathMatch: 'full' },

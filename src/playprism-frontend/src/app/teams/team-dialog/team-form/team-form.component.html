@@ -1,7 +1,4 @@
-<h1 mat-dialog-title>New team setup</h1>
-<div mat-dialog-content>
-
-  <form [formGroup]="createTeamFormGroup" (ngSubmit)="submit()">
+<form [formGroup]="teamFormGroup" (ngSubmit)="submit()">
     <mat-form-field>
         <mat-label>Tournament name</mat-label>
         <input matInput placeholder="My Great Team" formControlName="teamName" required>
@@ -28,14 +25,8 @@
       <button 
         type="submit" 
         mat-flat-button 
-        [disabled]="!createTeamFormGroup.valid">
+        [disabled]="!teamFormGroup.valid">
           Submit
       </button>
-      <p class="error" *ngIf="error">{{ error }}</p>
     </div>
   </form>
-
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="cancel()">Cancel</button>
-</div>

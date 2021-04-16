@@ -5,7 +5,7 @@
         type="button" 
         mat-flat-button
         color="primary"
-        (click)="openDialog()">
+        (click)="openCreateDialog()">
             Create
     </button>
     <div class="assignments" *ngIf="assignments.length > 0; else noTeams">
@@ -53,6 +53,14 @@
                         (click)="leave(assignment.team.id)" 
                         [disabled]="!assignment.active">
                             Leave
+                    </button>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-flat-button 
+                        color="primary" 
+                        (click)="openEditDialog(assignment.team)">
+                            Edit
                     </button>
                 </div>
             </mat-list-item>
