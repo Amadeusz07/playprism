@@ -42,7 +42,7 @@ export class ConfigureTournamentComponent implements OnInit {
     this.tournament = await this.tournamentService.getTournament(tournamentId);
     this.matchDefinitions = await this.matchDefinitionService.getMatchDefinitions(tournamentId);
     this.configureFormGroup = this.formBuilder.group({
-      startDate: this.tournament.startDate,
+      startDate: this.tournament.startDate != null ? new Date(this.tournament.startDate) : null,
       startTime: this.datepipe.transform(this.tournament.startDate, 'HH:mm'),
       checkInDate: this.tournament.checkInDate,
       registrationEndDate: this.tournament.registrationEndDate,
@@ -63,6 +63,7 @@ export class ConfigureTournamentComponent implements OnInit {
     this.loading = true;
     this.saveMatchDefinition();
     const updateTournamentRequest = new UpdateTournamentRequest(this.configureFormGroup.value);
+    updateTournamentRequest.setStartDateTime(this.configureFormGroup.value.startTime);
     updateTournamentRequest.published = this.tournament.published;
     this.tournamentService.putTournament(this.tournament.id.toString(), updateTournamentRequest)
       .subscribe(

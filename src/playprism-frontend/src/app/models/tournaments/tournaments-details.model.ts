@@ -11,7 +11,7 @@ export interface TournamentDetails extends Tournament {
     currentNumberOfPlayers: number;
     maxNumberOfPlayers: number;
     timezone: string;
-    startDate: Date | string | null;
+    startDate: string | Date | null;
     registrationEndDate: Date | string | null;
     checkInDate: Date | string | null;
     checkInTime: Date | string | null;
