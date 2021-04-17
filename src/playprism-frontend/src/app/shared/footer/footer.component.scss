@@ -1,0 +1,34 @@
+@import '../../../styles.scss';
+
+footer {
+    min-height: 100px;
+    width: 100%;
+    background-color: $primary-container-color;;
+    flex-shrink: 0;
+    padding: 1.5rem 6rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    .left {
+        flex: 1;
+    }
+    .right {
+        display: flex;
+        flex-direction: row;
+        .links {
+            display: flex;
+            flex-direction: column;
+            margin-right: 4rem;
+            text-transform: capitalize;
+            a {
+                text-transform: capitalize;
+                text-decoration: none;
+                margin-bottom: 0.7rem;
+                color: mat-color($playprism-custom-theme-primary);
+                &:visited {
+                    color: mat-color($playprism-custom-theme-primary);
+                }
+            }
+        }
+    }
+}

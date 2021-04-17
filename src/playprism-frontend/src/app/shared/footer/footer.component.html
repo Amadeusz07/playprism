@@ -1,0 +1,27 @@
+<footer>
+    <div class="left">
+        <h2>Playprism </h2>
+        <p> &#169; {{ year }} Playprism </p>
+    </div>
+    <div class="right">
+        <div class="links">
+            <a routerLink="browse/games">
+                Disciplines
+            </a>
+            <a routerLink="manager" *ngIf='auth.isAuthenticated$ | async'>
+                Tournament Manager
+            </a>
+            <a routerLink="matches" *ngIf='auth.isAuthenticated$ | async'>
+                Matches
+            </a>
+            <a routerLink="teams" *ngIf='auth.isAuthenticated$ | async'>
+                Teams
+            </a>
+        </div>
+        <div class="contact">
+            <p>Contact</p>
+            <p>lechniak.amadeusz07@gmail.com</p>
+            <p>+48 777 777 777</p>
+        </div>
+    </div>
+</footer>

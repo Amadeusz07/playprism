@@ -11,7 +11,7 @@ import { MatchService } from 'src/app/services/match.service';
 export class MatchesListComponent implements OnInit {
   @ViewChild(MatAccordion) accordion: MatAccordion;
   public matches: Match[];
-  public error: string;
+  public errorMessage: string;
 
   constructor(private matchService: MatchService) { }
 
@@ -24,7 +24,7 @@ export class MatchesListComponent implements OnInit {
       .subscribe(_ => {
           this.getMatches();
         },
-        err => this.error = err.error
+        err => this.errorMessage = err.error
       );
   }
 
@@ -35,10 +35,10 @@ export class MatchesListComponent implements OnInit {
       },
       err => {
         if (err.status == 404) {
-          this.error = "No matches found"
+          this.errorMessage = "No matches found"
         }
         else {
-          this.error = "Error occured"
+          this.errorMessage = "Error occured"
         }
       }
     );

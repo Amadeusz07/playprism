@@ -20,7 +20,8 @@ html, body { height: 100%; }
 body { 
   margin: 0; 
   font-family: Roboto, "Helvetica Neue", sans-serif; 
-  background-color: $primary-background-color;
+  background: linear-gradient(180deg, $primary-container-color 0%, $primary-container-color 30%, $secondary-background-color 100%);
   color: mat-color($playprism-custom-theme-primary);
-
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }

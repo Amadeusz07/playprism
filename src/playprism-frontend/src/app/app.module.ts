@@ -45,6 +45,7 @@ import { DatePipe } from '@angular/common';
 import { TeamDialogComponent } from './teams/team-dialog/team-dialog.component';
 import { EditMatchResultComponent } from './matches/matches-list/edit-match-result/edit-match-result.component';
 import { TeamFormComponent } from './teams/team-dialog/team-form/team-form.component';
+import { FooterComponent } from './shared/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { TeamFormComponent } from './teams/team-dialog/team-form/team-form.compo
     JoinButtonComponent,
     TeamDialogComponent,
     EditMatchResultComponent,
-    TeamFormComponent
+    TeamFormComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
