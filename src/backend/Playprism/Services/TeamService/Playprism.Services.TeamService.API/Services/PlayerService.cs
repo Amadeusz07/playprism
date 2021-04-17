@@ -38,7 +38,7 @@ namespace Playprism.Services.TeamService.API.Services
             return player;
         }
 
-        private async Task<PlayerEntity> HandleUnknownUserAsync(UserInfo userInfo)
+        public async Task<PlayerEntity> HandleUnknownUserAsync(UserInfo userInfo)
         {
             var newEntity = new PlayerEntity()
             {

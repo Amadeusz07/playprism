@@ -48,6 +48,7 @@ export class TeamsComponent implements OnInit {
       width: '35%',
       data: { isEdit: false }
     });
+    dialogRef.afterClosed().subscribe(_ => this.getAssignments());
   }
 
   public openEditDialog(team: Team ): void {

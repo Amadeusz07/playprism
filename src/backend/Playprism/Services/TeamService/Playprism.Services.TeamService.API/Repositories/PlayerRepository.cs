@@ -22,5 +22,11 @@ namespace Playprism.Services.TeamService.API.Repositories
 
             return player.Assignments.Select(x => x.Team);
         }
+
+        public async Task<bool> PlayerExists(string userId)
+        {
+            var exists = (await MainDbContext.Players.FirstOrDefaultAsync(x => x.UserId == userId)) != null;
+            return exists;
+        }
     }
 }

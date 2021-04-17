@@ -42,5 +42,23 @@ namespace Playprism.Services.TeamService.API.Repositories
             var userInfo = JsonConvert.DeserializeObject<IEnumerable<UserInfo>>(response.Content);
             return userInfo.FirstOrDefault();
         }
+
+        public async Task<UserInfo> GetUserByUserId(string userId)
+        {
+            var request = new RestRequest(userId, Method.GET)
+                .AddHeader("authorization", $"Bearer {_authConfig.Token}");
+            IRestResponse response = await _restClient.ExecuteAsync(request);
+            if (!response.IsSuccessful)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new Exception("Got unauthorized response from Auth0");
+                }
+                //TODO: log error
+                return null;
+            }
+            var userInfo = JsonConvert.DeserializeObject<UserInfo>(response.Content);
+            return userInfo;
+        }
     }
 }

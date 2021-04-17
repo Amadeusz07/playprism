@@ -8,7 +8,7 @@
         (click)="openCreateDialog()">
             Create
     </button>
-    <div class="assignments" *ngIf="assignments.length > 0; else noTeams">
+    <div class="assignments" *ngIf="assignments && assignments.length > 0; else noTeams">
         <mat-list role="list">
             <mat-list-item *ngFor="let assignment of assignments" class="assignment">
                 <div class="invitation">

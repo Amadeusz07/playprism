@@ -9,3 +9,7 @@ dotnet ef --startup-project ../Playprism.Services.TournamentService.API/ migrati
 dotnet ef --startup-project ./ database update -script -SourceMigration:0
 
 update-database -script -SourceMigration:[name of the migration] -TargetMigration:[name of the migration]
+
+## Get Auth0 Token
+1. Go to Auth0 Management API
+2. Api Explorer

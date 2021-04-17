@@ -8,5 +8,6 @@ namespace Playprism.Services.TeamService.API.Interfaces.Services
     {
         Task<PlayerEntity> GetPlayerByUserIdAsync(string userId);
         Task<PlayerEntity> GetPlayerByUserInfoAsync(UserInfo userInfo);
+        Task<PlayerEntity> HandleUnknownUserAsync(UserInfo userInfo);
     }
 }

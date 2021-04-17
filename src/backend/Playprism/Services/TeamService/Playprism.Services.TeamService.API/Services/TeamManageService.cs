@@ -147,7 +147,7 @@ namespace Playprism.Services.TeamService.API.Services
             var assignments = await _teamPlayerAssignmentRepository
                 .GetAsync(x => x.TeamId == teamId &&
                     x.PlayerId == playerId &&
-                    (x.Active || !x.Active && x.LeaveDate != null));
+                    x.LeaveDate == null);
             return !assignments.Any();
         }
 
