@@ -7,8 +7,7 @@ namespace Playprism.Services.TournamentService.DAL.Interfaces
     public interface IRoundRepository: IRepository<RoundEntity>
     {
         Task<IEnumerable<RoundEntity>> AddAsync(IEnumerable<RoundEntity> entities);
-        Task<RoundEntity> GetRoundToFinishAsync();
-        Task<RoundEntity> FinishRoundAsync(int roundId);
+        Task<RoundEntity> GetRoundToFinishAsync(int tournamentId);
         Task<RoundEntity> GetNextRoundAsync(RoundEntity currentRound);
         Task<RoundEntity> GetPreviousRoundAsync(RoundEntity currentRound);
         Task ClearAsync(int tournamentId);

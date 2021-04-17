@@ -185,7 +185,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             }
             try
             {
-                await _competitionProcess.CloseRoundAsync();
+                await _competitionProcess.CloseRoundAsync(tournament.Id);
             }
             catch(ValidationException ex)
             {

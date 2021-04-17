@@ -9,11 +9,11 @@
           <div class="tournament-bracket__match" tabindex="0">
             <div [ngClass]="{'winner': match.result == 1, 'participant': true}">
               {{ match.participant1 ? match.participant1 : 'TBD'  }} 
-              <span class="score">{{ match.participant1Score ? match.participant1Score : '-'  }}</span>
+              <span class="score">{{ match.participant1Score != null ? match.participant1Score : '-'  }}</span>
             </div>
             <div [ngClass]="{'winner': match.result == 2, 'participant': true}">
               <span>{{ match.participant2 ? match.participant2 : 'TBD' }}</span>
-              <span class="score">{{ match.participant2Score ? match.participant2Score : '-' }}</span>
+              <span class="score">{{ match.participant2Score != null ? match.participant2Score : '-' }}</span>
             </div>
           </div>
         </li>

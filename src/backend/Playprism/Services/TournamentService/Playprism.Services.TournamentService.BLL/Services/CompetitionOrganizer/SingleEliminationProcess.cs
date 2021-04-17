@@ -1,4 +1,5 @@
-﻿using Playprism.Services.TournamentService.BLL.Dtos;
+﻿using Playprism.Services.TournamentService.BLL.Common;
+using Playprism.Services.TournamentService.BLL.Dtos;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 using Playprism.Services.TournamentService.BLL.Interfaces.CompetitionOrganizer;
 using Playprism.Services.TournamentService.DAL.Entities;
@@ -72,9 +73,9 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             await _roundRepository.UpdateAsync(firstRound);
         }
 
-        public async Task CloseRoundAsync()
+        public async Task CloseRoundAsync(int tournamentId)
         {
-            var finishedRound = await FinishRound();
+            var finishedRound = await FinishRound(tournamentId);
             var nextRound = await _roundRepository.GetNextRoundAsync(finishedRound);
             if (nextRound == null)
             {
@@ -98,9 +99,9 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
             await _tournamentRepository.UpdateAsync(tournament);
         }
 
-        private async Task<RoundEntity> FinishRound()
+        private async Task<RoundEntity> FinishRound(int tournamentId)
         {
-            var roundToFinish = await _roundRepository.GetRoundToFinishAsync();
+            var roundToFinish = await _roundRepository.GetRoundToFinishAsync(tournamentId);
             if (roundToFinish == null)
             {
                 throw new ValidationException("No rounds available to close");
@@ -134,9 +135,10 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
         
         public async Task<BracketResponse> GenerateResponseBracketAsync(int tournamentId)
         {
+            var participants = await _participantRepository.GetAsync(x => x.TournamentId == tournamentId);
             var rounds = await _roundRepository.GetAsync(
-                x => x.TournamentId == tournamentId, 
-                x => x.OrderByDescending(y => y.Order), 
+                x => x.TournamentId == tournamentId,
+                x => x.OrderByDescending(y => y.Order),
                 "Matches",
                 true
             );
@@ -145,8 +147,55 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
                 throw new EntityNotFoundException();
             }
 
-            var participants = await _participantRepository.GetAsync(x => x.TournamentId == tournamentId);
+            BracketResponse bracketResponse = GenerateEmptyResponseRounds(rounds);
 
+            for (int i = 0; i < rounds.Count; i++)
+            {
+                if (i == 0)
+                {
+                    var finalMatch = rounds.First().Matches.First();
+                    var matchResponse = GenerateMatchResponse(
+                        finalMatch,
+                        participants.GetName(finalMatch.Participant1Id),
+                        participants.GetName(finalMatch.Participant2Id)
+                    );
+                    bracketResponse.Rounds.First().Matches.Add(matchResponse); 
+                }
+                foreach (var match in bracketResponse.Rounds[i].Matches)
+                {
+                    var isLastRound = i + 1 <= bracketResponse.Rounds.Count - 1;
+                    if (isLastRound)
+                    {
+                        var previousRoundResponse = bracketResponse.Rounds.ElementAt(i + 1);
+                        var previousRoundMatches = rounds[i + 1].Matches;
+
+                        var previousMatch1 = previousRoundMatches.Single(x => x.Id == match.PreviousMatch1Id);
+                        var matchResponse1 = GenerateMatchResponse(
+                            previousMatch1, 
+                            participants.GetName(previousMatch1.Participant1Id),
+                            participants.GetName(previousMatch1.Participant2Id)
+                        );
+                        previousRoundResponse.Matches.Add(matchResponse1);
+
+
+                        var previousMatch2 = previousRoundMatches.Single(x => x.Id == match.PreviousMatch2Id);
+                        var matchResponse2 = GenerateMatchResponse(
+                            previousMatch2,
+                            participants.GetName(previousMatch2.Participant1Id),
+                            participants.GetName(previousMatch2.Participant2Id)
+                        );
+                        previousRoundResponse.Matches.Add(matchResponse2);
+
+                    }
+                }
+            }
+
+            bracketResponse.Rounds.Reverse();
+            return bracketResponse;
+        }
+
+        private BracketResponse GenerateEmptyResponseRounds(IReadOnlyList<RoundEntity> rounds)
+        {
             var bracket = new BracketResponse();
             foreach (var round in rounds)
             {
@@ -157,74 +206,23 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
                 });
             }
 
-            for (int i = 0; i < rounds.Count; i++)
-            {
-                foreach (var match in rounds[i].Matches)
-                {
-                    BracketResponseAddMatch(participants, bracket, i, match);
-
-                    var isLastRound = i + 1 <= bracket.Rounds.Count - 1;
-                    if (isLastRound)
-                    {
-                        var previousRoundBracket = bracket.Rounds.ElementAt(i + 1);
-
-                        if (match.PreviousMatch1Id != null)
-                        {
-                            var previousMatch1 = rounds[i + 1].Matches.Single(x => x.Id == match.PreviousMatch1Id);
-                            previousRoundBracket.Matches.Add(new MatchResponse()
-                            {
-                                Id = previousMatch1.Id,
-                                MatchDate = previousMatch1.MatchDate,
-                                Participant1 = participants.SingleOrDefault(x => x.Id == previousMatch1.Participant1Id)
-                                    ?.Name,
-                                Participant2 = participants.SingleOrDefault(x => x.Id == previousMatch1.Participant2Id)
-                                    ?.Name,
-                                Participant1Score = previousMatch1.Participant1Score,
-                                Participant2Score = previousMatch1.Participant2Score,
-                                Result = previousMatch1.Result
-                            });
-                        }
-
-                        if (match.PreviousMatch2Id != null)
-                        {
-                            var previousMatch2 = rounds[i + 1].Matches.Single(x => x.Id == match.PreviousMatch2Id);
-                            previousRoundBracket.Matches.Add(new MatchResponse()
-                            {
-                                Id = previousMatch2.Id,
-                                MatchDate = previousMatch2.MatchDate,
-                                Participant1 = participants.SingleOrDefault(x => x.Id == previousMatch2.Participant1Id)
-                                    ?.Name,
-                                Participant2 = participants.SingleOrDefault(x => x.Id == previousMatch2.Participant2Id)
-                                    ?.Name,
-                                Participant1Score = previousMatch2.Participant1Score,
-                                Participant2Score = previousMatch2.Participant2Score,
-                                Result = previousMatch2.Result
-                            });
-                        }
-                    }
-                }
-            }
-
-            bracket.Rounds.Reverse();
             return bracket;
         }
 
-        private void BracketResponseAddMatch(IReadOnlyList<ParticipantEntity> participants, BracketResponse bracket, int i, MatchEntity match)
+        private MatchResponse GenerateMatchResponse(MatchEntity match, string participant1Name, string participant2Name)
         {
-            var currentRoundBracket = bracket.Rounds.ElementAt(i);
-            if (!currentRoundBracket.Matches.Any())
+            return new MatchResponse()
             {
-                currentRoundBracket.Matches.Add(new MatchResponse()
-                {
-                    Id = match.Id,
-                    MatchDate = match.MatchDate,
-                    Participant1 = participants.SingleOrDefault(x => x.Id == match.Participant1Id)?.Name,
-                    Participant2 = participants.SingleOrDefault(x => x.Id == match.Participant2Id)?.Name,
-                    Participant1Score = match.Participant1Score,
-                    Participant2Score = match.Participant2Score,
-                    Result = match.Result
-                });
-            }
+                Id = match.Id,
+                MatchDate = match.MatchDate,
+                PreviousMatch1Id = match.PreviousMatch1Id,
+                PreviousMatch2Id = match.PreviousMatch2Id,
+                Participant1 = participant1Name,
+                Participant2 = participant2Name,
+                Participant1Score = match.Participant1Score,
+                Participant2Score = match.Participant2Score,
+                Result = match.Result
+            };
         }
     }
 }

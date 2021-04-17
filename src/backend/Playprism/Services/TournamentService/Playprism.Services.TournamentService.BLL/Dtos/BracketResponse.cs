@@ -24,5 +24,7 @@ namespace Playprism.Services.TournamentService.BLL.Dtos
         public int? Participant2Score { get; set; }
         public int? Result { get; set; }
         public DateTime? MatchDate { get; set; }
+        public int? PreviousMatch1Id { get; set; }
+        public int? PreviousMatch2Id { get; set; }
     }
 }
