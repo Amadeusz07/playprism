@@ -48,4 +48,8 @@ export class TeamService {
   public putTeam(team: Team): Observable<Team> {
     return this.http.put<Team>(`${this.API_URL}/team/${team.id}`, team);
   }
+
+  public deleteTeam(team: Team): Observable<any> {
+    return this.http.delete<Team>(`${this.API_URL}/team/${team.id}`);
+  }
 }

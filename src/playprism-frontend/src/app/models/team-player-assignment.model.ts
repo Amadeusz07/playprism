@@ -9,6 +9,7 @@ export interface TeamPlayerAssignment {
     leaveDate: Date | string | null;
     accepted: boolean;
     active: boolean;
+    isOwner: boolean;
     player: Player;
     team: Team;
 }

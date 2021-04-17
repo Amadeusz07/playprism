@@ -12,6 +12,7 @@ namespace Playprism.Services.TeamService.API.Dtos
         public bool Accepted { get; set; }
         public bool Active { get; set; }
         public TeamResponse Team { get; set; }
+        public bool IsOwner { get; set; }
     }
 
     public class TeamResponse

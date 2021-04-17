@@ -35,5 +35,12 @@ namespace Playprism.Services.TeamService.API.Repositories
                 .ToListAsync();
         }
 
+        public async Task DeleteAssignments(int teamId)
+        {
+            var toRemove = MainDbContext.TeamPlayerAssignments.Where(x => x.TeamId == teamId);
+            MainDbContext.TeamPlayerAssignments.RemoveRange(toRemove);
+            await MainDbContext.SaveChangesAsync();
+        }
+
     }
 }

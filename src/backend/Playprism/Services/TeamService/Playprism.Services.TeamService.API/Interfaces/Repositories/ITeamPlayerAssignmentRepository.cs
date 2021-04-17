@@ -7,5 +7,6 @@ namespace Playprism.Services.TeamService.API.Interfaces.Repositories
     public interface ITeamPlayerAssignmentRepository: IRepository<TeamPlayerAssignmentEntity>
     {
         Task<IEnumerable<TeamPlayerAssignmentEntity>> GetAssignmentsAsync(string userId);
+        Task DeleteAssignments(int teamId);
     }
 }

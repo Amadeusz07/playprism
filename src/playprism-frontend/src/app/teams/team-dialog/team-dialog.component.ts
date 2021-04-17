@@ -41,4 +41,13 @@ export class TeamDialogComponent implements OnInit {
       )
     }
   }
+
+  public deleteTeam(team: Team): void {
+    this.teamService.deleteTeam(team).subscribe(
+      _ => {
+        this.dialogRef.close();
+      },
+      err => this.error = err.error
+    );
+  }
 }

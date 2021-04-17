@@ -1,7 +1,11 @@
 <h1 mat-dialog-title> {{ data.isEdit ? 'Edit team' : 'New team setup' }}</h1>
 <div mat-dialog-content>
 
-  <app-team-form (onSubmit)="submit($event)" [team]='data.team'></app-team-form>
+  <app-team-form 
+    (onSubmit)="submit($event)" 
+    (onDelete)="deleteTeam($event)"
+    [deleteButtonVisible]="data.isEdit"
+    [team]='data.team'></app-team-form>
   <p class="error" *ngIf="error">{{ error }}</p>
 
 </div>

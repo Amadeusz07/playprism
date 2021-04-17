@@ -9,7 +9,9 @@ import { Team } from 'src/app/models/team.model';
 })
 export class TeamFormComponent implements OnInit {
   @Input() team: Team | null;
+  @Input() deleteButtonVisible: boolean;
   @Output() onSubmit = new EventEmitter<Team>();
+  @Output() onDelete = new EventEmitter<Team>();
 
   public teamFormGroup: FormGroup;
   constructor(private formBuilder: FormBuilder) { }
@@ -31,6 +33,10 @@ export class TeamFormComponent implements OnInit {
       contact: this.teamFormGroup.value.contact
     };
     this.onSubmit.emit(toEmit);
+  }
+
+  public deleteTeam(): void {
+    this.onDelete.emit(<Team>{ ...this.team });
   }
 
 }

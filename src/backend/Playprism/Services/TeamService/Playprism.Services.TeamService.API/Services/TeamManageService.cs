@@ -34,7 +34,7 @@ namespace Playprism.Services.TeamService.API.Services
 
         public async Task<TeamEntity> AddTeamAsync(TeamEntity entity)
         {
-            var hasTeam = (await _teamRepository.GetAsync(x => x.OwnerId == entity.OwnerId)).Any();
+            var hasTeam = (await _teamRepository.GetAsync(x => x.OwnerId == entity.OwnerId && x.Active)).Any();
             if (hasTeam)
             {
                 throw new ValidationException("You already have a team");
@@ -58,7 +58,10 @@ namespace Playprism.Services.TeamService.API.Services
 
         public async Task DeleteTeamAsync(TeamEntity entity)
         {
-            await _teamRepository.DeleteAsync(entity);
+            await _teamPlayerAssignmentRepository.DeleteAssignments(entity.Id);
+            entity.DeleteDate = DateTime.UtcNow;
+            entity.Active = false;
+            await _teamRepository.UpdateAsync(entity);
         }
 
         public async Task<TeamEntity> GetTeamAsync(int id)
@@ -93,19 +96,20 @@ namespace Playprism.Services.TeamService.API.Services
         {
             var assignments = await _teamPlayerAssignmentRepository.GetAssignmentsAsync(userId);
             var response = _mapper.Map<List<AssignmentResponse>>(assignments);
+            response.ForEach(x => x.IsOwner = false);
             var asOwner = (await _teamRepository
-                .GetAsync(x => x.OwnerId == userId))
+                .GetAsync(x => x.OwnerId == userId && x.Active))
                 .FirstOrDefault();
-            // TODO: below should be moved into extended AssignmentResponse DTO
             if (asOwner != null)
             {
-                asOwner.Name = asOwner.Name + " (Owner)";
+                asOwner.Name = asOwner.Name;
                 response.Add(new AssignmentResponse()
                 {
                     PlayerId = 0,
                     TeamId = asOwner.Id,
                     Accepted = true,
-                    Active = false,
+                    Active = true,
+                    IsOwner = true,
                     Team = _mapper.Map<TeamResponse>(asOwner)
                 });
             }

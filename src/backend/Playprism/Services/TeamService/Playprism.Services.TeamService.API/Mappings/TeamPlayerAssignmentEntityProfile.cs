@@ -9,7 +9,8 @@ namespace Playprism.Services.TeamService.API.Mappings
         public TeamPlayerAssignmentEntityProfile()
         {
             CreateMap<TeamPlayerAssignmentEntity, AssignmentResponse>()
-                .ForMember(x => x.Team, opt => opt.MapFrom(x => x.Team));
+                .ForMember(x => x.Team, opt => opt.MapFrom(x => x.Team))
+                .ForMember(x => x.IsOwner, opt => opt.Ignore());
         }
     }
 }
