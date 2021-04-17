@@ -3,6 +3,7 @@
 .tournament-title {
     text-align: center;
 }
+
 .tournament-container {
     @include main-container;
     .informations {
@@ -54,4 +55,5 @@
             }
         }
     }
+    
 }
