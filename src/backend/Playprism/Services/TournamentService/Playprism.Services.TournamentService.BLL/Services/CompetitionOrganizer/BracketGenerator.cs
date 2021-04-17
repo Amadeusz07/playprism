@@ -31,8 +31,8 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
         {
             const int numberOfMatchesInLastRound = 1;
             var defaultMatchDefinition = (await _matchDefinitionRepository
-                .GetAsync(x => x.TournamentId == tournament.Id
-                               && x.Name == Consts.DefaultSettingsName)).First();
+                .GetAsync(x => x.TournamentId == tournament.Id && x.Name == Consts.DefaultSettingsName)
+                ).First();
             var rounds = new List<RoundEntity>();
             for (var i = 0; i < tournament.MaxNumberOfPlayers; i++)
             {
@@ -112,8 +112,9 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
                         previousMatches.MoveNext();
                         newMatch.PreviousMatch2Id = previousMatches.Current.Id;
                     }
-                    await _matchRepository.AddAsync(newMatch);
+                    round.Matches.Add(newMatch);
                 }
+                await _roundRepository.UpdateAsync(round);
             }
 
             var newMatches = rounds.SelectMany(x => x.Matches);

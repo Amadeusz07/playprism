@@ -115,7 +115,6 @@ namespace Playprism.Services.TournamentService.DAL.Repositories
             if (includes != null)
             {
                 query = includes.Aggregate(query, (current, include) => current.Include(include));
-                //query = query.Include(includeString);
             }
 
             if (predicate != null)

@@ -148,6 +148,7 @@ namespace Playprism.Services.TournamentService.UnitTests.BLL.Services.Competitio
             var expectedNumberOfMatchesInRound1 = 4;
             var expectedNumberOfMatchesInRound2 = 2;
             var expectedNumberOfMatchesInRound5 = 1;
+            var expectedNumberOfRoundUpdateCalls = 3;
 
             var actual = await _serviceUnderTest.GenerateMatchesAsync(rounds);
 
@@ -155,6 +156,7 @@ namespace Playprism.Services.TournamentService.UnitTests.BLL.Services.Competitio
             actual.Where(x => x.RoundId == 1).Should().HaveCount(expectedNumberOfMatchesInRound1);
             actual.Where(x => x.RoundId == 2).Should().HaveCount(expectedNumberOfMatchesInRound2);
             actual.Where(x => x.RoundId == 5).Should().HaveCount(expectedNumberOfMatchesInRound5);
+            _roundRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<RoundEntity>()), Times.Exactly(expectedNumberOfRoundUpdateCalls));
         }
 
         private MatchDefinitionEntity SetupMatchDefinitionRepository(bool confirmationNeeded = false)
