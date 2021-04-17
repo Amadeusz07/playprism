@@ -1,12 +1,12 @@
 <div class="browse-games">
     <mat-form-field class="search-field">
         <mat-label>Game</mat-label>
-        <input type="tel" matInput placeholder="Search for a game">
+        <input type="tel" matInput placeholder="Search for a game" [(ngModel)]="searchText" (ngModelChange)="search($event)">
         <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
     <div class="discipline-list">
         <mat-card 
-            *ngFor="let discipline of disciplines" 
+            *ngFor="let discipline of displayDiscplines" 
             class="discipline-card" 
             [routerLink]="['.', discipline.id, 'tournaments']"
             [state]="{ disciplineName: discipline.name }">

@@ -1,24 +1,23 @@
 <div class="image-container">
-    <!-- <img src="https://static.antyweb.pl/wp-content/uploads/2019/07/10200433/fortnite-pokonany-loeague-of-legends-twitch-antyweb.jpg" alt=""> -->
     <h1>Tournaments: {{ disciplineName }}</h1>
 </div>
 <div class="tournaments-container">
     <div class="filters">
         <mat-form-field class="search-field">
             <mat-label>Tournament name</mat-label>
-            <input type="tel" matInput placeholder="Search for a tournament">
+            <input type="tel" matInput placeholder="Search for a tournament" [(ngModel)]="searchText" (ngModelChange)="search()">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Status</mat-label>
-            <mat-select matNativeControl>
-                <mat-option *ngFor="let symbol of keys(tournamentStatus)" [value]="symbol">{{symbol}}</mat-option>
+            <mat-select matNativeControl (selectionChange)="search()" [(ngModel)]="searchStatus">
+                <mat-option *ngFor="let status of statusOptions" [value]="status">{{status}}</mat-option>
             </mat-select>
         </mat-form-field>
     </div>
     <div class="tournaments-list" *ngIf="tournaments; else noTournamentsFound">
         <mat-card 
-            *ngFor="let tournament of tournaments" 
+            *ngFor="let tournament of displayTournaments" 
             class="tournament-card">
                 <h3>{{ tournament.name }}</h3>
                 <p>Organized by {{ tournament.ownerName }}</p>
