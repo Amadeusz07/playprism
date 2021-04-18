@@ -61,6 +61,7 @@
                         <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
                         <mat-datepicker #picker3></mat-datepicker>
                     </mat-form-field>
+                    <p class="error" *ngIf="!areDatesValid()">Dates are not valid. First day should be Registration Date then Check in then StartDate</p>
                 </div>
                 <div class="participants">
                     <p class="numbers">

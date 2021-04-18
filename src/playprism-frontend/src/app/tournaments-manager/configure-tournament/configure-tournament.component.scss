@@ -30,6 +30,9 @@
             .time {
                 margin-left: 1rem;
             }
+            .error {
+                color: mat-color($playprism-custom-theme-warn);
+            }
         }
         .participants {
             display: flex;

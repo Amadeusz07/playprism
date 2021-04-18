@@ -5,6 +5,7 @@ using Playprism.Services.TournamentService.BLL.Dtos;
 using Playprism.Services.TournamentService.BLL.Interfaces;
 using Playprism.Services.TournamentService.DAL.Entities;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -60,9 +61,15 @@ namespace Playprism.Services.TournamentService.API.Controllers
                 return BadRequest();
             }
 
-            var result = await _matchService.SetResultAsync(entity);
-
-            return Accepted(result);
+            try
+            {
+                var result = await _matchService.SetResultAsync(entity);
+                return Accepted(result);
+            }
+            catch(ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]

@@ -1,42 +1,42 @@
 <div class="matches-container">
-    <ng-container *ngIf="matches; else error">
+  <ng-container *ngIf="errorMessage">
+    <div class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+  </ng-container>
 
-      <div>
-        <button mat-button (click)="accordion.openAll()">Expand All</button>
-        <button mat-button (click)="accordion.closeAll()">Collapse All</button>
-      </div>
+  <ng-container *ngIf="matches">
 
-      <mat-accordion multi>
-        <mat-expansion-panel *ngFor="let match of matches">
-          <mat-expansion-panel-header>
+    <div>
+      <button mat-button (click)="accordion.openAll()">Expand All</button>
+      <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+    </div>
 
-            <mat-panel-title>
-              Match Date: {{ match.matchDate | date:'short' }}
-            </mat-panel-title>
+    <mat-accordion multi>
+      <mat-expansion-panel *ngFor="let match of matches">
+        <mat-expansion-panel-header>
 
-            <mat-panel-description>
-                <mat-icon>account_circle</mat-icon>
-                {{ match.participant1Name }}
-                vs.
-                {{ match.participant2Name }}
-                <mat-icon>account_circle</mat-icon>
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          
-          <app-edit-match-result 
-            [match]='match'
-            (onSubmit)="submit($event)">
-          </app-edit-match-result>
-      
-        </mat-expansion-panel>
+          <mat-panel-title>
+            Match Date: {{ match.matchDate | date:'short' }}
+          </mat-panel-title>
 
-      </mat-accordion>
-    </ng-container>
+          <mat-panel-description>
+              <mat-icon>account_circle</mat-icon>
+              {{ match.participant1Name }}
+              vs.
+              {{ match.participant2Name }}
+              <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        
+        <app-edit-match-result 
+          [match]='match'
+          (onSubmit)="submit($event)">
+        </app-edit-match-result>
+    
+      </mat-expansion-panel>
 
-    <ng-template #error>
-      <div class="no-matches">
-        <p>{{ errorMessage }}</p>
-      </div>
-    </ng-template>
+    </mat-accordion>
+  </ng-container>
 
 </div>

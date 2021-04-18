@@ -3,7 +3,7 @@
 .matches-container {
     @include main-container;
 }
-.no-matches {
+.error-message {
     text-align: center;
     padding: 2rem;
 }
