@@ -1,0 +1,6 @@
+@import '../../styles.scss';
+
+.statistics-container {
+    @include main-container;
+    display: grid;
+}

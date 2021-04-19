@@ -11,7 +11,7 @@ namespace Playprism.Services.TournamentService.BLL.Dtos
         public string Prizes { get; set; }
         public string Rules { get; set; }
         public string ContactEmail { get; set; }
-        public string ContactNumber { get; set; }
+        public int ContactNumber { get; set; }
         public bool RegistrationApprovalNeeded { get; set; }
         public bool Published { get; set; }
     }

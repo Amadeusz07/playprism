@@ -1,13 +1,12 @@
 ﻿using Playprism.Services.TournamentService.DAL.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Playprism.Services.TournamentService.BLL.Dtos
 {
     public class MatchDto : Dto
     {
         public int Id { get; set; }
+        public string TournamentName { get; set; }
         public MatchDefinitionEntity MatchDefinition { get; set; }
         public DateTime? MatchDate { get; set; }
         public string Participant1Name { get; set; }

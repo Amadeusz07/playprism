@@ -114,6 +114,10 @@ namespace Playprism.Services.TournamentService.API.Controllers
             {
                 return NotFound();
             }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             return NoContent();
         }

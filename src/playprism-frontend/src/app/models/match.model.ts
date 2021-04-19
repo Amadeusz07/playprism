@@ -2,6 +2,7 @@ import { MatchDefinition } from "./match-definitions.model";
 
 export interface Match {
     id: number;
+    tournamentName: string;
     matchDefinition: MatchDefinition; 
     matchDate: Date;
     participant1Name: string; 

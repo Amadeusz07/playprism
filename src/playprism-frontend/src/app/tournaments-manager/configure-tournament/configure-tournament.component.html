@@ -11,6 +11,7 @@
                 [disabled]="!tournamentValidToStart()"
                 *ngIf="!tournament.ongoing"
                 (click)="startTournament()">Start tournament</button>
+            <mat-error *ngIf="startTournamentError">{{ startTournamentError }}</mat-error>
         </div>
         <div *ngIf="tournament.published && tournament.ongoing && !tournament.finished">
             <button 
@@ -75,15 +76,15 @@
             <div class="email-input-container">
                 <mat-form-field appearance="fill">
                     <mat-label>Enter your email</mat-label>
-                    <input matInput placeholder="pat@example.com" formControlName="email">
-                    <mat-error *ngIf="configureFormGroup.get('email')?.hasError('email')">Not a valid mail</mat-error>
+                    <input matInput placeholder="pat@example.com" formControlName="contactEmail">
+                    <mat-error *ngIf="configureFormGroup.get('contactEmail')?.hasError('email')">Not a valid mail</mat-error>
                 </mat-form-field>
             </div>
             <div>
                 <mat-form-field appearance="fill">
                     <mat-label>Enter your contact phone number</mat-label>
-                    <input matInput type="number" placeholder="123123123" formControlName="phoneNumber">
-                    <mat-error *ngIf="configureFormGroup.get('phoneNumber')?.hasError('pattern')">Not a valid phone number</mat-error>
+                    <input matInput type="number" placeholder="123123123" formControlName="contactNumber">
+                    <mat-error *ngIf="configureFormGroup.get('contactNumber')?.hasError('pattern')">Not a valid phone number</mat-error>
                 </mat-form-field>
             </div>
             <div>
@@ -145,8 +146,9 @@
                     <div *ngIf="configureFormGroup.value.scoreBased === false">
                         <mat-form-field>
                             <mat-label>Best of</mat-label>
-                            <input matInput type="number" placeholder="3" formControlName="bestOf" required>
+                            <input matInput type="number" placeholder="3" formControlName="bestOf">
                         </mat-form-field>
+                        <mat-error *ngIf="configureFormGroup.get('bestOf')?.errors?.EvenNumberValidator">Can't be even</mat-error>
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
@@ -155,7 +157,7 @@
                 <button 
                     mat-flat-button 
                     color="primary" 
-                    [disabled]="!areDatesValid()"
+                    [disabled]="!areDatesValid() || !configureFormGroup.valid"
                     (click)="submit()">
                         Save
                 </button>
@@ -164,7 +166,7 @@
                     color="primary"
                     class="margin-left" 
                     *ngIf="!tournament.published"
-                    [disabled]="!areDatesValid()"
+                    [disabled]="!areDatesValid() || !configureFormGroup.valid"
                     (click)="saveAndPublishTournament()">
                         {{ configureFormGroup.touched ? 'Save and ' : '' }}Publish tournament
                 </button>

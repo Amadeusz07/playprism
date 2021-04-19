@@ -9,6 +9,7 @@ import { MatchComponent } from './matches/matches-list/match/match.component';
 import { TournamentsManagerComponent } from './tournaments-manager/tournaments-manager.component';
 import { ConfigureTournamentComponent } from './tournaments-manager/configure-tournament/configure-tournament.component';
 import { TeamsComponent } from './teams/teams.component';
+import { PlayerStatisticsComponent } from './player-statistics/player-statistics.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', component: TeamsComponent }
+    ]
+  },
+  {
+    path: 'player-statistics',
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: PlayerStatisticsComponent }
     ]
   },
   { path: '',   redirectTo: '/browse/games', pathMatch: 'full' },

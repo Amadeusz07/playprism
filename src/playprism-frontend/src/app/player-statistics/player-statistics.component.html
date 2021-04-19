@@ -1,0 +1,4 @@
+<div class="statistics-container">
+    <app-bar-chart [data]="statisticsData" *ngIf="statisticsData && !error"></app-bar-chart>
+    <mat-error *ngIf="error">{{ error }}</mat-error>
+</div>

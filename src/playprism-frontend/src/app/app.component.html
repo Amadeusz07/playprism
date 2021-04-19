@@ -15,6 +15,9 @@
         <a routerLink="teams">
           <button mat-button *ngIf='auth.isAuthenticated$ | async' ngClass="toolbar-button">MY TEAMS</button>
         </a>
+        <a routerLink="player-statistics">
+          <button mat-button *ngIf='auth.isAuthenticated$ | async' ngClass="toolbar-button">RECORDS</button>
+        </a>
       </div>
     
       <div>

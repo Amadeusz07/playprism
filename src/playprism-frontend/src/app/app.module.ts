@@ -35,17 +35,20 @@ import { TournamentsManagerComponent } from './tournaments-manager/tournaments-m
 import { CreateTournamentDialogComponent } from './tournaments-manager/create-tournament-dialog/create-tournament-dialog.component';
 import { ConfigureTournamentComponent } from './tournaments-manager/configure-tournament/configure-tournament.component';
 import { TeamsComponent } from './teams/teams.component';
+import { TeamDialogComponent } from './teams/team-dialog/team-dialog.component';
+import { EditMatchResultComponent } from './matches/matches-list/edit-match-result/edit-match-result.component';
+import { TeamFormComponent } from './teams/team-dialog/team-form/team-form.component';
+import { FooterComponent } from './shared/footer/footer.component';
 import { BracketComponent } from './shared/bracket/bracket.component';
+import { PlayerStatisticsComponent } from './player-statistics/player-statistics.component';
 import { AuthHttpExtendedInterceptor } from './interceptors/auth-extended.interceptor';
 import { environment } from 'src/environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
 import { JoinButtonComponent } from './shared/tournament/join-button/join-button.component';
 import { DatePipe } from '@angular/common';
-import { TeamDialogComponent } from './teams/team-dialog/team-dialog.component';
-import { EditMatchResultComponent } from './matches/matches-list/edit-match-result/edit-match-result.component';
-import { TeamFormComponent } from './teams/team-dialog/team-form/team-form.component';
-import { FooterComponent } from './shared/footer/footer.component';
+import { BarChartComponent } from './shared/charts/bar-chart/bar-chart.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -67,7 +70,9 @@ import { FooterComponent } from './shared/footer/footer.component';
     TeamDialogComponent,
     EditMatchResultComponent,
     TeamFormComponent,
-    FooterComponent
+    FooterComponent,
+    BarChartComponent,
+    PlayerStatisticsComponent
   ],
   imports: [
     BrowserModule,
@@ -106,7 +111,8 @@ import { FooterComponent } from './shared/footer/footer.component';
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatDatepickerModule,
-    MatExpansionModule
+    MatExpansionModule,
+    NgxChartsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true },

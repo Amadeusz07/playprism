@@ -22,6 +22,25 @@ namespace Playprism.Services.TournamentService.DAL.Repositories
                     && x.Played == false)
                 .Include(x => x.Round)
                 .ThenInclude(x => x.MatchDefinition)
+                .Include(x => x.Tournament)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MatchEntity>> GetCompletedMatchesByParticipant1Ids(List<int> participantIds)
+        {
+            return await MainDbContext.Matches
+                .Where(x => participantIds.Contains(x.Participant1Id.Value)
+                    && x.Confirmed
+                    && x.Played)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MatchEntity>> GetCompletedMatchesByParticipant2Ids(List<int> participantIds)
+        {
+            return await MainDbContext.Matches
+                .Where(x => participantIds.Contains(x.Participant2Id.Value)
+                    && x.Confirmed
+                    && x.Played)
                 .ToListAsync();
         }
 

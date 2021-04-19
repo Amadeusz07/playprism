@@ -7,6 +7,7 @@ import { TournamentDetails } from 'src/app/models/tournaments/tournaments-detail
 import { UpdateTournamentRequest } from 'src/app/models/tournaments/update-tournament-request.model';
 import { MatchDefinitionService } from 'src/app/services/match-definition.service';
 import { TournamentService } from 'src/app/services/tournament.service';
+import { EvenNumberValidator } from 'src/app/services/validators/even-number-validator';
 
 @Component({
   selector: 'app-configure-tournament',
@@ -22,6 +23,7 @@ export class ConfigureTournamentComponent implements OnInit {
   }
   public configureFormGroup: FormGroup;
   public closeRoundResponse: string | null;
+  public startTournamentError: string | null;
   
   constructor(
     private tournamentService: TournamentService, 
@@ -47,14 +49,14 @@ export class ConfigureTournamentComponent implements OnInit {
       checkInDate: this.tournament.checkInDate,
       registrationEndDate: this.tournament.registrationEndDate,
       location: this.tournament.location,
-      email: [this.tournament.contactEmail, Validators.email],
-      phoneNumber: [this.tournament.contactNumber, Validators.pattern("^[0-9]*$")],
+      contactEmail: [this.tournament.contactEmail, Validators.email],
+      contactNumber: [Number(this.tournament.contactNumber), Validators.pattern("^[0-9]*$")],
       description: [this.tournament.description, Validators.maxLength(256)],
       rules: [this.tournament.rules, Validators.maxLength(256)],
       prizes: [this.tournament.prizes, Validators.maxLength(256)],
       confirmationNeeded: this.defaultMatchDefinition.confirmationNeeded,
       scoreBased: [this.defaultMatchDefinition.scoreBased, Validators.required],
-      bestOf: [this.defaultMatchDefinition.numberOfGames]
+      bestOf: [this.defaultMatchDefinition.numberOfGames, EvenNumberValidator(false)]
     });
     this.loading = false;
   }
@@ -68,7 +70,7 @@ export class ConfigureTournamentComponent implements OnInit {
     this.tournamentService.putTournament(this.tournament.id.toString(), updateTournamentRequest)
       .subscribe(
         _ => this.setupConfiguration(this.tournament.id.toString()), 
-        err => console.log(err)
+        err => this.startTournamentError = err.error
       );
   }
 

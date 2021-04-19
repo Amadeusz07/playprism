@@ -17,12 +17,12 @@
         <mat-expansion-panel-header>
 
           <mat-panel-title>
-            Match Date: {{ match.matchDate | date:'short' }}
+            <span *ngIf="match.matchDate != null">Match Date: {{ match.matchDate | date:'short' }} | </span>  <span class="tournament-name">{{ '  ' + match.tournamentName }}</span>
           </mat-panel-title>
 
           <mat-panel-description>
               <mat-icon>account_circle</mat-icon>
-              {{ match.participant1Name }}
+              {{ match.participant1Name }} 
               vs.
               {{ match.participant2Name }}
               <mat-icon>account_circle</mat-icon>

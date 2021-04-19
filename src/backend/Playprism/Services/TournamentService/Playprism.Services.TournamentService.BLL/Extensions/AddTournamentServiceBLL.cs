@@ -15,6 +15,7 @@ namespace Playprism.Services.TournamentService.BLL.Extensions
             services.AddTransient<IMatchService, MatchService>();
             services.AddTransient<IBrowserService, BrowserService>();
             services.AddTransient<IShuffler, Shuffler>();
+            services.AddTransient<IPlayerStatisticsService, PlayerStatisticsService>();
                 
             services.AddTransient<ICompetitionProcess, SingleEliminationProcess>();
             services.AddTransient<IBracketGenerator, BracketGenerator>();

@@ -57,6 +57,10 @@ namespace Playprism.Services.TournamentService.BLL.Services
             //{
             //    throw new ValidationException("Name already exists"); 
             //}
+            if (request.ScoreBased && request.NumberOfGames % 2 == 0)
+            {
+                throw new ValidationException("Number of games can\'t be even");
+            }
 
             matchDefinition = _mapper.Map(request, matchDefinition);
             await _matchDefinitionRepository.UpdateAsync(matchDefinition);
