@@ -5,6 +5,7 @@ using Playprism.Services.TeamService.API.Exceptions;
 using Playprism.Services.TeamService.API.Interface.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Services;
+using Playprism.Services.TeamService.API.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -122,7 +123,7 @@ namespace Playprism.Services.TeamService.API.Services
             if (user != null)
             {
                 var player = await _playerService.GetPlayerByUserInfoAsync(user);
-                if (!await CanAssign(id, player.Id))
+                if (!await CanAssign(id, player.Id, user))
                 {
                     throw new ValidationException("Active assignment already exists");
                 }
@@ -142,13 +143,14 @@ namespace Playprism.Services.TeamService.API.Services
             }
         }
 
-        private async Task<bool> CanAssign(int teamId, int playerId)
+        private async Task<bool> CanAssign(int teamId, int playerId, UserInfo user)
         {
             var assignments = await _teamPlayerAssignmentRepository
                 .GetAsync(x => x.TeamId == teamId &&
                     x.PlayerId == playerId &&
                     x.LeaveDate == null);
-            return !assignments.Any();
+            var isOwner = (await _teamRepository.GetAsync(x => x.OwnerId == user.UserId)).Any();
+            return !assignments.Any() && !isOwner;
         }
 
         public async Task JoinTeamAsync(string userId, int teamId)
@@ -183,6 +185,11 @@ namespace Playprism.Services.TeamService.API.Services
             if (assignment == null)
             {
                 throw new EntityNotFoundException($"Player\'s assignment to team {teamId} not found");
+            }
+            var isOwner = (await _teamRepository.GetAsync(x => x.OwnerId == userId)).Any();
+            if (isOwner)
+            {
+                throw new ValidationException("You can\'t join other team if you are owner of other one");
             }
 
             return assignment;

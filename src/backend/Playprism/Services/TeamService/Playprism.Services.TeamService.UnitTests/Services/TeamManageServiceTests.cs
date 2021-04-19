@@ -105,6 +105,7 @@ namespace Playprism.Services.TeamService.UnitTests.Services
             _teamPlayerAssignmentRepositoryMock.Setup(x => x.GetAsync(
                 It.IsAny<Expression<Func<TeamPlayerAssignmentEntity, bool>>>()))
                 .ReturnsAsync(emptyList);
+            _teamRepositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>())).ReturnsAsync(new List<TeamEntity>());
 
             await _serviceUnderTest.InvitePlayerAsync(teamId, username);
 
@@ -138,6 +139,34 @@ namespace Playprism.Services.TeamService.UnitTests.Services
                 {
                     new TeamPlayerAssignmentEntity()
                 });
+            _teamRepositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>())).ReturnsAsync(new List<TeamEntity>());
+
+            Assert.ThrowsAsync<ValidationException>(() => _serviceUnderTest.InvitePlayerAsync(teamId, username));
+        }
+
+        [Test]
+        public void InvitePlayerAsync_ShouldNotAddAssignmentWhenIsTeamOwner()
+        {
+            var emptyList = new List<TeamPlayerAssignmentEntity>();
+            _auth0RepositoryMock.Setup(x => x.SearchUserByNameAsync(username)).ReturnsAsync(new UserInfo()
+            {
+                UserId = userId
+            });
+            _playerServiceMock.Setup(x => x.GetPlayerByUserInfoAsync(It.IsAny<UserInfo>())).ReturnsAsync(new PlayerEntity()
+            {
+                Id = playerId,
+                UserId = userId,
+                Name = username
+            });
+            _teamPlayerAssignmentRepositoryMock.Setup(x => x.GetAsync(
+                It.IsAny<Expression<Func<TeamPlayerAssignmentEntity, bool>>>()))
+                .ReturnsAsync(emptyList);
+            _teamRepositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>()))
+                .ReturnsAsync(new List<TeamEntity>() 
+                { 
+                    new TeamEntity() { Id = 99 }
+                }
+            );
 
             Assert.ThrowsAsync<ValidationException>(() => _serviceUnderTest.InvitePlayerAsync(teamId, username));
         }
@@ -174,6 +203,7 @@ namespace Playprism.Services.TeamService.UnitTests.Services
                     Active = false,
                 }
             };
+            _teamRepositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>())).ReturnsAsync(new List<TeamEntity>());
             SetupPlayerRepositoryMockGetAsync(assignments);
 
             await _serviceUnderTest.JoinTeamAsync(userId, teamId);
@@ -207,7 +237,40 @@ namespace Playprism.Services.TeamService.UnitTests.Services
                     Active = true,
                 }
             };
+            _teamRepositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>())).ReturnsAsync(new List<TeamEntity>());
             SetupPlayerRepositoryMockGetAsync(assignments);
+
+            Assert.ThrowsAsync<ValidationException>(() => _serviceUnderTest.JoinTeamAsync(userId, teamId));
+        }
+
+        [Test]
+        public void JoinTeamAsync_ShouldNotAcceptWhenIsOwnerOfOtherTeam()
+        {
+            var assignments = new List<TeamPlayerAssignmentEntity>()
+            {
+                new TeamPlayerAssignmentEntity()
+                {
+                    PlayerId = playerId,
+                    TeamId = teamId,
+                    Accepted = false,
+                    Active = false,
+                },
+                new TeamPlayerAssignmentEntity()
+                {
+                    PlayerId = playerId,
+                    TeamId = teamId2,
+                    LeaveDate = DateTime.Now,
+                    Accepted = true,
+                    Active = false,
+                }
+            };
+            SetupPlayerRepositoryMockGetAsync(assignments);
+            _teamRepositoryMock.Setup(x => x.GetAsync(It.IsAny<Expression<Func<TeamEntity, bool>>>()))
+                .ReturnsAsync(new List<TeamEntity>()
+                {
+                    new TeamEntity { Id = 99 }
+                }
+            );
 
             Assert.ThrowsAsync<ValidationException>(() => _serviceUnderTest.JoinTeamAsync(userId, teamId));
         }

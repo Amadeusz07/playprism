@@ -11,8 +11,10 @@ import { TeamService } from 'src/app/services/team.service';
 export class TeamDialogComponent implements OnInit {
   public error: string;
   public team: Team;
+  public usernameToInvite: string;
+  public inviteMessage: string;
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { team: Team, isEdit: boolean },
+    @Inject(MAT_DIALOG_DATA) public data: { team: Team, isEdit: boolean, isOwner: boolean },
     private teamService: TeamService, 
     public dialogRef: MatDialogRef<TeamDialogComponent>) { }
 
@@ -40,6 +42,22 @@ export class TeamDialogComponent implements OnInit {
         err => this.error = err.error
       )
     }
+  }
+
+  public async invite(teamId: number): Promise<void> {
+    this.inviteMessage = '';
+    this.error = '';
+    this.teamService.sendInvite(teamId, this.usernameToInvite).subscribe(
+      _ => this.inviteMessage = 'User has been invited',
+      err => {
+        if (err.status == 409) {
+          this.error = err.error;
+        }
+        else {
+          this.error = 'Can\'t invite user'
+        }
+      }
+    );
   }
 
   public deleteTeam(team: Team): void {

@@ -13,32 +13,32 @@ export class TeamService {
   private API_URL = environment.API_URL_TEAM;
   constructor(private http: HttpClient) { }
 
-  public async getPlayerInfo(): Promise<Player> {
-    return await this.http.get<Player>(`${this.API_URL}/player`).toPromise();
+  public getPlayerInfo(): Observable<Player> {
+    return this.http.get<Player>(`${this.API_URL}/player`);
   }
 
-  public async getMyTeam(): Promise<Team> {
-    return await this.http.get<Team>(`${this.API_URL}/team/current-team`).toPromise();
+  public getMyTeam(): Observable<Team> {
+    return this.http.get<Team>(`${this.API_URL}/team/current-team`);
   }
 
-  public async getMyTeams(): Promise<TeamPlayerAssignment[]> {
-    return await this.http.get<TeamPlayerAssignment[]>(`${this.API_URL}/team`).toPromise();
+  public getMyTeams(): Observable<TeamPlayerAssignment[]> {
+    return this.http.get<TeamPlayerAssignment[]>(`${this.API_URL}/team`);
   }
 
-  public async sendInvite(teamId: number, username: string): Promise<any> {
-    return await this.http.post(`${this.API_URL}/team/${teamId}/invite/${username}`, null).toPromise();
+  public sendInvite(teamId: number, username: string): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/team/${teamId}/invite/${username}`, null);
   }
 
-  public async joinTeam(teamId: number): Promise<any> {
-    return await this.http.post(`${this.API_URL}/team/${teamId}/join`, null).toPromise();
+  public joinTeam(teamId: number): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/team/${teamId}/join`, null);
   }
 
-  public async leaveTeam(teamId: number): Promise<any> {
-    return await this.http.post(`${this.API_URL}/team/${teamId}/leave`, null).toPromise();
+  public leaveTeam(teamId: number): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/team/${teamId}/leave`, null);
   }
 
-  public async refuseTeam(teamId: number): Promise<any> {
-    return await this.http.post(`${this.API_URL}/team/${teamId}/refuse`, null).toPromise();
+  public refuseTeam(teamId: number): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/team/${teamId}/refuse`, null);
   }
 
   public postTeam(team: Team): Observable<Team> {

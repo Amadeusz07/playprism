@@ -5,8 +5,30 @@
     (onSubmit)="submit($event)" 
     (onDelete)="deleteTeam($event)"
     [deleteButtonVisible]="data.isEdit"
-    [team]='data.team'></app-team-form>
-  <p class="error" *ngIf="error">{{ error }}</p>
+    [team]='data.team'>
+  </app-team-form>
+
+  <div *ngIf="data.isEdit" class="invitation">
+    <mat-form-field ngClass="whiteInput" class="search-field">
+      <mat-label>Username</mat-label>
+      <input [(ngModel)]="usernameToInvite" type="text" matInput />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <button
+        id="basic" 
+        type="button" 
+        class="margin-left"
+        mat-flat-button 
+        color="primary" 
+        (click)="invite(data.team.id)" 
+        *ngIf="data.isOwner"
+        [disabled]="usernameToInvite == ''">
+            Invite
+    </button>
+  </div>
+
+  <p class="error" *ngIf="error && error != ''">{{ error }}</p>
+  <p *ngIf="inviteMessage && inviteMessage != ''">{{ inviteMessage }}</p>
 
 </div>
 <div mat-dialog-actions>

@@ -144,7 +144,14 @@ namespace Playprism.Services.TeamService.API.Controllers
             {
                 return BadRequest();
             }
-            await _teamManageService.InvitePlayerAsync(id, username);
+            try
+            {
+                await _teamManageService.InvitePlayerAsync(id, username);
+            }
+            catch (ValidationException ex)
+            {
+                return Conflict(ex.Message);
+            }
 
             return Accepted();
         }
@@ -154,7 +161,14 @@ namespace Playprism.Services.TeamService.API.Controllers
         public async Task<ActionResult<TeamEntity>> JoinTeam(int id)
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            await _teamManageService.JoinTeamAsync(userId, id);
+            try
+            {
+                await _teamManageService.JoinTeamAsync(userId, id);
+            }
+            catch (ValidationException ex)
+            {
+                return Conflict(ex.Message);
+            }
 
             return Accepted();
         }
