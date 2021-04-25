@@ -40,12 +40,12 @@ namespace Playprism.Services.TeamService.API.Services
             {
                 throw new ValidationException("You already have a team");
             }
-            hasTeam = (await _teamPlayerAssignmentRepository.GetAssignmentsAsync(entity.OwnerId)).Any();
+            hasTeam = (await _teamPlayerAssignmentRepository.GetAssignmentsAsync(entity.OwnerId)).Any(x => x.Active);
             if (hasTeam)
             {
                 throw new ValidationException("You already have a team");
             }
-            var duplicate = await _teamRepository.GetAsync(x => x.Name == entity.Name);
+            var duplicate = await _teamRepository.GetAsync(x => x.Name == entity.Name && x.Active);
             if (duplicate.Any())
             {
                 throw new ValidationException("Team with provided name already exists");
@@ -149,7 +149,7 @@ namespace Playprism.Services.TeamService.API.Services
                 .GetAsync(x => x.TeamId == teamId &&
                     x.PlayerId == playerId &&
                     x.LeaveDate == null);
-            var isOwner = (await _teamRepository.GetAsync(x => x.OwnerId == user.UserId)).Any();
+            var isOwner = (await _teamRepository.GetAsync(x => x.OwnerId == user.UserId && x.Active)).Any();
             return !assignments.Any() && !isOwner;
         }
 

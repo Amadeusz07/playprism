@@ -8,6 +8,8 @@ import { UpdateTournamentRequest } from 'src/app/models/tournaments/update-tourn
 import { MatchDefinitionService } from 'src/app/services/match-definition.service';
 import { TournamentService } from 'src/app/services/tournament.service';
 import { EvenNumberValidator } from 'src/app/services/validators/even-number-validator';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-configure-tournament',
@@ -24,6 +26,7 @@ export class ConfigureTournamentComponent implements OnInit {
   public configureFormGroup: FormGroup;
   public closeRoundResponse: string | null;
   public startTournamentError: string | null;
+  public error: string | null
   
   constructor(
     private tournamentService: TournamentService, 
@@ -46,7 +49,7 @@ export class ConfigureTournamentComponent implements OnInit {
     this.configureFormGroup = this.formBuilder.group({
       startDate: this.tournament.startDate != null ? new Date(this.tournament.startDate) : null,
       startTime: this.datepipe.transform(this.tournament.startDate, 'HH:mm'),
-      checkInDate: this.tournament.checkInDate,
+      checkInDate: this.tournament.checkInDate != null ? new Date(this.tournament.checkInDate) : null,
       registrationEndDate: this.tournament.registrationEndDate,
       location: this.tournament.location,
       contactEmail: [this.tournament.contactEmail, Validators.email],
@@ -64,14 +67,7 @@ export class ConfigureTournamentComponent implements OnInit {
   public submit(): void {
     this.loading = true;
     this.saveMatchDefinition();
-    const updateTournamentRequest = new UpdateTournamentRequest(this.configureFormGroup.value);
-    updateTournamentRequest.setStartDateTime(this.configureFormGroup.value.startTime);
-    updateTournamentRequest.published = this.tournament.published;
-    this.tournamentService.putTournament(this.tournament.id.toString(), updateTournamentRequest)
-      .subscribe(
-        _ => this.setupConfiguration(this.tournament.id.toString()), 
-        err => this.startTournamentError = err.error
-      );
+    this.putTournament(this.tournament.published);
   }
 
   public saveMatchDefinition(): void {
@@ -87,19 +83,36 @@ export class ConfigureTournamentComponent implements OnInit {
           this.tournament.id.toString(), 
           this.defaultMatchDefinition.id.toString(), 
           matchDefinition)
-            .subscribe(err => console.log(err));
+            .pipe(
+              catchError(err => {
+                if (err.status == 404 || err.status == 400) {
+                  this.error = err.error;
+                }
+                else {
+                  this.error = 'Error occured during Match Definition update';
+                }
+                return of([]);
+              })
+            )
+            .subscribe();
     }
   }
 
   public saveAndPublishTournament(): void {
     this.loading = true;
     this.saveMatchDefinition();
+    this.putTournament(true);
+  }
+
+  private putTournament(published: boolean): void {
     const updateTournamentRequest = new UpdateTournamentRequest(this.configureFormGroup.value);
-    updateTournamentRequest.published = true;
+    updateTournamentRequest.setStartDateTimeAsUTC(this.configureFormGroup.value.startTime);
+    updateTournamentRequest.setCheckinDateTimeAsUTC();
+    updateTournamentRequest.published = published;
     this.tournamentService.putTournament(this.tournament.id.toString(), updateTournamentRequest)
       .subscribe(
         _ => this.setupConfiguration(this.tournament.id.toString()), 
-        err => console.log(err)
+        err => this.startTournamentError = 'Error occured during Tournament update'
       );
   }
 
@@ -108,7 +121,7 @@ export class ConfigureTournamentComponent implements OnInit {
       this.tournamentService.startTournament(this.tournament.id.toString())
         .subscribe(
           _ => this.setupConfiguration(this.tournament.id.toString()),
-          err => console.log(err)
+          err => this.startTournamentError = 'Error occured during starting Tournament'
       );
     }
   }

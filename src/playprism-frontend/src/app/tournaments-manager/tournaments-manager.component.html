@@ -12,6 +12,7 @@
       (click)="openDialog()">
         Create
     </button>
+    <mat-error *ngIf="error">{{ error }}</mat-error>
     <table mat-table [dataSource]="tournaments" color="primary" class="mat-elevation-z8">
 
       <!--- Note that these columns can be defined in any order.

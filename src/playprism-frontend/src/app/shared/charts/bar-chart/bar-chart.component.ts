@@ -12,7 +12,7 @@ export class BarChartComponent {
   @Input() showYAxis: boolean = true;
   @Input() gradient: boolean = true;
   @Input() showLegend: boolean = true;
-  @Input() showXAxisLabel: boolean = true;
+  @Input() showXAxisLabel: boolean = false;
   @Input() xAxisLabel: string = 'Discipline';
   @Input() showYAxisLabel: boolean = false;
   @Input() yAxisLabel: string = 'Population';

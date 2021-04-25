@@ -17,7 +17,6 @@ export class TeamFormComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    console.log(this.team);
     this.teamFormGroup = this.formBuilder.group({
       teamName: [this.team?.name, Validators.required],
       description: [this.team?.description],

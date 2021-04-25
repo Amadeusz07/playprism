@@ -13,6 +13,7 @@ export class JoinButtonComponent implements OnInit {
   @Input() areTeams: boolean;
   @Input() tournamentStatus: TournamentStatusEnum;
   @Input() canJoin: CanJoin;
+  @Input() isAuthenticated: boolean | null;
   @Output() clicked: EventEmitter<any> = new EventEmitter();
 
   public labels: {

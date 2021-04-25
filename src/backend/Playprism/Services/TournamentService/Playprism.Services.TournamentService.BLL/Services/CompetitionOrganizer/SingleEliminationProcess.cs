@@ -107,12 +107,19 @@ namespace Playprism.Services.TournamentService.BLL.Services.CompetitionOrganizer
                 throw new ValidationException("No rounds available to close");
             }
 
+
             var toAutoResult = roundToFinish.Matches
                 .Where(x => x.Participant1Id == null || x.Participant2Id == null);
             foreach (var matchToAutoResult in toAutoResult)
             {
                 matchToAutoResult.AutoResult();
                 await _matchRepository.UpdateAsync(matchToAutoResult);
+            }
+
+
+            if (roundToFinish.Matches.Any(x => !x.Confirmed || !x.Played))
+            {
+                throw new ValidationException("Not all matches has been already played");
             }
 
             roundToFinish.Finished = true;

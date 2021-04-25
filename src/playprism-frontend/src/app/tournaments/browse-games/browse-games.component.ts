@@ -21,7 +21,7 @@ export class BrowseGamesComponent implements OnInit {
 
   public search(text: string): void {
     this.displayDiscplines = this.disciplines.filter(element => {
-      return element.name.toLowerCase().includes(text);
+      return element.name.toLowerCase().includes(text.toLowerCase());
     })
   }
 

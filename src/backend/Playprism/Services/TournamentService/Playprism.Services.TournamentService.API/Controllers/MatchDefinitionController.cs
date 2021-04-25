@@ -112,7 +112,7 @@ namespace Playprism.Services.TournamentService.API.Controllers
             }
             catch (EntityNotFoundException)
             {
-                return NotFound();
+                return NotFound($"Not found team with id {id}");
             }
             catch (ValidationException ex)
             {

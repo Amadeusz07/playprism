@@ -17,6 +17,7 @@ export class TournamentsManagerComponent implements OnInit {
   public disciplines: Discipline[];
   public tournaments: TournamentListItem[] | null;
   public tournamentStatus = TournamentStatusEnum;
+  public error: string | null;
 
   constructor(private tournamentService: TournamentService, private disciplineService: DisciplineService, public dialog: MatDialog) { }
 
@@ -36,7 +37,7 @@ export class TournamentsManagerComponent implements OnInit {
     this.tournamentService.deleteTournament(tournamentId.toString())
       .subscribe(
         _ => this.loadTournaments(),
-        err => console.log(err)
+        err => this.error = 'Error occured during deleting Tournament'
       );
   }
 

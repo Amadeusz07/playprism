@@ -4,11 +4,11 @@
         <h1>{{ tournament.name }}</h1>
         <h4>organized by {{ tournament.ownerName }}</h4>
         <app-join-button 
-            *ngIf="(authService.isAuthenticated$ | async) && canJoin" 
             [areTeams]="tournament.areTeams"
             [tournamentStatus]="tournamentStatus" 
             [canJoin]="canJoin" 
-            (clicked)="join()">
+            (clicked)="join()"
+            [isAuthenticated]="authService.isAuthenticated$ | async">
         </app-join-button>
     </div>
     <div class="tournament-container">
@@ -35,13 +35,13 @@
                             <div class="dates">
                                 <ng-container *ngIf="tournamentStatus == tournamentStatusEnum.Incoming || tournamentStatus == tournamentStatusEnum.Ongoing">
                                     <h3>Check in date</h3>
-                                    <p>{{ tournament.checkInDate | date:'short' }}</p>
+                                    <p>{{ tournament.checkInDate | date:'shortDate' }}</p>
                                 </ng-container>
                                 <h3>Start date</h3>
                                 <p>{{ tournament.startDate | date:'short' }}</p>
                                 <ng-container *ngIf="tournamentStatus == tournamentStatusEnum.Ended || tournamentStatus == tournamentStatusEnum.Aborted">
                                     <h3>End date</h3>
-                                    <p>{{ tournament.endDate | date:'short' }}</p>
+                                    <p>{{ tournament.endDate | date:'shortDate' }}</p>
                                 </ng-container>
                             </div>
                             <div class="participants">
@@ -66,9 +66,11 @@
                     </div>
                 </div>
             </mat-tab>
+
             <mat-tab class="tab-container" label="BRACKET">
                 <app-bracket [bracket]="bracket"></app-bracket>
             </mat-tab>
+
             <mat-tab class="tab-container" label="MEDIA">
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/bvI_ZxFl5Ps" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <iframe width="560" height="315" src="https://www.youtube.com/embed/Fqsl3amjOZc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

@@ -24,7 +24,12 @@ export class BrowseTournamentsComponent implements OnInit {
   public disciplineName: string;
   public statusOptions: string[] = [ STATUS_ALL, ...(Object.keys(this.tournamentStatus))];
 
-  constructor(private tournamentService: TournamentService, private disciplineService: DisciplineService, private route: ActivatedRoute, private tournamentStatusPipe: TournamentStatusPipe) { }
+  constructor(
+    private tournamentService: TournamentService, 
+    private disciplineService: DisciplineService, 
+    private route: ActivatedRoute, 
+    private tournamentStatusPipe: TournamentStatusPipe
+  ) { }
 
   async ngOnInit(): Promise<void> {
     const disciplineId = this.route.snapshot.paramMap.get('disciplineId');

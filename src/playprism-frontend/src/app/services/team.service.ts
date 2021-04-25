@@ -13,12 +13,12 @@ export class TeamService {
   private API_URL = environment.API_URL_TEAM;
   constructor(private http: HttpClient) { }
 
-  public getPlayerInfo(): Observable<Player> {
-    return this.http.get<Player>(`${this.API_URL}/player`);
+  public async getPlayerInfo(): Promise<Player> {
+    return this.http.get<Player>(`${this.API_URL}/player`).toPromise();
   }
 
-  public getMyTeam(): Observable<Team> {
-    return this.http.get<Team>(`${this.API_URL}/team/current-team`);
+  public async getMyTeam(): Promise<Team> {
+    return this.http.get<Team>(`${this.API_URL}/team/current-team`).toPromise();
   }
 
   public getMyTeams(): Observable<TeamPlayerAssignment[]> {

@@ -24,7 +24,7 @@
                 [disabled]="true" 
                 [(ngModel)]="tournament.areTeams"
                 color="primary">
-                    For teams
+                    For teams (read-only)
             </mat-checkbox>
             <mat-checkbox 
                 class="margin-left" 
@@ -56,13 +56,14 @@
                         <mat-datepicker #picker2></mat-datepicker>
                     </mat-form-field>
                     <br>
-                    <mat-form-field appearance="fill">
+                    <!-- TODO: add feature flag -->
+                    <!-- <mat-form-field appearance="fill">
                         <mat-label>Registration ends</mat-label>
                         <input matInput [matDatepicker]="picker3" formControlName="registrationEndDate">
                         <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
                         <mat-datepicker #picker3></mat-datepicker>
-                    </mat-form-field>
-                    <p class="error" *ngIf="!areDatesValid()">Dates are not valid. First day should be Registration Date then Check in then StartDate</p>
+                    </mat-form-field> -->
+                    <p class="error" *ngIf="!areDatesValid()">Dates are not valid. First day should be Check in data then Start Date</p>
                 </div>
                 <div class="participants">
                     <p class="numbers">
@@ -170,6 +171,10 @@
                     (click)="saveAndPublishTournament()">
                         {{ configureFormGroup.touched ? 'Save and ' : '' }}Publish tournament
                 </button>
+            </div>
+
+            <div>
+                <mat-error *ngIf="error">{{ error }}</mat-error>
             </div>
         </form>
     </ng-container>

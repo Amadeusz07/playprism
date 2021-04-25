@@ -19,8 +19,8 @@
         <ng-template matStepLabel>Discipline</ng-template>
         <mat-form-field>
             <mat-label>Discipline</mat-label>
-            <mat-select required formControlName="disciplineId">
-                <mat-option *ngFor="let discipline of data.disciplines" [value]="discipline.id">
+            <mat-select required formControlName="discipline">
+                <mat-option *ngFor="let discipline of data.disciplines" [value]="discipline">
                     {{ discipline.name }}
                 </mat-option>
             </mat-select>
@@ -91,7 +91,7 @@
                     Tournament name: {{ firstFormGroup.value.tournamentName }}
                 </mat-list-item>
                 <mat-list-item class="mat-list-item-small">
-                    Discipline: {{ data.disciplines[secondFormGroup.value.disciplineId]?.name }}
+                    Discipline: {{ secondFormGroup.value.discipline.name }}
                 </mat-list-item>
                 <mat-list-item class="mat-list-item-small">
                     Tournament available for: {{ secondFormGroup.value.areTeams ? "Teams" : 'Individual players'}}

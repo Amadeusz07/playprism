@@ -24,7 +24,6 @@
         <mat-error *ngIf="scoreFormGroup.controls['result'].hasError('min') || scoreFormGroup.controls['result'].hasError('max')">Scores are not correct</mat-error>
 
         <div class="result">
-            result {{ scoreFormGroup.value.result }}
             Winner: {{ 
                 scoreFormGroup.valid 
                 ? scoreFormGroup.value.result == 1 ? match.participant1Name : match.participant2Name 
