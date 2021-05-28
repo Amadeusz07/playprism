@@ -92,7 +92,7 @@ namespace Playprism.Services.TeamService.API.Controllers
             }
             try
             {
-                await _teamManageService.UpdateTeamAsync(entity);
+                await _teamManageService.UpdateTeamAsync(id, entity);
             }
             catch (ValidationException ex)
             {

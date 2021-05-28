@@ -236,9 +236,9 @@ namespace Playprism.Services.TeamService.API.Services
             return assignment;
         }
 
-        public async Task<TeamEntity> UpdateTeamAsync(TeamEntity team)
+        public async Task<TeamEntity> UpdateTeamAsync(int id, TeamEntity team)
         {
-            var duplicate = await _teamRepository.GetAsync(x => x.Name == team.Name);
+            var duplicate = await _teamRepository.GetAsync(x => x.Name == team.Name && x.Id != id);
             if (duplicate.Any())
             {
                 throw new ValidationException("Team with provided name already exists");
