@@ -38,32 +38,6 @@ namespace Playprism.Services.TournamentService.DAL.Migrations
                     b.ToTable("Disciplines");
                 });
 
-            modelBuilder.Entity("Playprism.Services.TournamentService.DAL.Entities.GameEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<int>("MatchId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Score1")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Score2")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MatchId");
-
-                    b.ToTable("Games");
-                });
-
             modelBuilder.Entity("Playprism.Services.TournamentService.DAL.Entities.MatchDefinitionEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -157,14 +131,20 @@ namespace Playprism.Services.TournamentService.DAL.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("ParticipantId")
+                    b.Property<int>("PlayerId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int>("TeamId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("TournamentId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -279,8 +259,16 @@ namespace Playprism.Services.TournamentService.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("integer");
+                    b.Property<bool>("Ongoing")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OwnerName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Platform")
                         .IsRequired()
@@ -319,17 +307,6 @@ namespace Playprism.Services.TournamentService.DAL.Migrations
                     b.HasIndex("DisciplineId");
 
                     b.ToTable("Tournaments");
-                });
-
-            modelBuilder.Entity("Playprism.Services.TournamentService.DAL.Entities.GameEntity", b =>
-                {
-                    b.HasOne("Playprism.Services.TournamentService.DAL.Entities.MatchEntity", "Match")
-                        .WithMany("Games")
-                        .HasForeignKey("MatchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Match");
                 });
 
             modelBuilder.Entity("Playprism.Services.TournamentService.DAL.Entities.MatchEntity", b =>
@@ -382,11 +359,6 @@ namespace Playprism.Services.TournamentService.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Discipline");
-                });
-
-            modelBuilder.Entity("Playprism.Services.TournamentService.DAL.Entities.MatchEntity", b =>
-                {
-                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("Playprism.Services.TournamentService.DAL.Entities.RoundEntity", b =>

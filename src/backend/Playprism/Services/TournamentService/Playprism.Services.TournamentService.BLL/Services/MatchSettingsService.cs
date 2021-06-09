@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Playprism.Services.TournamentService.BLL.Common;
+using Playprism.Services.TournamentService.BLL.Dtos;
 using Playprism.Services.TournamentService.BLL.Interfaces;
 using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
@@ -49,15 +50,19 @@ namespace Playprism.Services.TournamentService.BLL.Services
             return result;
         }
 
-        public async Task<MatchDefinitionEntity> UpdateMatchSettingsAsync(MatchDefinitionEntity entity)
+        public async Task<MatchDefinitionEntity> UpdateMatchSettingsAsync(int id, UpdateMatchDefinitionRequest request)
         {
-            var matchDefinition = await _matchDefinitionRepository.GetByIdAsync(entity.Id);
-            if (await NameExistsAsync(entity.TournamentId, entity.Name))
+            var matchDefinition = await _matchDefinitionRepository.GetByIdAsync(id);
+            //if (await NameExistsAsync(reqest.TournamentId, reqest.Name))
+            //{
+            //    throw new ValidationException("Name already exists"); 
+            //}
+            if (request.ScoreBased && request.NumberOfGames % 2 == 0)
             {
-                throw new ValidationException("Name already exists"); 
+                throw new ValidationException("Number of games can\'t be even");
             }
 
-            matchDefinition = _mapper.Map(entity, matchDefinition);
+            matchDefinition = _mapper.Map(request, matchDefinition);
             await _matchDefinitionRepository.UpdateAsync(matchDefinition);
             return matchDefinition;
         }

@@ -10,7 +10,9 @@ namespace Playprism.Services.TournamentService.DAL.Entities
         public int Id { get; set; }
         [ForeignKey("Tournament")]
         public int TournamentId { get; set; }
-        public int ParticipantId { get; set; }
+        public string UserId { get; set; }
+        public int PlayerId { get; set; }
+        public int TeamId { get; set; }
         public string Name { get; set; }
         public bool Approved { get; set; }
         public DateTime RegistrationDate { get; set; }

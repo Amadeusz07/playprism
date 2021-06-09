@@ -1,1 +1,80 @@
-<app-bracket [bracket]="bracket"></app-bracket>
+<!-- based on type -->
+<ng-container *ngIf="tournament">
+    <div class="tournament-title">
+        <h1>{{ tournament.name }}</h1>
+        <h4>organized by {{ tournament.ownerName }}</h4>
+        <app-join-button 
+            [areTeams]="tournament.areTeams"
+            [tournamentStatus]="tournamentStatus" 
+            [canJoin]="canJoin" 
+            (clicked)="join()"
+            [isAuthenticated]="authService.isAuthenticated$ | async">
+        </app-join-button>
+    </div>
+    <div class="tournament-container">
+        <mat-tab-group dynamicHeight mat-align-tabs="start" [color]="'primary'">
+            <mat-tab class="tab-container" label="INFORMATIONS">
+                <div class="informations">
+                    <div class="informations-left">
+                        <div class="description">
+                            <h3>Description</h3>
+                            <p>{{ tournament.description }}</p>
+                        </div>
+                        <div class="rules">
+                            <h3>Rules</h3>
+                            <p>{{ tournament.rules }}</p>
+                        </div>
+                        <div class="prizes">
+                            <h3>Prizes</h3>
+                            <p>{{ tournament.prizes }}</p>
+                        </div>
+                    </div>
+
+                    <div class="informations-right">
+                        <div class="panel">
+                            <div class="dates">
+                                <ng-container *ngIf="tournamentStatus == tournamentStatusEnum.Incoming || tournamentStatus == tournamentStatusEnum.Ongoing">
+                                    <h3>Check in date</h3>
+                                    <p>{{ tournament.checkInDate | date:'shortDate' }}</p>
+                                </ng-container>
+                                <h3>Start date</h3>
+                                <p>{{ tournament.startDate | date:'short' }}</p>
+                                <ng-container *ngIf="tournamentStatus == tournamentStatusEnum.Ended || tournamentStatus == tournamentStatusEnum.Aborted">
+                                    <h3>End date</h3>
+                                    <p>{{ tournament.endDate | date:'shortDate' }}</p>
+                                </ng-container>
+                            </div>
+                            <div class="participants">
+                                <p class="numbers">{{ tournament.currentNumberOfPlayers }}/{{
+                                    tournament.maxNumberOfPlayers }}</p>
+                                <p>participants</p>
+                            </div>
+                        </div>
+                        <div class="type">
+                            <h3>Type</h3>
+                            <p>{{ tournamentFormatString }}</p>
+                        </div>
+                        <div class="platform">
+                            <h3>Platform</h3>
+                            <p>{{ tournament.platform }}</p>
+                        </div>
+                        <div class="contact">
+                            <h3>Contact</h3>
+                            <p>Email: {{ tournament.contactEmail }}</p>
+                            <p>Number: {{ tournament.contactNumber }}</p>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <mat-tab class="tab-container" label="BRACKET">
+                <app-bracket [bracket]="bracket"></app-bracket>
+            </mat-tab>
+
+            <mat-tab class="tab-container" label="MEDIA">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/bvI_ZxFl5Ps" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/Fqsl3amjOZc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</ng-container>

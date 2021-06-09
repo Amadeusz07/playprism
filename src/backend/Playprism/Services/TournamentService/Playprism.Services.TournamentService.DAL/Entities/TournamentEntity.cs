@@ -17,7 +17,9 @@ namespace Playprism.Services.TournamentService.DAL.Entities
         [Required]
         public string Name { get; set; }
         [Required]
-        public int OwnerId { get; set; }
+        public string OwnerId { get; set; }
+        [Required]
+        public string OwnerName { get; set; }
         [Required]
         public bool AreTeams { get; set; }
         [Required]
@@ -46,6 +48,7 @@ namespace Playprism.Services.TournamentService.DAL.Entities
         public bool Published { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public bool Ongoing { get; set; }
         public bool Finished { get; set; }
         public bool Aborted { get; set; }
 

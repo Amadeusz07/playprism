@@ -13,7 +13,7 @@ namespace Playprism.Services.TeamService.API.Repositories
         {
         }
 
-        public async Task<IEnumerable<TeamEntity>> GetMemberTeamsAsync(int userId)
+        public async Task<IEnumerable<TeamEntity>> GetMemberTeamsAsync(string userId)
         {
             var player = await MainDbContext.Players
                 .Include(x => x.Assignments)
@@ -21,6 +21,12 @@ namespace Playprism.Services.TeamService.API.Repositories
                 .FirstOrDefaultAsync(x => x.UserId == userId);
 
             return player.Assignments.Select(x => x.Team);
+        }
+
+        public async Task<bool> PlayerExists(string userId)
+        {
+            var exists = (await MainDbContext.Players.FirstOrDefaultAsync(x => x.UserId == userId)) != null;
+            return exists;
         }
     }
 }

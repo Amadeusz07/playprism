@@ -1,0 +1,30 @@
+@import '../../styles.scss';
+
+.teams-container {
+    @include main-container;
+    .create-button {
+        float: right;
+        margin: 0 1rem 1rem 0;
+    }
+    .no-teams {
+        text-align: center;
+        padding: 2rem;
+    }
+    .assignments {
+        padding: 2rem;
+        .assignment {
+            .options {
+                .team-name {
+                    color: mat-color($playprism-custom-theme-primary);
+                    margin-right: 2rem;
+                }
+                .search-field {
+                    color: mat-color($playprism-custom-theme-primary);
+                }
+                button {
+                    margin-left: 1rem
+                }
+            }
+        }
+    }
+}

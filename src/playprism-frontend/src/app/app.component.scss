@@ -3,17 +3,30 @@
 .app {
     height: 100%;
     width: 100%;
-    .container {
-        display: block;
-        margin: 3rem;
+    display: flex;
+    flex-direction: column;
+    header {
+        flex-shrink: 0;
+        .toolbar-transparent {
+            background-color: transparent;
+            justify-content: space-around;
+            .center {
+                a {
+                    .toolbar-button {
+                        margin: 1rem;
+                        color: $primary-font-color-white;
+                        border-radius: 0;
+                    }
+                }
+            }
+        }
     }
-    .mat-toolbar-row, .mat-toolbar-single-row {
-        justify-content: space-around ;
-    }
-    .center {
-        .toolbar-button {
-            color: $secondary-font-color;
-            margin: 1rem;
+    main {
+        flex-grow: 1;
+        .container {
+            display: block;
+            flex: 1;
+            margin: 3rem;
         }
     }
 }

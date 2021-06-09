@@ -7,11 +7,9 @@ import { TournamentComponent } from './shared/tournament/tournament.component';
 import { MatchesListComponent } from './matches/matches-list/matches-list.component';
 import { MatchComponent } from './matches/matches-list/match/match.component';
 import { TournamentsManagerComponent } from './tournaments-manager/tournaments-manager.component';
-import { CreateTournamentComponent } from './tournaments-manager/create-tournament/create-tournament.component';
 import { ConfigureTournamentComponent } from './tournaments-manager/configure-tournament/configure-tournament.component';
-import { CreateTeamComponent } from './teams/create-team/create-team.component';
-import { EditTeamComponent } from './teams/edit-team/edit-team.component';
 import { TeamsComponent } from './teams/teams.component';
+import { PlayerStatisticsComponent } from './player-statistics/player-statistics.component';
 
 const routes: Routes = [
   {
@@ -40,17 +38,21 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', component: TournamentsManagerComponent },
-      { path: 'create-tournament', component: CreateTournamentComponent },
-      { path: 'configure/:id', component: ConfigureTournamentComponent }
+      { path: 'configure/:tournamentId', component: ConfigureTournamentComponent }
     ]
   },
   {
     path: 'teams',
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: TeamsComponent },
-      { path: 'create-team', component: CreateTeamComponent },
-      { path: 'edit/:id', component: EditTeamComponent }
+      { path: '', component: TeamsComponent }
+    ]
+  },
+  {
+    path: 'player-statistics',
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: PlayerStatisticsComponent }
     ]
   },
   { path: '',   redirectTo: '/browse/games', pathMatch: 'full' },

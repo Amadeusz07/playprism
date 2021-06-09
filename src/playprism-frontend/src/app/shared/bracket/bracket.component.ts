@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Bracket } from 'src/app/models/bracket.model';
 
 @Component({
@@ -6,18 +6,12 @@ import { Bracket } from 'src/app/models/bracket.model';
   templateUrl: './bracket.component.html',
   styleUrls: ['./bracket.component.scss']
 })
-export class BracketComponent implements OnInit, OnChanges {
+export class BracketComponent implements OnInit {
 
   @Input() bracket: Bracket;
 
   constructor() { }
 
   ngOnInit(): void {
-    
   }
-
-  ngOnChanges() {
-    console.log(this.bracket);
-  }
-
 }

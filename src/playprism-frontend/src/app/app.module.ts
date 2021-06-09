@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
+import { AuthModule } from '@auth0/auth0-angular';
 import { AuthButtonComponent } from './shared/auth-button/auth-button.component';
 import { UserProfileComponent } from './shared/user-profile/user-profile.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -13,18 +13,42 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card'
 import { MatInputModule } from '@angular/material/input';
+import { MatTabsModule } from '@angular/material/tabs'
+import { MatSelectModule } from '@angular/material/select';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowseGamesComponent } from './tournaments/browse-games/browse-games.component';
 import { BrowseTournamentsComponent } from './tournaments/browse-games/browse-tournaments/browse-tournaments.component';
 import { TournamentComponent } from './shared/tournament/tournament.component';
 import { MatchesListComponent } from './matches/matches-list/matches-list.component';
 import { MatchComponent } from './matches/matches-list/match/match.component';
 import { TournamentsManagerComponent } from './tournaments-manager/tournaments-manager.component';
-import { CreateTournamentComponent } from './tournaments-manager/create-tournament/create-tournament.component';
+import { CreateTournamentDialogComponent } from './tournaments-manager/create-tournament-dialog/create-tournament-dialog.component';
 import { ConfigureTournamentComponent } from './tournaments-manager/configure-tournament/configure-tournament.component';
 import { TeamsComponent } from './teams/teams.component';
-import { CreateTeamComponent } from './teams/create-team/create-team.component';
-import { EditTeamComponent } from './teams/edit-team/edit-team.component';
+import { TeamDialogComponent } from './teams/team-dialog/team-dialog.component';
+import { EditMatchResultComponent } from './matches/matches-list/edit-match-result/edit-match-result.component';
+import { TeamFormComponent } from './teams/team-dialog/team-form/team-form.component';
+import { FooterComponent } from './shared/footer/footer.component';
 import { BracketComponent } from './shared/bracket/bracket.component';
+import { PlayerStatisticsComponent } from './player-statistics/player-statistics.component';
+import { AuthHttpExtendedInterceptor } from './interceptors/auth-extended.interceptor';
+import { environment } from 'src/environments/environment';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TournamentStatusPipe } from './pipes/tournament-status.pipe';
+import { JoinButtonComponent } from './shared/tournament/join-button/join-button.component';
+import { DatePipe } from '@angular/common';
+import { BarChartComponent } from './shared/charts/bar-chart/bar-chart.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -37,24 +61,35 @@ import { BracketComponent } from './shared/bracket/bracket.component';
     MatchesListComponent,
     MatchComponent,
     TournamentsManagerComponent,
-    CreateTournamentComponent,
+    CreateTournamentDialogComponent,
     ConfigureTournamentComponent,
     TeamsComponent,
-    CreateTeamComponent,
-    EditTeamComponent,
-    BracketComponent
+    BracketComponent,
+    TournamentStatusPipe,
+    JoinButtonComponent,
+    TeamDialogComponent,
+    EditMatchResultComponent,
+    TeamFormComponent,
+    FooterComponent,
+    BarChartComponent,
+    PlayerStatisticsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     AuthModule.forRoot({
       domain: 'dev-e821827o.eu.auth0.com',
       clientId: 'BfS5VVPmKwqKlWPqDqdpiisJhwtpC7sw',
       audience: 'https://playprism/api/v1',
       redirectUri: window.location.origin,
       httpInterceptor: {
-        allowedList: [ 'http://localhost:5000/api/v1/*' ],
+        allowedList: [ 
+          `${environment.API_URL_TEAM}/*`, 
+          `${environment.API_URL_TOURNAMENT}/*` 
+        ],
       }
     }),
     BrowserAnimationsModule,
@@ -62,11 +97,31 @@ import { BracketComponent } from './shared/bracket/bracket.component';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    MatInputModule
+    MatInputModule,
+    MatTabsModule,
+    MatOptionModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    MatListModule,
+    MatTableModule,
+    MatStepperModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatExpansionModule,
+    NgxChartsModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpExtendedInterceptor, multi: true },
+    TournamentStatusPipe,
+    DatePipe
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [
+    TournamentStatusPipe
+  ]
 })
 export class AppModule { }

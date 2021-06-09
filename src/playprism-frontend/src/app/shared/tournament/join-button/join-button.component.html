@@ -1,0 +1,39 @@
+<ng-container [ngSwitch]="tournamentStatus">
+    <ng-container *ngSwitchCase="tournamentStatusEnum.Incoming">
+        <ng-container *ngIf="!isAuthenticated">
+            <p class="ongoing">Login to join to the tournament</p>
+        </ng-container>
+        <ng-container *ngIf="isAuthenticated">
+            <ng-container *ngIf="areTeams; else singlePlayers">
+                <button 
+                    id="basic" 
+                    type="button" 
+                    mat-flat-button 
+                    color="primary" 
+                    (click)="join()" 
+                    *ngIf="canJoin.accepted">
+                        Register team to the tournament
+                </button>
+                <p *ngIf="!canJoin.accepted">{{ canJoin.message }}</p>
+            </ng-container>
+            <ng-template #singlePlayers>
+                <button 
+                    id="basic" 
+                    type="button" 
+                    mat-flat-button 
+                    color="primary" 
+                    (click)="join()" 
+                    *ngIf="canJoin.accepted">
+                        Register to the tournament
+                </button>
+                <p *ngIf="!canJoin.accepted">{{ canJoin.message }}</p>
+            </ng-template>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="tournamentStatusEnum.Ongoing">
+        <p class="ongoing">Ongoing tournament</p>
+    </ng-container>
+    <ng-container *ngSwitchCase="tournamentStatusEnum.Ended">
+        <p class="completed">Completed tournament</p>
+    </ng-container>
+</ng-container>

@@ -1,0 +1,121 @@
+<h1 mat-dialog-title>Initial tournament setup</h1>
+<div mat-dialog-content class="content-resize">
+
+    <mat-vertical-stepper [linear]="isLinear" #stepper>
+    <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Tournament name</ng-template>
+        <mat-form-field>
+            <mat-label>Tournament name</mat-label>
+            <input matInput placeholder="My Great Tournament" formControlName="tournamentName" required>
+        </mat-form-field>
+        <div>
+            <button mat-button matStepperNext [disabled]="!firstFormGroup.valid">Next</button>
+        </div>
+        </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel>Discipline</ng-template>
+        <mat-form-field>
+            <mat-label>Discipline</mat-label>
+            <mat-select required formControlName="discipline">
+                <mat-option *ngFor="let discipline of data.disciplines" [value]="discipline">
+                    {{ discipline.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div class="slider">
+            <mat-label ngClass="label-before-slide">For individual players</mat-label>
+            <mat-slide-toggle
+                color="primary"
+                formControlName="areTeams">
+                    <span matTooltip="Only teams will be able to register to your tournament" matTooltipPosition="right">
+                        For team
+                        <mat-icon aria-hidden="false" class="sm-icon">help</mat-icon>
+                    </span>
+            </mat-slide-toggle>
+        </div>
+        <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext [disabled]="!secondFormGroup.valid">Next</button>
+        </div>
+        </form>
+    </mat-step>
+    <mat-step [stepControl]="thirdFormGroup">
+        <form [formGroup]="thirdFormGroup">
+        <ng-template matStepLabel>Platform</ng-template>
+        <mat-form-field>
+            <mat-label>Platform</mat-label>
+            <mat-select required formControlName="platform">
+                <mat-option *ngFor="let platform of platforms" [value]="platform">
+                    {{ platform }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext [disabled]="!thirdFormGroup.valid">Next</button>
+        </div>
+        </form>
+    </mat-step>
+    <mat-step [stepControl]="fourthFromGroup">
+        <form [formGroup]="fourthFromGroup">
+        <ng-template matStepLabel>Participants</ng-template>
+        <mat-form-field>
+            <mat-label>Total count of {{ secondFormGroup.value.areTeams ? 'teams' : 'players' }}</mat-label>
+            <mat-select required formControlName="numberOfParticipants">
+                <mat-option *ngFor="let option of sizeOptions" [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div class="slider">
+            <mat-slide-toggle
+                color="primary"
+                formControlName="approvalNeeded">
+                        Registration needs admin's approval
+            </mat-slide-toggle>
+        </div>
+        <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext [disabled]="!fourthFromGroup.valid"> Next</button>
+        </div>
+        </form>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Summary</ng-template>
+        <div class="summary-step">
+            <mat-list class="mat-list-small">
+                <mat-list-item class="mat-list-item-small">
+                    Tournament name: {{ firstFormGroup.value.tournamentName }}
+                </mat-list-item>
+                <mat-list-item class="mat-list-item-small">
+                    Discipline: {{ secondFormGroup.value.discipline.name }}
+                </mat-list-item>
+                <mat-list-item class="mat-list-item-small">
+                    Tournament available for: {{ secondFormGroup.value.areTeams ? "Teams" : 'Individual players'}}
+                </mat-list-item>
+                <mat-list-item class="mat-list-item-small">
+                    Platform: {{thirdFormGroup.value.platform}}
+                </mat-list-item>
+                <mat-list-item class="mat-list-item-small">
+                    Number of available slots: {{ fourthFromGroup.value.numberOfParticipants }}
+                </mat-list-item>
+                <mat-list-item class="mat-list-item-small">
+                    Registration will need approval: {{ fourthFromGroup.value.approvalNeeded ? 'Yes' : 'No' }}
+                </mat-list-item>
+            </mat-list>
+        </div>
+        <div class="actions">
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-flat-button color="primary" (click)="submit()" [disabled]="!formIsValid">Create</button>
+            <p color="warn" *ngIf="error">{{ error }}</p>
+        </div>
+    </mat-step>
+    </mat-vertical-stepper>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+</div>

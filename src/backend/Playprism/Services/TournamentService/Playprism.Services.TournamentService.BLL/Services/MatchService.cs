@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Playprism.Services.TournamentService.BLL.Dtos;
 using Playprism.Services.TournamentService.BLL.Exceptions;
 using Playprism.Services.TournamentService.BLL.Interfaces;
 using Playprism.Services.TournamentService.DAL.Entities;
@@ -12,12 +15,66 @@ namespace Playprism.Services.TournamentService.BLL.Services
     public class MatchService: IMatchService
     {
         private readonly IMatchRepository _matchRepository;
+        private readonly IParticipantRepository _participantRepository;
         private readonly IMapper _mapper;
+        private const string EmptySlot = "EMPTY";
 
-        public MatchService(IMatchRepository matchRepository, IMapper mapper)
+        public MatchService(IMatchRepository matchRepository, IParticipantRepository participantRepository, IMapper mapper)
         {
             _matchRepository = matchRepository;
+            _participantRepository = participantRepository;
             _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<MatchDto>> GetIncomingMatchListAsync(string userId)
+        {
+            var participants = await _participantRepository.GetParticipantsByUserIdAsync(userId);
+            if (participants == null)
+            {
+                return null;
+            }
+            List<MatchDto> result = new List<MatchDto>();
+            foreach (var participant in participants)
+            {
+                var entities = await _matchRepository.GetIncomingMatchesAsync(participant.Id);
+                var matches = _mapper.Map<IEnumerable<MatchDto>>(entities);
+                result.AddRange(matches);
+            }
+
+            if (result.Count == 0)
+            {
+                return null;
+            }
+            await FillParticipantsNamesAsync(result);
+            return result.OrderBy(x => x.MatchDate);
+        }
+
+        private async Task<IEnumerable<MatchDto>> FillParticipantsNamesAsync(IEnumerable<MatchDto> matches)
+        {
+            var participantIds = matches
+                .Where(x => x.Participant1Id != null)
+                .Select(x => x.Participant1Id.Value)
+                .Concat(
+                    matches
+                        .Where(x => x.Participant2Id != null)
+                        .Select(x => x.Participant2Id.Value)
+                ).Distinct();
+            var neededParticipants = await _participantRepository.GetByIdsAsync(participantIds);
+
+            foreach (var match in matches)
+            {
+                SetNames(neededParticipants, match);
+            }
+
+            return matches;
+        }
+
+        private void SetNames(IEnumerable<ParticipantEntity> participants, MatchDto match)
+        {
+            var participant1 = participants.FirstOrDefault(x => x.Id == match.Participant1Id);
+            match.Participant1Name = participant1 != null ? participant1.Name : EmptySlot;
+            var participant2 = participants.FirstOrDefault(x => x.Id == match.Participant2Id);
+            match.Participant2Name = participant2 != null ? participant2.Name : EmptySlot;
         }
 
         public async Task<MatchEntity> UpdateMatchAsync(MatchEntity entity)
@@ -84,7 +141,7 @@ namespace Playprism.Services.TournamentService.BLL.Services
         // for now public, might be used to valid on a fly data in frontend
         public bool IsMatchResultValid(MatchEntity match, MatchDefinitionEntity matchDefinition)
         {
-            // todo: it shouldn't be the part of this method, much more like for MatchDefinition CRUD methods
+            // todo: it shouldn't be the part of this method, fits more likely to MatchDefinition CRUD methods
             // if (matchDefinition.NumberOfGames % 2 != 1)
             // {
             //     throw new ArgumentException("Number of games should be not divisible by two");    

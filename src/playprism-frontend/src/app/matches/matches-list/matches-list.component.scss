@@ -1,0 +1,12 @@
+@import '../../../styles.scss';
+
+.matches-container {
+    @include main-container;
+    .tournament-name {
+        font-weight: bold;
+    }
+}
+.error-message {
+    text-align: center;
+    padding: 2rem;
+}

@@ -1,3 +1,5 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,16 +7,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Playprism.Services.TeamService.API.Repositories;
+using Playprism.Services.TeamService.API.Filters;
+using Playprism.Services.TeamService.API.Interface.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Repositories;
 using Playprism.Services.TeamService.API.Interfaces.Services;
+using Playprism.Services.TeamService.API.Models;
+using Playprism.Services.TeamService.API.Repositories;
 using Playprism.Services.TeamService.API.Services;
-using Playprism.Services.TeamService.API.Filters;
+using RestSharp;
+using System;
 
 namespace Playprism.Services.TeamService.API
 {
     public class Startup
     {
+        private const string AuthenticationProviderKey = "AuthKey";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,16 +43,38 @@ namespace Playprism.Services.TeamService.API
                     options => options.MigrationsAssembly("Playprism.Services.TeamService.API")
                     );
             });
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            var auth0Section = Configuration.GetSection("Auth0");
+            services.Configure<AuthConfig>(auth0Section);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IPlayerRepository), typeof(PlayerRepository));
             services.AddScoped(typeof(ITeamRepository), typeof(TeamRepository));
+            services.AddScoped(typeof(ITeamPlayerAssignmentRepository), typeof(TeamPlayerAssignmentRepository));
+            services.AddScoped<IAuth0Repository, Auth0Repository>();
             services.AddScoped<ITeamManageService, TeamManageService>();
+            services.AddScoped<IPlayerService, PlayerService>();
+            services.AddTransient<IRestClient, RestClient>();
 
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Team API", Version = "v1" });
             });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = AuthenticationProviderKey;
+                options.DefaultChallengeScheme = AuthenticationProviderKey;
+            }).AddJwtBearer(AuthenticationProviderKey, options =>
+            {
+                options.Authority = auth0Section.GetValue<string>("Authority");
+                options.Audience = auth0Section.GetValue<string>("Audience");
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("TeamOwnerPolicy", policy => policy.Requirements.Add(new TeamOwnerRequirement()));
+            }); 
+            services.AddSingleton<IAuthorizationHandler, TeamOwnerHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,10 +91,10 @@ namespace Playprism.Services.TeamService.API
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Team API v1");
             });
 
-            app.UseHttpsRedirection();
-
+            //app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

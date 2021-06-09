@@ -1,1 +1,188 @@
-<p>configure-tournament works!</p>
+<div class="configure-container">
+    <ng-container *ngIf="!loading && tournament && matchDefinitions && matchDefinitions.length != 0; else loader">
+        <h1>Tournament: {{ tournament.name }}</h1>
+        <h2>{{ tournament.disciplineName }} on {{ tournament.platform }}</h2>
+        <h2 *ngIf="tournament.published && !tournament.ongoing && !tournament.finished">Tournament is published</h2>
+        <h2 *ngIf="tournament.published && tournament.ongoing && !tournament.finished">Tournament is ongoing</h2>
+        <h2 *ngIf="tournament.published && tournament.ongoing && tournament.finished">Tournament is finished</h2>
+        <div>
+            <button 
+                mat-flat-button color="primary" 
+                [disabled]="!tournamentValidToStart()"
+                *ngIf="!tournament.ongoing"
+                (click)="startTournament()">Start tournament</button>
+            <mat-error *ngIf="startTournamentError">{{ startTournamentError }}</mat-error>
+        </div>
+        <div *ngIf="tournament.published && tournament.ongoing && !tournament.finished">
+            <button 
+                mat-flat-button color="primary" 
+                (click)="closeTournament()">Close current round</button>
+            <p *ngIf="closeRoundResponse">{{ closeRoundResponse }}</p>
+        </div>
+        <div class="readonly-fields">
+            <mat-checkbox 
+                [disabled]="true" 
+                [(ngModel)]="tournament.areTeams"
+                color="primary">
+                    For teams (read-only)
+            </mat-checkbox>
+            <mat-checkbox 
+                class="margin-left" 
+                [disabled]="true" 
+                [(ngModel)]="tournament.registrationApprovalNeeded"
+                color="primary">
+                    Approval for registration
+            </mat-checkbox>
+        </div>
+
+        <form [formGroup]="configureFormGroup">
+            <div class="panel">
+                <div class="dates">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Start Date</mat-label>
+                        <input matInput [matDatepicker]="picker1" formControlName="startDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field class="time">
+                        <mat-label>Time</mat-label>
+                        <input matInput placeholder="15:35" formControlName="startTime" required>
+                    </mat-form-field>
+                    <br>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Check In Date</mat-label>
+                        <input matInput [matDatepicker]="picker2" formControlName="checkInDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                    <br>
+                    <!-- TODO: add feature flag -->
+                    <!-- <mat-form-field appearance="fill">
+                        <mat-label>Registration ends</mat-label>
+                        <input matInput [matDatepicker]="picker3" formControlName="registrationEndDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                        <mat-datepicker #picker3></mat-datepicker>
+                    </mat-form-field> -->
+                    <p class="error" *ngIf="!areDatesValid()">Dates are not valid. First day should be Check in data then Start Date</p>
+                </div>
+                <div class="participants">
+                    <p class="numbers">
+                        {{ tournament.currentNumberOfPlayers }}
+                        /
+                        {{tournament.maxNumberOfPlayers }}
+                    </p>
+                    <p>participants</p>
+                </div>
+            </div>
+            <div class="email-input-container">
+                <mat-form-field appearance="fill">
+                    <mat-label>Enter your email</mat-label>
+                    <input matInput placeholder="pat@example.com" formControlName="contactEmail">
+                    <mat-error *ngIf="configureFormGroup.get('contactEmail')?.hasError('email')">Not a valid mail</mat-error>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Enter your contact phone number</mat-label>
+                    <input matInput type="number" placeholder="123123123" formControlName="contactNumber">
+                    <mat-error *ngIf="configureFormGroup.get('contactNumber')?.hasError('pattern')">Not a valid phone number</mat-error>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field class="text-area-input" appearance="fill">
+                    <mat-label>Description</mat-label>
+                    <textarea 
+                        matInput 
+                        placeholder="Tell more about your tournament" 
+                        formControlName="description"></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field class="text-area-input" appearance="fill">
+                    <mat-label>Rules</mat-label>
+                    <textarea 
+                        matInput 
+                        placeholder="Describe rules of your tournament" 
+                        formControlName="rules"></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field class="text-area-input" appearance="fill">
+                    <mat-label>Prizes</mat-label>
+                    <textarea 
+                        matInput 
+                        placeholder="What is the prize pool"
+                        formControlName="prizes"></textarea>
+                </mat-form-field>
+            </div>
+
+            <mat-accordion multi>
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Match settings
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Customize matches in your tournament
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="confirmation-needed">
+                        <mat-checkbox 
+                            color="primary"
+                            formControlName="confirmationNeeded">
+                                Matches need admin's confirmation
+                        </mat-checkbox>
+                    </div>
+                    <mat-form-field>
+                        <mat-label>Match type</mat-label>
+                        <mat-select formControlName="scoreBased">
+                            <mat-option [value]="true">
+                                Score-based
+                            </mat-option>
+                            <mat-option [value]="false">
+                                Best of
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="configureFormGroup.value.scoreBased === false">
+                        <mat-form-field>
+                            <mat-label>Best of</mat-label>
+                            <input matInput type="number" placeholder="3" formControlName="bestOf">
+                        </mat-form-field>
+                        <mat-error *ngIf="configureFormGroup.get('bestOf')?.errors?.EvenNumberValidator">Can't be even</mat-error>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <div class="save">
+                <button 
+                    mat-flat-button 
+                    color="primary" 
+                    [disabled]="!areDatesValid() || !configureFormGroup.valid"
+                    (click)="submit()">
+                        Save
+                </button>
+                <button 
+                    mat-flat-button
+                    color="primary"
+                    class="margin-left" 
+                    *ngIf="!tournament.published"
+                    [disabled]="!areDatesValid() || !configureFormGroup.valid"
+                    (click)="saveAndPublishTournament()">
+                        {{ configureFormGroup.touched ? 'Save and ' : '' }}Publish tournament
+                </button>
+            </div>
+
+            <div>
+                <mat-error *ngIf="error">{{ error }}</mat-error>
+            </div>
+        </form>
+    </ng-container>
+
+    <ng-template #loader>
+        <div class="spinner">
+            <mat-spinner color="primary"></mat-spinner>
+        </div>
+    </ng-template>
+    
+</div>

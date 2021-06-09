@@ -1,1 +1,65 @@
-<p>teams works!</p>
+ <div class="teams-container">
+     <div class="header">
+        <h1>Your team and invitations</h1>
+     </div>
+    <button 
+        class="create-button" 
+        id="basic" 
+        type="button" 
+        mat-flat-button
+        color="primary"
+        (click)="openCreateDialog()">
+            Create
+    </button>
+    <div class="assignments" *ngIf="assignments && assignments.length > 0; else noTeams">
+        <mat-list role="list">
+            <mat-list-item *ngFor="let assignment of assignments" class="assignment">
+                <div class="options">
+                    <span class="team-name">{{ assignment.team.name}} {{ assignment.isOwner ? '(Owner)' : (assignment.active ? "(Current team)" : "") }}</span>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-flat-button 
+                        color="primary" 
+                        (click)="join(assignment.team.id)" 
+                        [disabled]="assignment.active || assignment.isOwner">
+                            Join
+                    </button>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-flat-button 
+                        color="warn" 
+                        (click)="refuse(assignment.team.id)" 
+                        [disabled]="assignment.active || assignment.isOwner">
+                            Refuse
+                    </button>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-flat-button 
+                        color="warn" 
+                        (click)="leave(assignment.team.id)" 
+                        [disabled]="!assignment.active || assignment.isOwner">
+                            Leave
+                    </button>
+                    <button 
+                        id="basic" 
+                        type="button" 
+                        mat-flat-button 
+                        color="primary" 
+                        *ngIf="assignment.isOwner"
+                        (click)="openEditDialog(assignment.team)">
+                            Edit
+                    </button>
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </div>
+    <mat-error *ngIf="error">{{ error }}</mat-error>
+    <ng-template #noTeams>
+        <div class="no-teams">
+            You have no teams or pending invitations
+        </div>
+    </ng-template>
+</div>

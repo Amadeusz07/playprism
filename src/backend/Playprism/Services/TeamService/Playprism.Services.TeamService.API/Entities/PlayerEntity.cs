@@ -7,8 +7,8 @@ namespace Playprism.Services.TeamService.API.Entities
     {
         [Key]
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int Name { get; set; }
+        public string UserId { get; set; }
+        public string Name { get; set; }
 
         public ICollection<TeamPlayerAssignmentEntity> Assignments { get; set; }
     }

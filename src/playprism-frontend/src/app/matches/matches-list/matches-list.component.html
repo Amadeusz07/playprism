@@ -1,1 +1,45 @@
-<p>matches-list works!</p>
+<div class="matches-container">
+  <div class="header">
+    <h1>Your matches</h1>
+  </div>
+  <ng-container *ngIf="errorMessage">
+    <div class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="matches">
+
+    <div>
+      <button mat-button (click)="accordion.openAll()">Expand All</button>
+      <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+    </div>
+
+    <mat-accordion multi>
+      <mat-expansion-panel *ngFor="let match of matches">
+        <mat-expansion-panel-header>
+
+          <mat-panel-title>
+            <span *ngIf="match.matchDate != null">Match Date: {{ match.matchDate | date:'short' }} | </span>  <span class="tournament-name">{{ '  ' + match.tournamentName }}</span>
+          </mat-panel-title>
+
+          <mat-panel-description>
+              <mat-icon>account_circle</mat-icon>
+              {{ match.participant1Name }} 
+              vs.
+              {{ match.participant2Name }}
+              <mat-icon>account_circle</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        
+        <app-edit-match-result 
+          [match]='match'
+          (onSubmit)="submit($event)">
+        </app-edit-match-result>
+    
+      </mat-expansion-panel>
+
+    </mat-accordion>
+  </ng-container>
+
+</div>

@@ -26,11 +26,11 @@ namespace Playprism.Services.TeamService.API.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<int>("Name")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -68,8 +68,8 @@ namespace Playprism.Services.TeamService.API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("integer");
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("text");
 
                     b.Property<string>("WebsiteUrl")
                         .HasColumnType("text");
@@ -106,7 +106,7 @@ namespace Playprism.Services.TeamService.API.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("TeamPlayerAssignmentEntity");
+                    b.ToTable("TeamPlayerAssignments");
                 });
 
             modelBuilder.Entity("Playprism.Services.TeamService.API.Entities.TeamPlayerAssignmentEntity", b =>

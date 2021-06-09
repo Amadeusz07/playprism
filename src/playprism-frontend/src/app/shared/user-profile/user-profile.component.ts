@@ -16,7 +16,6 @@ export class UserProfileComponent implements OnChanges {
 
   public ngOnChanges() {
     this.auth.user$.subscribe(ele => {
-      console.log(ele);
       this.tmp = ele;
     });
   }

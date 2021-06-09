@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Playprism.Services.TournamentService.DAL.Entities;
 using Playprism.Services.TournamentService.DAL.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Playprism.Services.TournamentService.DAL.Repositories
 {
@@ -23,33 +21,13 @@ namespace Playprism.Services.TournamentService.DAL.Repositories
             return entities;
         }
 
-        public async Task<RoundEntity> FinishRoundAsync(int roundId)
+        public async Task<RoundEntity> GetRoundToFinishAsync(int tournamentId)
         {
-            var entity = MainDbContext.Rounds
+            return await MainDbContext.Rounds
                 .Include(x => x.Matches)
-                .First(x => x.Id == roundId);
-
-
-            if (entity.Finished)
-            {
-                throw new ValidationException("Round is already finished");
-            }
-            
-             var toAutoResult = entity.Matches
-                .Where(x => x.Participant1Id == null || x.Participant2Id == null);
-            foreach (var matchToAutoResult in toAutoResult)
-            {
-                matchToAutoResult.AutoResult();
-                MainDbContext.Entry(matchToAutoResult).State = EntityState.Modified;
-                await MainDbContext.SaveChangesAsync();
-            }
-            
-            entity.Finished = true;
-            entity.EndDate = DateTime.UtcNow;
-            MainDbContext.Entry(entity).State = EntityState.Modified;
-            await MainDbContext.SaveChangesAsync();
-
-            return entity;
+                .Where(x => x.TournamentId == tournamentId && !x.Finished && x.Started)
+                .OrderBy(x => x.Order)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<RoundEntity> GetNextRoundAsync(RoundEntity currentRound)

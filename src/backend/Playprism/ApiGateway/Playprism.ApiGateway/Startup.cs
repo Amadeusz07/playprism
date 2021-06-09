@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ namespace Playprism.ApiGateway
 {
     public class Startup
     {
+        private const string AuthenticationProviderKey = "Auth0";
         public Startup(IConfiguration config)
         {
             Configuration = config;
@@ -28,11 +30,23 @@ namespace Playprism.ApiGateway
                     builder =>
                     {
                         builder
-                        .WithOrigins("http://localhost:4200")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
                     });
             });
+
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = AuthenticationProviderKey;
+                options.DefaultChallengeScheme = AuthenticationProviderKey;
+            }).AddJwtBearer(AuthenticationProviderKey, options =>
+            {
+                options.Authority = "https://dev-e821827o.eu.auth0.com/";
+                options.Audience = "https://playprism/api/v1";
+            });
+
             services.AddOcelot();
         }
 
@@ -46,6 +60,9 @@ namespace Playprism.ApiGateway
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

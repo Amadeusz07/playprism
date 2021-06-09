@@ -7,41 +7,14 @@
 
         <li class="tournament-bracket__item" *ngFor="let match of round.matches">
           <div class="tournament-bracket__match" tabindex="0">
-            <table class="tournament-bracket__table">
-              <caption class="tournament-bracket__caption">
-                <time datetime="1998-02-18">18 February 1998</time>
-              </caption>
-              <thead class="sr-only">
-                <tr>
-                  <th>Country</th>
-                  <th>Score</th>
-                </tr>
-              </thead>  
-              <tbody class="tournament-bracket__content">
-                <tr [class]="{'tournament-bracket__team': true, 'tournament-bracket__team--winner': match.result == 1 }">
-                  <td class="tournament-bracket__country">
-                    <abbr class="tournament-bracket__code" title="Czech Republic">
-                      {{ match.participant1 ? match.participant1 : 'TBD' }}
-                    </abbr>
-                    <span class="tournament-bracket__flag flag-icon flag-icon-cz" aria-label="Flag"></span>
-                  </td>
-                  <td class="tournament-bracket__score">
-                    <span class="tournament-bracket__number">{{ match.participant1Score }}</span>
-                  </td>
-                </tr>
-                <tr [class]="{'tournament-bracket__team': true, 'tournament-bracket__team--winner': match.result == 2 }">
-                  <td class="tournament-bracket__country">
-                    <abbr class="tournament-bracket__code" title="Unitede states of America"> 
-                      {{ match.participant2 ? match.participant2 : 'TBD' }}
-                    </abbr>
-                    <span class="tournament-bracket__flag flag-icon flag-icon-us" aria-label="Flag"></span>
-                  </td>
-                  <td class="tournament-bracket__score">
-                    <span class="tournament-bracket__number">{{ match.participant2Score }}</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div [ngClass]="{'winner': match.result == 1, 'participant': true}">
+              {{ match.participant1 ? match.participant1 : 'TBD'  }} 
+              <span class="score">{{ match.participant1Score != null ? match.participant1Score : '-'  }}</span>
+            </div>
+            <div [ngClass]="{'winner': match.result == 2, 'participant': true}">
+              <span>{{ match.participant2 ? match.participant2 : 'TBD' }}</span>
+              <span class="score">{{ match.participant2Score != null ? match.participant2Score : '-' }}</span>
+            </div>
           </div>
         </li>
 

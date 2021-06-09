@@ -17,6 +17,6 @@ namespace Playprism.Services.TeamService.API.Repositories
 
         public DbSet<TeamEntity> Teams { get; set; }
         public DbSet<PlayerEntity> Players { get; set; }
-        //public DbSet<TeamPlayerAssignmentEntity> TeamPlayerAssignments { get; set; }
+        public DbSet<TeamPlayerAssignmentEntity> TeamPlayerAssignments { get; set; }
     }
 }

@@ -1,0 +1,59 @@
+@import '../../../styles.scss';
+
+.tournament-title {
+    text-align: center;
+}
+
+.tournament-container {
+    @include main-container;
+    .informations {
+        color: $primary-font-color-white;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        h3 {
+            font-weight: bold;
+        }
+        .informations-left {
+            display: flex;
+            flex-direction: column;
+            width: 60%;
+            margin: 1rem;
+        }
+        .informations-right {
+            margin: 1rem;
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+            .panel {
+                color: $primary-font-color-white;
+                border-radius: 0;
+                border: 4px mat-color($playprism-custom-theme-primary) solid;
+                display: flex;
+                flex-direction: row;
+                width: 70%;
+                .dates {
+                    margin: 0.5rem;
+                    width: 60%;
+                    h3 {
+                        margin: 0;
+                        color: mat-color($playprism-custom-theme-primary);
+                    }
+                }
+                .participants {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                    color: #fff;
+                    width: 40%;
+                    background: mat-color($playprism-custom-theme-primary);
+                    .numbers {
+                        font-size: 2rem;
+                    }
+                }
+            }
+        }
+    }
+    
+}

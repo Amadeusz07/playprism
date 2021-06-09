@@ -1,0 +1,40 @@
+<form [formGroup]="scoreFormGroup" (ngSubmit)="submit()">
+    <div class="panel-content">
+        <div *ngIf="!match.matchDefinition.scoreBased">
+            Best of {{ match.matchDefinition.numberOfGames }}
+        </div>
+        <mat-form-field>
+            <mat-label>{{ match.participant1Name }} Score</mat-label>
+            <input matInput type="number" formControlName="participant1Score">
+        </mat-form-field>
+        vs.
+        <mat-form-field>
+            <mat-label>{{ match.participant2Name }} Score</mat-label>
+            <input matInput type="number" formControlName="participant2Score">
+        </mat-form-field>
+
+        <mat-error *ngIf="scoreFormGroup.controls['participant1Score'].errors?.required">Score for Participant 1 is required</mat-error>
+        <mat-error *ngIf="scoreFormGroup.controls['participant2Score'].errors?.required">Score for Participant 2 is required</mat-error>
+
+        <mat-error *ngIf="scoreFormGroup.controls['participant1Score'].errors?.min">Score for Participant 1 is less than 0</mat-error>
+        <mat-error *ngIf="scoreFormGroup.controls['participant2Score'].errors?.min">Score for Participant 2 is less than 0</mat-error>
+        <mat-error *ngIf="scoreFormGroup.controls['participant1Score'].errors?.max">Score for Participant 1 is more than {{ winnerScore }}</mat-error>
+        <mat-error *ngIf="scoreFormGroup.controls['participant2Score'].errors?.max">Score for Participant 2 is more than {{ winnerScore }}</mat-error>
+
+        <mat-error *ngIf="scoreFormGroup.controls['result'].hasError('min') || scoreFormGroup.controls['result'].hasError('max')">Scores are not correct</mat-error>
+
+        <div class="result">
+            Winner: {{ 
+                scoreFormGroup.valid 
+                ? scoreFormGroup.value.result == 1 ? match.participant1Name : match.participant2Name 
+                : 'TBD' }}
+        </div>
+        <button 
+            mat-flat-button 
+            color="primary" 
+            type="submit" 
+            [disabled]="!scoreFormGroup.valid">
+                Submit
+        </button>
+    </div>
+</form>

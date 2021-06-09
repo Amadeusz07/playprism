@@ -15,6 +15,35 @@ namespace Playprism.Services.TournamentService.DAL.Repositories
         {
         }
 
+        public async Task<IEnumerable<MatchEntity>> GetIncomingMatchesAsync(int participantId)
+        {
+            return await MainDbContext.Matches
+                .Where(x => (x.Participant1Id == participantId || x.Participant2Id == participantId)
+                    && x.Played == false)
+                .Include(x => x.Round)
+                .ThenInclude(x => x.MatchDefinition)
+                .Include(x => x.Tournament)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MatchEntity>> GetCompletedMatchesByParticipant1Ids(List<int> participantIds)
+        {
+            return await MainDbContext.Matches
+                .Where(x => participantIds.Contains(x.Participant1Id.Value)
+                    && x.Confirmed
+                    && x.Played)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MatchEntity>> GetCompletedMatchesByParticipant2Ids(List<int> participantIds)
+        {
+            return await MainDbContext.Matches
+                .Where(x => participantIds.Contains(x.Participant2Id.Value)
+                    && x.Confirmed
+                    && x.Played)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<MatchEntity>> AddRangeAsync(IEnumerable<MatchEntity> entities)
         {
             MainDbContext.Matches.AddRange(entities);

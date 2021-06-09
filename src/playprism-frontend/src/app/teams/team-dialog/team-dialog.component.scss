@@ -1,0 +1,11 @@
+@import '../../../styles.scss';
+
+.error {
+    color: mat-color($playprism-custom-theme-warn)
+} 
+.invitation {
+    margin-top: 1rem;
+    .margin-left {
+        margin-left: 1rem;
+    }
+}
