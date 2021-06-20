@@ -1,0 +1,16 @@
+sudo: required
+
+services:
+  - docker
+
+before_script: cd src\backend\Playprism
+
+before_install:
+  - docker build -t blueh10/tournament.api:build -f Services\TournamentService\Playprism.Services.TournamentService.API\Dockerfile .
+
+script:
+  - docker run blueh10/tournament.api:build
+
+after_success:
+  - echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push blueh10/tournament.api:build
