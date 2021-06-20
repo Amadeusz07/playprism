@@ -4,8 +4,8 @@ services:
   - docker
 
 before_install:
-  - cd src\backend\Playprism
-  - docker build -t blueh10/tournament.api:build -f Services\TournamentService\Playprism.Services.TournamentService.API\Dockerfile .
+  - cd src/backend/Playprism
+  - docker build -t blueh10/tournament.api:build -f Services/TournamentService/Playprism.Services.TournamentService.API/Dockerfile .
 
 script:
   - docker run blueh10/tournament.api:build
