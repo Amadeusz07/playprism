@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using MMLib.SwaggerForOcelot.DependencyInjection;
+using System;
 
 namespace Playprism.ApiGateway
 {
@@ -22,7 +22,17 @@ namespace Playprism.ApiGateway
                 {
                     if (hostingContext.HostingEnvironment.IsDevelopment())
                     {
-                        config.AddJsonFile("ocelot.json");
+                        config.AddJsonFile("ocelot.development.json");
+                    }
+                    else if (hostingContext.HostingEnvironment.IsEnvironment("Docker"))
+                    {
+                        Console.WriteLine("DEBUG: got ocelot.docker.json file");
+                        config.AddJsonFile("ocelot.docker.json");
+                    }
+                    else if (hostingContext.HostingEnvironment.IsProduction())
+                    {
+                        Console.WriteLine("DEBUG: got ocelot.production.json file");
+                        config.AddJsonFile("ocelot.production.json");
                     }
                     else
                     {

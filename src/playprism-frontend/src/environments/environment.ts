@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  API_URL_TOURNAMENT: 'http://localhost:5000/api/tournament-service',
-  API_URL_TEAM: 'http://localhost:5000/api/team-service'
+  API_URL_TOURNAMENT: 'http://localhost:8082/api/tournament-service',
+  API_URL_TEAM: 'http://localhost:8082/api/team-service'
 };
 
 /*
