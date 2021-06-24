@@ -23,6 +23,7 @@ namespace Playprism.ApiGateway
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHealthChecks();
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
@@ -66,6 +67,7 @@ namespace Playprism.ApiGateway
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
 
             await app.UseOcelot();

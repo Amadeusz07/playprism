@@ -1,8 +1,8 @@
-version: '3.4'
+version: "3.4"
 
 services:
-  playprismapi:
-    image: tournamentapi
+  tournament.api:
+    image: blueh10/tournament.api:latest
     build:
       context: .
       dockerfile: Services/TournamentService/Playprism.Services.TournamentService.API/Dockerfile
@@ -12,6 +12,41 @@ services:
       - ASPNETCORE_URLS=http://+:80
     ports:
       - "8080:80"
+
+  team.api:
+    image: blueh10/team.api:latest
+    build:
+      context: .
+      dockerfile: Services/TeamService/Playprism.Services.TeamService.API/Dockerfile
+    container_name: teamapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "8081:80"
+
+  apigateway:
+    image: blueh10/apigateway:latest
+    build:
+      context: .
+      dockerfile: ApiGateway/Playprism.ApiGateway/Dockerfile
+    container_name: apigateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "8082:80"
+
+  playprismdb:
+    container_name: playprismdb
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5431:5432"
     volumes:
-      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
-      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
+      - ../../../../postgres-data:/var/lib/postgresql/data
+      - ./Services/TeamService/Playprism.Services.TeamService.API/sql/01-init.sql:/docker-entrypoint-initdb.d/01-init-team.sql
+      - ./Services/TournamentService/Playprism.Services.TournamentService.API/sql/01-init.sql:/docker-entrypoint-initdb.d/02-init-tournament.sql
+      - ./Services/TournamentService/Playprism.Services.TournamentService.API/sql/seed.sql:/docker-entrypoint-initdb.d/03-seed.sql
